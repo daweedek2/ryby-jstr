@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<div class="container">
+  <div class="row" th:if="${newPlayer == true}">
+    <div class="col-sm-12 col-md-12 col-lg-6">
+      <h2>Nový hráč</h2>
+      <form action="#" th:action="@{/admin/players/create}" th:object="${registrationDto}" method="post">
+        <div class="form-group">
+          <label for="nickName" class="input-value-required">Uživatelské jméno</label>
+          <input id="nickName" class="form-control" type="text" th:field="*{nickName}" required/>
+          <p class="error" th:if="${#fields.hasErrors('nickName')}" th:errors="*{nickName}">Chyba - Jméno
+          </p>
+        </div>
+        <div class="form-group">
+          <label for="email" class="input-value-required">E-mail</label>
+          <input id="email" class="form-control" type="email" th:field="*{email}" required/>
+          <p class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Chyba - Email
+          </p>
+        </div>
+        <div class="form-group">
+          <label for="pin" class="input-value-required">PIN</label>
+          <input id="pin" class="form-control" type="number" th:field="*{pin}" required/>
+          <p class="error" th:if="${#fields.hasErrors('pin')}" th:errors="*{pin}">Chyba - Pin
+          </p>
+        </div>
+        <div class="form-group">
+          <label for="phone" class="login-form-label">Telefon</label>
+          <input id="phone" class="form-control" type="number" th:field="*{phone}"/>
+          <p class="error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">Chyba - Telefon
+          </p>
+        </div>
+        <button type="submit" class="btn btn-primary">Vytvořit</button>
+      </form>
+    </div>
+  </div>
+  <div class="row cypher-list" th:unless="${newPlayer == true}">
+    <div class="col-sm-12">
+      <a class="btn btn-primary" th:href="@{/admin/players/new}">Nový hráč</a>
+    </div>
+  </div>
+
+  <div class="row cypher-list" th:unless="${newPlayer == true}">
+    <div class="col-sm-12">
+      <h2 th:text="|Hráči (${allPlayers.size()})|"></h2>
+      <th:block th:each="player : ${allPlayers}">
+        <div class="cypher">
+          <a th:href="@{/admin/players/{id}(id=${player.id})}">
+            <div class="row align-items-center">
+              <div class="col" th:text="|${player.id}. ${player.nickname}|">1. U zeleného háje</div>
+            </div>
+          </a>
+        </div>
+      </th:block>
+    </div>
+  </div>
+</div>
+</body>
+</html>
