@@ -2,12 +2,12 @@ package cz.kostka.rybyjstr.domain;
 
 import jakarta.persistence.*;
 
-import java.util.List;
-
 @Table
 @Entity
 public class FishType {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column

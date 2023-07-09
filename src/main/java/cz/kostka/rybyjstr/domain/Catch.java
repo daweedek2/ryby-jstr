@@ -7,10 +7,12 @@ import java.time.LocalDateTime;
 @Entity
 @Table
 public class Catch {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private LocalDateTime timestamp;
 
     @Column
@@ -23,12 +25,12 @@ public class Catch {
     private String note;
 
     @ManyToOne
-    @JoinColumn(name = "hunter_id")
+    @JoinColumn(name = "hunter_id", nullable = false)
     private Hunter hunter;
 
 
     @ManyToOne
-    @JoinColumn(name = "fishType_id")
+    @JoinColumn(name = "fishType_id", nullable = false)
     private FishType fishType;
 
     public Catch() {
@@ -43,6 +45,21 @@ public class Catch {
             final Hunter hunter,
             final FishType fishType) {
         this.id = id;
+        this.timestamp = timestamp;
+        this.size = size;
+        this.weight = weight;
+        this.note = note;
+        this.hunter = hunter;
+        this.fishType = fishType;
+    }
+
+    public Catch(
+            final LocalDateTime timestamp,
+            final int size,
+            final long weight,
+            final String note,
+            final Hunter hunter,
+            final FishType fishType) {
         this.timestamp = timestamp;
         this.size = size;
         this.weight = weight;

@@ -1,59 +1,72 @@
 <!DOCTYPE html>
 <html lang="cs" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-</head>
+<head th:replace="fragments/head :: head()"></head>
 <body>
 <div class="container">
-  <div class="row" th:if="${newPlayer == true}">
+  <div class="row">
+    <h1 class="login-form-header">Jestřabice 2023</h1>
+  </div>
+  <div class="row">
     <div class="col-sm-12 col-md-12 col-lg-6">
-      <h2>Nový hráč</h2>
-      <form action="#" th:action="@{/admin/players/create}" th:object="${registrationDto}" method="post">
+      <h2>Nový úlovek</h2>
+      <form action="#" th:action="@{/catch/new}" th:object="${newCatchDTO}" method="post">
         <div class="form-group">
-          <label for="nickName" class="input-value-required">Uživatelské jméno</label>
-          <input id="nickName" class="form-control" type="text" th:field="*{nickName}" required/>
-          <p class="error" th:if="${#fields.hasErrors('nickName')}" th:errors="*{nickName}">Chyba - Jméno
+          <label for="hunterId" class="input-value-required">Lovec</label>
+          <select th:field="*{hunterId}" id="hunterId" required>
+            <option th:each="hunter : ${allHunters}" th:value="${hunter.id}" th:text="${hunter.name}"/>
+          </select>
+          <p class="error" th:if="${#fields.hasErrors('hunterId')}" th:errors="*{hunterId}">Chyba - Lovec
           </p>
         </div>
         <div class="form-group">
-          <label for="email" class="input-value-required">E-mail</label>
-          <input id="email" class="form-control" type="email" th:field="*{email}" required/>
-          <p class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Chyba - Email
+          <label for="fishTypeId" class="input-value-required">Ryba</label>
+          <select th:field="*{fishTypeId}" id="fishTypeId" required>
+            <option th:each="fish : ${allFishTypes}" th:value="${fish.id}" th:text="${fish.type}"/>
+          </select>
+          <p class="error" th:if="${#fields.hasErrors('fishTypeId')}" th:errors="*{fishTypeId}">Chyba - Ryba
           </p>
         </div>
         <div class="form-group">
-          <label for="pin" class="input-value-required">PIN</label>
-          <input id="pin" class="form-control" type="number" th:field="*{pin}" required/>
-          <p class="error" th:if="${#fields.hasErrors('pin')}" th:errors="*{pin}">Chyba - Pin
+          <label for="size" class="login-form-label">Velikost (cm)</label>
+          <input id="size" class="form-control" type="number" th:field="*{size}"/>
+          <p class="error" th:if="${#fields.hasErrors('size')}" th:errors="*{size}">Chyba - Velikost
           </p>
         </div>
         <div class="form-group">
-          <label for="phone" class="login-form-label">Telefon</label>
-          <input id="phone" class="form-control" type="number" th:field="*{phone}"/>
-          <p class="error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">Chyba - Telefon
+          <label for="weight" class="login-form-label">Váha (g)</label>
+          <input id="weight" class="form-control" type="number" th:field="*{weight}"/>
+          <p class="error" th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}">Chyba - Vaha
           </p>
         </div>
-        <button type="submit" class="btn btn-primary">Vytvořit</button>
+        <div class="form-group">
+          <label for="note" class="login-form-label">Poznámka</label>
+          <input id="note" class="form-control" type="text" th:field="*{note}"/>
+          <p class="error" th:if="${#fields.hasErrors('note')}" th:errors="*{note}">Chyba - Poznámka
+          </p>
+        </div>
+        <button type="submit" class="btn btn-primary">Uložit úlovek</button>
       </form>
     </div>
   </div>
-  <div class="row cypher-list" th:unless="${newPlayer == true}">
-    <div class="col-sm-12">
-      <a class="btn btn-primary" th:href="@{/admin/players/new}">Nový hráč</a>
-    </div>
-  </div>
+<!--  <div class="row cypher-list" th:unless="${newPlayer == true}">-->
+<!--    <div class="col-sm-12">-->
+<!--      <a class="btn btn-primary" th:href="@{/admin/players/new}">Nový hráč</a>-->
+<!--    </div>-->
+<!--  </div>-->
 
-  <div class="row cypher-list" th:unless="${newPlayer == true}">
+  <div class="row cypher-list">
     <div class="col-sm-12">
-      <h2 th:text="|Hráči (${allPlayers.size()})|"></h2>
-      <th:block th:each="player : ${allPlayers}">
+      <h2 th:text="|Všechny úlovky (${allCatches.size()})|"></h2>
+      <th:block th:each="catch : ${allCatches}">
         <div class="cypher">
-          <a th:href="@{/admin/players/{id}(id=${player.id})}">
-            <div class="row align-items-center">
-              <div class="col" th:text="|${player.id}. ${player.nickname}|">1. U zeleného háje</div>
-            </div>
-          </a>
+          <!-- TODO: add link to catch detail for editing-->
+          <div class="row align-items-center">
+            <div class="col" th:text="${#temporals.format(catch.timestamp, ' dd.MM.yyyy HH:mm')}">1.7.2023 14:00</div>
+            <div class="col" th:text="${catch.hunter}">Jan</div>
+            <div class="col" th:text="${catch.fish}">kapr</div>
+            <div class="col" th:text="|${catch.size} cm|">120 cm</div>
+            <div class="col" th:text="|${catch.weight} g|">2500 g</div>
+          </div>
         </div>
       </th:block>
     </div>
