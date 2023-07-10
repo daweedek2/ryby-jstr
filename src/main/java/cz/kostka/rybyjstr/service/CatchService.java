@@ -41,7 +41,11 @@ public class CatchService {
     public void newCatch(final NewCatchDTO newCatchDTO, final Hunter hunter, final FishType fishType) {
         catchRepository.save(
                 new Catch(
-                        LocalDateTime.now(), newCatchDTO.size(), newCatchDTO.weight(), newCatchDTO.note(),
-                        hunter, fishType));
+                        LocalDateTime.now(),
+                        newCatchDTO.size() == null ? 0 : newCatchDTO.size(),
+                        newCatchDTO.weight() == null ? 0 : newCatchDTO.weight(),
+                        newCatchDTO.note(),
+                        hunter,
+                        fishType));
     }
 }

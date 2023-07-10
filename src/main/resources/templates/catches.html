@@ -28,13 +28,13 @@
         </div>
         <div class="form-group">
           <label for="size" class="login-form-label">Velikost (cm)</label>
-          <input id="size" class="form-control" type="number" th:field="*{size}"/>
+          <input id="size" class="form-control" type="number" th:field="*{size}" min="0"/>
           <p class="error" th:if="${#fields.hasErrors('size')}" th:errors="*{size}">Chyba - Velikost
           </p>
         </div>
         <div class="form-group">
           <label for="weight" class="login-form-label">Váha (g)</label>
-          <input id="weight" class="form-control" type="number" th:field="*{weight}"/>
+          <input id="weight" class="form-control" type="number" th:field="*{weight}" min="0"/>
           <p class="error" th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}">Chyba - Vaha
           </p>
         </div>
