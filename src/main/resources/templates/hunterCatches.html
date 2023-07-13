@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head()"></head>
+<body>
+<div class="container">
+  <a th:href="@{/}">
+    <div class="row">
+      <h1 class="login-form-header">Jestřabice 2023</h1>
+    </div>
+  </a>
+  <div class="row cypher-list">
+    <div class="col-sm-12">
+      <h2 th:text="|${hunter}: Počet ulovených ryb: ${allCatches.size()}|"></h2>
+      <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">Čas</th>
+          <th scope="col">Ryba</th>
+          <th scope="col">Délka</th>
+          <th scope="col">Váha</th>
+          <th scope="col">Akce</th>
+        </tr>
+        </thead>
+        <tbody>
+        <th:block th:each="catch : ${allCatches}">
+          <a href="#" th:href="@{/catch/{id}(id=${catch.id})}">
+            <tr>
+              <th th:text="${#temporals.format(catch.timestamp, ' dd.MM.yyyy HH:mm')}">1</th>
+              <td th:text="${catch.fish}">kapr</td>
+              <td th:text="|${catch.size} cm|">120 cm</td>
+              <td th:text="|${catch.weight} g|">2500 g</td>
+              <td>
+                <a class="btn btn-secondary" href="#" th:href="@{/catch/{id}(id=${catch.id})}">Detail</a>
+              </td>
+            </tr>
+          </a>
+        </th:block>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>

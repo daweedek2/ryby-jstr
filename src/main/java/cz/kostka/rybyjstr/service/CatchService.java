@@ -14,7 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +36,9 @@ public class CatchService {
                         c.getId(),
                         c.getTimestamp(),
                         c.getFishType().getType(),
+                        c.getFishType().getId(),
                         c.getHunter().getName(),
+                        c.getHunter().getId(),
                         c.getSize(),
                         c.getWeight(),
                         c.getNote(),
@@ -59,7 +63,9 @@ public class CatchService {
                         c.getId(),
                         c.getTimestamp(),
                         c.getFishType().getType(),
+                        c.getFishType().getId(),
                         c.getHunter().getName(),
+                        c.getHunter().getId(),
                         c.getSize(),
                         c.getWeight(),
                         c.getNote(),
@@ -85,5 +91,17 @@ public class CatchService {
 
     public void deleteCatch(final Long catchId) {
         catchRepository.deleteById(catchId);
+    }
+
+    public List<CatchDTO> getAllCatches(final Hunter hunter) {
+        return getAllCatches().stream()
+                .filter(catchDTO -> Objects.equals(catchDTO.hunter(), hunter.getName()))
+                .collect(Collectors.toList());
+    }
+
+    public List<CatchDTO> getAllCatches(final FishType fish) {
+        return getAllCatches().stream()
+                .filter(catchDTO -> Objects.equals(catchDTO.fish(), fish.getType()))
+                .collect(Collectors.toList());
     }
 }

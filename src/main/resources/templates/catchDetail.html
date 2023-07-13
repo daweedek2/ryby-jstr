@@ -3,19 +3,24 @@
 <head th:replace="fragments/head :: head"></head>
 <body>
 <div class="container">
-    <div class="row">
-        <h1 class="login-form-header">Jestřabice 2023</h1>
-    </div>
+    <a th:href="@{/}">
+        <div class="row">
+            <h1 class="login-form-header">Jestřabice 2023</h1>
+        </div>
+    </a>
     <div class="row cypher-list">
         <div class="col-sm-12">
-            <h2>Detail úlovku</h2>
+            <h2 th:text="|Detail úlovku z ${#temporals.format(catchDTO.timestamp, ' dd.MM.yyyy HH:mm')}|"></h2>
             <div class="cypher">
-                <div class="form-group" th:text="${#temporals.format(catchDTO.timestamp, ' dd.MM.yyyy HH:mm')}">1.7.2023 14:00</div>
-                <div class="form-group" th:text="${catchDTO.hunter}">Jan</div>
-                <div class="form-group" th:text="${catchDTO.fish}">kapr</div>
-                <div class="form-group" th:text="|${catchDTO.size} cm|">120 cm</div>
-                <div class="form-group" th:text="|${catchDTO.weight} g|">2500 g</div>
-                <div class="form-group" th:text="${catchDTO.note}">Poznámka</div>
+                <a th:href="@{/catch/hunter/{id}(id=${catchDTO.hunterId()})}">
+                    <div class="btn btn-secondary"  th:text="|Lovec: ${catchDTO.hunter}|">Jan</div>
+                </a>
+                <a th:href="@{/catch/fish/{id}(id=${catchDTO.fishId()})}">
+                    <div class="btn btn-secondary"  th:text="|Ryba: ${catchDTO.fish}|">kapr</div>
+                </a>
+                <div class="btn btn-secondary" th:text="|Délka: ${catchDTO.size} cm|">120 cm</div>
+                <div class="btn btn-secondary" th:text="|Váha: ${catchDTO.weight} g|">2500 g</div>
+                <div class="form-group" th:text="|Popis: ${catchDTO.note}|">Poznámka</div>
             </div>
             <div class="form-group">
                 <img class="card-img-top" th:src="@{/catch/{id}/image(id=${catchDTO.id})}" alt="">
@@ -34,7 +39,7 @@
             </div>
             <br>
             <div>
-                <a class="btn btn-secondary" href="#" th:href="@{/catch/{id}/delete(id=${catchDTO.id})}"
+                <a class="btn btn-primary" href="#" th:href="@{/catch/{id}/delete(id=${catchDTO.id})}"
                    th:attr="onclick='return confirm(\'' + 'Opravdu chcete smazat úlovek?' + '\');'">
                     Smazat úlovek
                 </a>

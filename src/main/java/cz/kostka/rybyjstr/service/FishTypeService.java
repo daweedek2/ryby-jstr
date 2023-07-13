@@ -1,6 +1,7 @@
 package cz.kostka.rybyjstr.service;
 
 import cz.kostka.rybyjstr.domain.FishType;
+import cz.kostka.rybyjstr.domain.Hunter;
 import cz.kostka.rybyjstr.repository.FishTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,5 +23,9 @@ public class FishTypeService {
 
     public FishType getFishType(Long fishTypeId) {
         return fishTypeRepository.findById(fishTypeId).orElse(null);
+    }
+
+    public FishType getFishType(String name) {
+        return fishTypeRepository.getFishTypeByType(name);
     }
 }

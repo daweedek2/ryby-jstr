@@ -57,6 +57,22 @@ public class CatchController {
         return "catchDetail";
     }
 
+    @GetMapping("/catch/hunter/{id}")
+    public String getCatchesForHunter(@PathVariable final Long id, final Model model) {
+        final var hunter = hunterService.getHunter(id);
+        model.addAttribute("allCatches", catchService.getAllCatches(hunter));
+        model.addAttribute("hunter", hunter.getName());
+        return "hunterCatches";
+    }
+
+    @GetMapping("/catch/fish/{id}")
+    public String getCatchesForFish(@PathVariable final Long id, final Model model) {
+        final var fish = fishTypeService.getFishType(id);
+        model.addAttribute("allCatches", catchService.getAllCatches(fish));
+        model.addAttribute("fish", fish.getType());
+        return "fishCatches";
+    }
+
     @GetMapping("/catch/{id}/delete")
     public String deleteCatch(@PathVariable final Long id, final Model model) {
         catchService.deleteCatch(id);

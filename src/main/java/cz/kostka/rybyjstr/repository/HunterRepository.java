@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface HunterRepository extends JpaRepository<Hunter, Long> {
+    Hunter getHunterByName(String name);
 }

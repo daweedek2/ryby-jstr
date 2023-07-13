@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head"></head>
+<body>
+<div class="container">
+    <a th:href="@{/}">
+        <div class="row">
+            <h1 class="login-form-header">Jestřabice 2023</h1>
+        </div>
+    </a>
+    <div class="row cypher-list">
+        <div class="col-sm-12">
+            <h1>Statistiky lovců</h1>
+            <th:block th:each="hunterStats : ${allStats}">
+                <div class="cypher">
+                    <h2 th:text="|${hunterStats.name()} (${hunterStats.totalFishCount()})|">Jan</h2>
+                    <div class="row align-items-center">
+                        <a class="btn btn-secondary" th:href="@{/catch/{id}(id=${hunterStats.maxSizeCatch().id()})}">
+                            <div class="col" th:text="|Největší ${hunterStats.maxSizeCatch().size()} cm|">150 cm</div>
+                        </a>
+                        <a class="btn btn-secondary" th:href="@{/catch/{id}(id=${hunterStats.maxWeightCatch().id()})}">
+                            <div class="col" th:text="|Nejtěžší ${hunterStats.maxWeightCatch().weight()} g|">150 g</div>
+                        </a>
+                    </div>
+                    <div class="row align-items-center">
+                        <th:block th:each="catch : ${hunterStats.catchesMap()}">
+                            <div class="col" th:text="|${catch.key} : ${catch.value} ks|">Kapr : 5</div>
+                        </th:block>
+                    </div>
+                    <br>
+                </div>
+            </th:block>
+        </div>
+    </div>
+</div>
+</body>
+</html>

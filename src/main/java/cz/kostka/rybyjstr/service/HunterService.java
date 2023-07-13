@@ -24,4 +24,8 @@ public class HunterService {
     public Hunter getHunter(Long hunterId) {
         return hunterRepository.findById(hunterId).orElse(null);
     }
+
+    public Hunter getHunter(String name) {
+        return hunterRepository.getHunterByName(name);
+    }
 }

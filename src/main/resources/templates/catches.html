@@ -3,11 +3,15 @@
 <head th:replace="fragments/head :: head()"></head>
 <body>
 <div class="container">
-  <div class="row">
-    <h1 class="login-form-header">Jestřabice 2023</h1>
-  </div>
+  <a th:href="@{/}">
+    <div class="row">
+      <h1 class="login-form-header">Jestřabice 2023</h1>
+    </div>
+  </a>
   <div class="row">
     <div class="col-sm-12 col-md-12 col-lg-6">
+      <a class="btn btn-secondary" href="#" th:href="@{/statistics/hunter}">Statistiky lovců</a>
+      <a class="btn btn-secondary" href="#" th:href="@{/statistics/fish}">Statistiky ryb</a>
       <h2>Nový úlovek</h2>
       <form action="#" th:action="@{/catch/new}" th:object="${newCatchDTO}" method="post">
         <div class="form-group">
@@ -48,28 +52,37 @@
       </form>
     </div>
   </div>
-<!--  <div class="row cypher-list" th:unless="${newPlayer == true}">-->
-<!--    <div class="col-sm-12">-->
-<!--      <a class="btn btn-primary" th:href="@{/admin/players/new}">Nový hráč</a>-->
-<!--    </div>-->
-<!--  </div>-->
-
   <div class="row cypher-list">
     <div class="col-sm-12">
       <h2 th:text="|Všechny úlovky (${allCatches.size()})|"></h2>
-      <th:block th:each="catch : ${allCatches}">
-        <a class="btn btn-secondary" href="#" th:href="@{/catch/{id}(id=${catch.id})}">
-          <div class="cypher">
-            <div class="row align-items-center">
-              <div class="col" th:text="${#temporals.format(catch.timestamp, ' dd.MM.yyyy HH:mm')}">1.7.2023 14:00</div>
-              <div class="col" th:text="${catch.hunter}">Jan</div>
-              <div class="col" th:text="${catch.fish}">kapr</div>
-              <div class="col" th:text="|${catch.size} cm|">120 cm</div>
-              <div class="col" th:text="|${catch.weight} g|">2500 g</div>
-            </div>
-          </div>
-        </a>
-      </th:block>
+      <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">Čas</th>
+          <th scope="col">Lovec</th>
+          <th scope="col">Ryba</th>
+          <th scope="col">Délka</th>
+          <th scope="col">Váha</th>
+          <th scope="col">Akce</th>
+        </tr>
+        </thead>
+        <tbody>
+        <th:block th:each="catch : ${allCatches}">
+          <a href="#" th:href="@{/catch/{id}(id=${catch.id})}">
+            <tr>
+              <th th:text="${#temporals.format(catch.timestamp, ' dd.MM.yyyy HH:mm')}">1</th>
+              <td th:text="${catch.hunter}">Jan</td>
+              <td th:text="${catch.fish}">kapr</td>
+              <td th:text="|${catch.size} cm|">120 cm</td>
+              <td th:text="|${catch.weight} g|">2500 g</td>
+              <td>
+                <a class="btn btn-secondary" href="#" th:href="@{/catch/{id}(id=${catch.id})}">Detail</a>
+              </td>
+            </tr>
+          </a>
+        </th:block>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
