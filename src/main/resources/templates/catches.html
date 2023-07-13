@@ -58,16 +58,17 @@
     <div class="col-sm-12">
       <h2 th:text="|Všechny úlovky (${allCatches.size()})|"></h2>
       <th:block th:each="catch : ${allCatches}">
-        <div class="cypher">
-          <!-- TODO: add link to catch detail for editing-->
-          <div class="row align-items-center">
-            <div class="col" th:text="${#temporals.format(catch.timestamp, ' dd.MM.yyyy HH:mm')}">1.7.2023 14:00</div>
-            <div class="col" th:text="${catch.hunter}">Jan</div>
-            <div class="col" th:text="${catch.fish}">kapr</div>
-            <div class="col" th:text="|${catch.size} cm|">120 cm</div>
-            <div class="col" th:text="|${catch.weight} g|">2500 g</div>
+        <a class="btn btn-secondary" href="#" th:href="@{/catch/{id}(id=${catch.id})}">
+          <div class="cypher">
+            <div class="row align-items-center">
+              <div class="col" th:text="${#temporals.format(catch.timestamp, ' dd.MM.yyyy HH:mm')}">1.7.2023 14:00</div>
+              <div class="col" th:text="${catch.hunter}">Jan</div>
+              <div class="col" th:text="${catch.fish}">kapr</div>
+              <div class="col" th:text="|${catch.size} cm|">120 cm</div>
+              <div class="col" th:text="|${catch.weight} g|">2500 g</div>
+            </div>
           </div>
-        </div>
+        </a>
       </th:block>
     </div>
   </div>

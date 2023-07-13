@@ -9,5 +9,10 @@ public record CatchDTO(
         String hunter,
         Integer size,
         Long weight,
-        String note) {
+        String note,
+        Boolean isFilePresent) {
+
+    public static CatchDTO empty() {
+        return new CatchDTO(null, null, null, null, null, null, null, false);
+    }
 }

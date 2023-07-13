@@ -24,6 +24,10 @@ public class Catch {
     @Column
     private String note;
 
+    @Lob
+    @Column(name = "imagedata", length = 1000)
+    private byte[] imageData;
+
     @ManyToOne
     @JoinColumn(name = "hunter_id", nullable = false)
     private Hunter hunter;
@@ -122,5 +126,13 @@ public class Catch {
 
     public void setFishType(FishType fishType) {
         this.fishType = fishType;
+    }
+
+    public byte[] getImageData() {
+        return imageData;
+    }
+
+    public void setImageData(byte[] imageData) {
+        this.imageData = imageData;
     }
 }

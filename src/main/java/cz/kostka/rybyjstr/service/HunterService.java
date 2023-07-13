@@ -22,6 +22,6 @@ public class HunterService {
     }
 
     public Hunter getHunter(Long hunterId) {
-        return hunterRepository.findAllById(List.of(hunterId)).stream().findFirst().orElse(null);
+        return hunterRepository.findById(hunterId).orElse(null);
     }
 }

@@ -21,6 +21,6 @@ public class FishTypeService {
     }
 
     public FishType getFishType(Long fishTypeId) {
-        return fishTypeRepository.findAllById(List.of(fishTypeId)).stream().findFirst().orElse(null);
+        return fishTypeRepository.findById(fishTypeId).orElse(null);
     }
 }
