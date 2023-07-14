@@ -10,6 +10,14 @@
     </a>
     <div class="row cypher-list">
         <div class="col-sm-12">
+            <form action="#" th:action="@{/hunter}" th:object="${newHunterDTO}" method="post">
+                <div class="form-group">
+                    <label for="name" class="input-value-required">Nový lovec</label>
+                    <input th:field="*{name}" id="name" required></input>
+                    <p class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Chyba - Lovec</p>
+                </div>
+                <button type="submit" class="btn btn-primary">Vytvořit</button>
+            </form>
             <h1>Statistiky lovců</h1>
             <th:block th:each="hunterStats : ${allStats}">
                 <div class="cypher">

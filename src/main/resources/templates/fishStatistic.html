@@ -10,6 +10,14 @@
     </a>
     <div class="row cypher-list">
         <div class="col-sm-12">
+            <form action="#" th:action="@{/fishtype}" th:object="${newFishTypeDTO}" method="post">
+                <div class="form-group">
+                    <label for="type" class="input-value-required">Nová ryba</label>
+                    <input th:field="*{type}" id="type" required></input>
+                    <p class="error" th:if="${#fields.hasErrors('type')}" th:errors="*{type}">Chyba - Ryba</p>
+                </div>
+                <button type="submit" class="btn btn-primary">Vytvořit</button>
+            </form>
             <h1>Statistiky ryb</h1>
             <th:block th:each="fishStats : ${allStats}">
                 <div class="cypher">

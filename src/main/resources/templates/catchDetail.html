@@ -24,7 +24,9 @@
             </div>
             <th:block th:each="imageId : ${catchDTO.imageIds()}">
                 <div class="form-group">
-                    <img class="card-img-top" th:src="@{/image/{id}(id=${imageId})}" alt="">
+                    <a th:href="@{/image/{id}(id=${imageId})}">
+                        <img class="card-img-top" th:src="@{/image/{id}(id=${imageId})}" alt="">
+                    </a>
                 </div>
             </th:block>
             <br>

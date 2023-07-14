@@ -1,5 +1,7 @@
 package cz.kostka.rybyjstr.controller;
 
+import cz.kostka.rybyjstr.dto.NewFishTypeDTO;
+import cz.kostka.rybyjstr.dto.NewHunterDTO;
 import cz.kostka.rybyjstr.service.StatisticsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,12 +21,14 @@ public class StatisticsController {
     @GetMapping("/hunter")
     public String getHunterStats(final Model model) {
         model.addAttribute("allStats", statisticsService.getHunterStatistics());
+        model.addAttribute("newHunterDTO", NewHunterDTO.empty());
         return "hunterStatistic";
     }
 
     @GetMapping("/fish")
     public String getFishStats(final Model model) {
         model.addAttribute("allStats", statisticsService.getFishStatistics());
+        model.addAttribute("newFishTypeDTO", NewFishTypeDTO.empty());
         return "fishStatistic";
     }
 }

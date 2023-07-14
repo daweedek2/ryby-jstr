@@ -21,6 +21,10 @@ public class FishType {
         this.type = type;
     }
 
+    public FishType(final String type) {
+        this.type = type;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }

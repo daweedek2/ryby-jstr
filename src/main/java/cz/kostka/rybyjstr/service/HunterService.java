@@ -1,6 +1,7 @@
 package cz.kostka.rybyjstr.service;
 
 import cz.kostka.rybyjstr.domain.Hunter;
+import cz.kostka.rybyjstr.dto.NewHunterDTO;
 import cz.kostka.rybyjstr.repository.HunterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,5 +28,9 @@ public class HunterService {
 
     public Hunter getHunter(String name) {
         return hunterRepository.getHunterByName(name);
+    }
+
+    public Hunter create(NewHunterDTO newHunterDTO) {
+        return hunterRepository.save(new Hunter(newHunterDTO.name()));
     }
 }

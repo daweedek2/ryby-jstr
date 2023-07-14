@@ -21,6 +21,10 @@ public class Hunter {
         this.name = name;
     }
 
+    public Hunter(final String name) {
+        this.name = name;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
