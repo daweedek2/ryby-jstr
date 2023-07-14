@@ -3,6 +3,8 @@ package cz.kostka.rybyjstr.domain;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table
@@ -24,10 +26,6 @@ public class Catch {
     @Column
     private String note;
 
-    @Lob
-    @Column(name = "imagedata", length = 1000)
-    private byte[] imageData;
-
     @ManyToOne
     @JoinColumn(name = "hunter_id", nullable = false)
     private Hunter hunter;
@@ -36,6 +34,9 @@ public class Catch {
     @ManyToOne
     @JoinColumn(name = "fishType_id", nullable = false)
     private FishType fishType;
+
+    @OneToMany(mappedBy = "theCatch", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Image> imageList = new HashSet<>();
 
     public Catch() {
     }
@@ -128,11 +129,11 @@ public class Catch {
         this.fishType = fishType;
     }
 
-    public byte[] getImageData() {
-        return imageData;
+    public Set<Image> getImageList() {
+        return imageList;
     }
 
-    public void setImageData(byte[] imageData) {
-        this.imageData = imageData;
+    public void setImageList(Set<Image> imageList) {
+        this.imageList = imageList;
     }
 }

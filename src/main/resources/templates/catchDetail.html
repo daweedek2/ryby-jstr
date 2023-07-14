@@ -22,14 +22,16 @@
                 <div  class="form-group" th:text="|Váha: ${catchDTO.weight} g|">2500 g</div>
                 <div class="form-group" th:text="|Popis: ${catchDTO.note}|">Poznámka</div>
             </div>
-            <div class="form-group">
-                <img class="card-img-top" th:src="@{/catch/{id}/image(id=${catchDTO.id})}" alt="">
-            </div>
+            <th:block th:each="imageId : ${catchDTO.imageIds()}">
+                <div class="form-group">
+                    <img class="card-img-top" th:src="@{/image/{id}(id=${imageId})}" alt="">
+                </div>
+            </th:block>
             <br>
             <br>
-            <div th:unless="${catchDTO.isFilePresent}">
+            <div>
                 <h2>Nahrát fotku</h2>
-                <form action="#" th:action="@{/catch/{id}/image(id=${catchDTO.id})}" method="post" enctype="multipart/form-data">
+                <form action="#" th:action="@{/image/new/{id}(id=${catchDTO.id})}" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                       <label for="image" class="login-form-label">Fotka</label>
                       <input type="file" name="image" id="image" accept="image/jpeg" >

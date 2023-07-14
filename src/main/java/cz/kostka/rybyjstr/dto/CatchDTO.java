@@ -1,6 +1,7 @@
 package cz.kostka.rybyjstr.dto;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 public record CatchDTO(
         Long id,
@@ -12,12 +13,11 @@ public record CatchDTO(
         Integer size,
         Long weight,
         String note,
-        Boolean isFilePresent) {
+        Set<Long> imageIds) {
 
     public static CatchDTO empty() {
         return new CatchDTO(
                 null, null, null, null,
-                null, null, null, null,
-                null, false);
+                null, null, null, null, null, Set.of());
     }
 }
