@@ -12,6 +12,17 @@
     <div class="col-sm-12 col-md-12 col-lg-6">
       <a class="btn btn-secondary" href="#" th:href="@{/statistics/hunter}">Statistiky lovců</a>
       <a class="btn btn-secondary" href="#" th:href="@{/statistics/fish}">Statistiky ryb</a>
+      <h2>TOP 3</h2>
+      <th:block th:each="top : ${topThree}">
+        <div class="cypher">
+          <div class="row align-items-center">
+              <a class="btn btn-secondary" th:href="@{/catch/{id}(id=${top.id()})}">
+                <div class="col" th:text="|${top.hunter()} ${top.fish()} ${top.size()} cm|"> Karel 150 cm</div>
+              </a>
+          </div>
+        </div>
+      </th:block>
+      <br>
       <h2>Nový úlovek</h2>
       <form action="#" th:action="@{/catch/new}" th:object="${newCatchDTO}" method="post">
         <div class="form-group">
@@ -61,8 +72,6 @@
           <th scope="col">Čas</th>
           <th scope="col">Lovec</th>
           <th scope="col">Ryba</th>
-          <th scope="col">Délka</th>
-          <th scope="col">Váha</th>
           <th scope="col">Akce</th>
         </tr>
         </thead>
@@ -70,11 +79,9 @@
         <th:block th:each="catch : ${allCatches}">
           <a href="#" th:href="@{/catch/{id}(id=${catch.id})}">
             <tr>
-              <th th:text="${#temporals.format(catch.timestamp, ' dd.MM.yyyy HH:mm')}">1</th>
+              <th th:text="${#temporals.format(catch.timestamp, ' dd.MM HH:mm')}">1</th>
               <td th:text="${catch.hunter}">Jan</td>
-              <td th:text="${catch.fish}">kapr</td>
-              <td th:text="|${catch.size} cm|">120 cm</td>
-              <td th:text="|${catch.weight} g|">2500 g</td>
+              <td th:text="|${catch.fish} (${catch.size} cm)|">120 cm</td>
               <td>
                 <a class="btn btn-secondary" href="#" th:href="@{/catch/{id}(id=${catch.id})}">Detail</a>
               </td>

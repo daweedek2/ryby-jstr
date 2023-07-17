@@ -21,21 +21,28 @@
             <h1>Statistiky ryb</h1>
             <th:block th:each="fishStats : ${allStats}">
                 <div class="cypher">
-                    <h2 th:text="|${fishStats.name()} (${fishStats.totalFishCount()})|">Jan</h2>
-                    <div class="row align-items-center">
-                        <a class="btn btn-secondary" th:href="@{/catch/{id}(id=${fishStats.maxSizeCatch().id()})}">
-                            <div class="col" th:text="|Největší ${fishStats.maxSizeCatch().size()} cm|">150 cm</div>
-                        </a>
-                        <a class="btn btn-secondary" th:href="@{/catch/{id}(id=${fishStats.maxWeightCatch().id()})}">
-                            <div class="col" th:text="|Nejtěžší ${fishStats.maxWeightCatch().weight()} g|">150 g</div>
-                        </a>
-                    </div>
+                    <h2 th:text="|${fishStats.name()} (${fishStats.totalFishCount()} celkem)|">kapr (7 celkem)</h2>
                     <div class="row align-items-center">
                         <th:block th:each="catch : ${fishStats.catchesMap()}">
-                            <div class="col" th:text="|${catch.key} : ${catch.value} ks|">David : 5</div>
+                            <div class="col" th:text="|${catch.key} : ${catch.value} ks|">Jan : 5</div>
                         </th:block>
                     </div>
-                    <br>
+                    <div class="row align-items-center">
+                        <div class="col-sm-12">
+                            <th:block th:each="maxCatch : ${fishStats.maxSizeCatches()}">
+                                <a class="btn btn-secondary" th:href="@{/catch/{id}(id=${maxCatch.id()})}">
+                                    <div class="col" th:text="|${maxCatch.hunter()} ${maxCatch.size()} cm|">150 cm</div>
+                                </a>
+                            </th:block>
+                        </div>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-sm-12">
+                            <a class="btn btn-primary" th:href="@{/catch/fish/{id}(id=${fishStats.fishId()})}">
+                                <div class="col">Všechny úlovky ryby</div>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </th:block>
         </div>

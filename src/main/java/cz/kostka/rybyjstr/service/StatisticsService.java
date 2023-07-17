@@ -63,11 +63,11 @@ public class StatisticsService {
                 .orElse(CatchDTO.empty());
     }
 
-    private static CatchDTO findMaxSizeCatch(final List<CatchDTO> allCatches) {
+    private static List<CatchDTO> findMaxSizeCatch(final List<CatchDTO> allCatches) {
         return allCatches.stream()
-                .max(Comparator.comparingInt(CatchDTO::size))
-                .orElse(CatchDTO.empty());
-
+                .sorted(Comparator.comparingInt(CatchDTO::size).reversed())
+                .limit(3)
+                .collect(Collectors.toList());
     }
 
     private static Map<String, Integer> getHunterCatchesMapFromDTO(List<CatchDTO> catchDTOList) {
@@ -87,6 +87,13 @@ public class StatisticsService {
                 .collect(Collectors.groupingBy(CatchDTO::fish)).entrySet().stream()
                 .map(this::provideFishStatistic)
                 .sorted(Comparator.comparingInt(FishStatisticDTO::totalFishCount).reversed())
+                .collect(Collectors.toList());
+    }
+
+    public List<CatchDTO> getTopThree() {
+        return catchService.getAllCatches().stream()
+                .sorted(Comparator.comparingInt(CatchDTO::size).reversed())
+                .limit(3)
                 .collect(Collectors.toList());
     }
 }
