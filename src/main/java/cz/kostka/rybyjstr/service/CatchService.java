@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -47,12 +49,18 @@ public class CatchService {
     public void newCatch(final NewCatchDTO newCatchDTO, final Hunter hunter, final FishType fishType) {
         catchRepository.save(
                 new Catch(
-                        LocalDateTime.now(),
+                        getCatchTimestamp(newCatchDTO.time()),
                         newCatchDTO.size() == null ? 0 : newCatchDTO.size(),
                         newCatchDTO.weight() == null ? 0 : newCatchDTO.weight(),
                         newCatchDTO.note(),
                         hunter,
                         fishType));
+    }
+
+    private static LocalDateTime getCatchTimestamp(final LocalTime time) {
+        return time != null
+                ? LocalDateTime.of(LocalDate.now(), time)
+                : LocalDateTime.now();
     }
 
     public CatchDTO getCatchDTO(final Long catchId) {
