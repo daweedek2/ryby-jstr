@@ -113,4 +113,10 @@ public class CatchService {
 
         catchy.getImageList().add(savedImage);
     }
+
+    public List<CatchDTO> getAllCatches(final LocalDate date) {
+        return getAllCatches().stream()
+                .filter(c -> c.timestamp().toLocalDate().isEqual(date))
+                .collect(Collectors.toList());
+    }
 }

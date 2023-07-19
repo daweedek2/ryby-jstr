@@ -42,7 +42,7 @@ public class CatchController {
         model.addAttribute("allCatches", catchService.getAllCatches());
         model.addAttribute("allFishTypes", fishTypeService.getAllFishTypes());
         model.addAttribute("allHunters", hunterService.getAllHunters());
-        model.addAttribute("topThree", statisticsService.getTopThree());
+        model.addAttribute("topThree", statisticsService.getTopN(catchService.getAllCatches(), 3));
     }
 
     @PostMapping("/catch/new")

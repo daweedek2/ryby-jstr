@@ -31,4 +31,10 @@ public class StatisticsController {
         model.addAttribute("newFishTypeDTO", NewFishTypeDTO.empty());
         return "fishStatistic";
     }
+
+    @GetMapping("/day")
+    public String getDayStats(final Model model) {
+        model.addAttribute("allStats", statisticsService.getDayStatistics());
+        return "dayStatistic";
+    }
 }

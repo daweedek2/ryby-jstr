@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}"></head>
+<body>
+<div class="container">
+    <a th:href="@{/}">
+        <div class="row">
+            <h1 class="login-form-header">Jestřabice 2023</h1>
+        </div>
+    </a>
+    <div class="row cypher-list">
+        <div class="col-sm-12">
+            <h1>Statistiky dnů (TOP 5)</h1>
+            <th:block th:each="catchesInDay : ${allStats}">
+                <div class="cypher">
+                    <h2 th:text="${#temporals.format(catchesInDay.key, 'dd.MM. yyyy')}">15.4. 2023</h2>
+                    <div class="row align-items-center">
+                        <div class="col-sm-12">
+                            <th:block th:each="maxCatch : ${catchesInDay.value}">
+                            <a class="btn btn-secondary" th:href="@{/catch/{id}(id=${maxCatch.id()})}">
+                                <div class="col" th:text="|${maxCatch.hunter()} ${maxCatch.fish()} ${maxCatch.size()} cm|">150 cm</div>
+                            </a>
+                            </th:block>
+                        </div>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-sm-12">
+                            <a class="btn btn-primary" th:href="@{/catch/day/{date}(date=${catchesInDay.key})}">
+                                <div class="col">Všechny úlovky za den</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+    </div>
+</div>
+</body>
+</html>
