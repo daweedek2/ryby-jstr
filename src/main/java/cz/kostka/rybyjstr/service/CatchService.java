@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -57,9 +56,9 @@ public class CatchService {
                         fishType));
     }
 
-    private static LocalDateTime getCatchTimestamp(final LocalTime time) {
+    private static LocalDateTime getCatchTimestamp(final LocalDateTime time) {
         return time != null
-                ? LocalDateTime.of(LocalDate.now(), time)
+                ? time
                 : LocalDateTime.now();
     }
 
