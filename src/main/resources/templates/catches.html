@@ -56,7 +56,7 @@
         </div>
         <div class="form-group">
           <label for="time" class="login-form-label">Čas</label>
-          <input id="time" class="form-control" type="time" th:field="*{time}"/>
+          <input id="time" class="form-control" type="datetime-local" th:field="*{time}"/>
           <p class="error" th:if="${#fields.hasErrors('time')}" th:errors="*{time}">Chyba - Čas
           </p>
         </div>
