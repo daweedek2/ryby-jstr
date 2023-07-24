@@ -15,9 +15,8 @@
         <thead>
         <tr>
           <th scope="col">Čas</th>
+          <th scope="col">Lovec</th>
           <th scope="col">Ryba</th>
-          <th scope="col">Délka</th>
-          <th scope="col">Váha</th>
           <th scope="col">Akce</th>
         </tr>
         </thead>
@@ -26,9 +25,8 @@
           <a href="#" th:href="@{/catch/{id}(id=${catch.id})}">
             <tr>
               <th th:text="${#temporals.format(catch.timestamp, ' dd.MM.yyyy HH:mm')}">1</th>
-              <td th:text="${catch.fish}">kapr</td>
-              <td th:text="|${catch.size} cm|">120 cm</td>
-              <td th:text="|${catch.weight} g|">2500 g</td>
+              <td th:text="${catch.hunter()}">Jan</td>
+              <td th:text="|${catch.fish()} ()${catch.size})|">kapr (120)</td>
               <td>
                 <a class="btn btn-secondary" href="#" th:href="@{/catch/{id}(id=${catch.id})}">Detail</a>
               </td>
