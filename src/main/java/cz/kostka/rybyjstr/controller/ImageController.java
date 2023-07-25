@@ -21,10 +21,23 @@ public class ImageController {
     }
 
     @PostMapping("/new/{catchId}")
-    public String uploadImage(@PathVariable final Long catchId, @RequestParam("image") MultipartFile image, final Model model)
+    public String uploadImage(
+            @PathVariable final Long catchId,
+            @RequestParam("image") final MultipartFile image,
+            final Model model)
             throws IOException {
 
         imageService.saveImage(catchId, image);
+        return "redirect:/catch/" + catchId;
+    }
+
+    @GetMapping("/delete/{catchId}/{imageId}")
+    public String deleteImage(
+            @PathVariable final Long catchId,
+            @PathVariable final Long imageId,
+            final Model model) {
+
+        imageService.delete(catchId, imageId);
         return "redirect:/catch/" + catchId;
     }
 }

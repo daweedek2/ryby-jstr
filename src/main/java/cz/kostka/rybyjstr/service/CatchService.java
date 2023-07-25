@@ -45,8 +45,8 @@ public class CatchService {
                 .collect(Collectors.toList());
     }
 
-    public void newCatch(final NewCatchDTO newCatchDTO, final Hunter hunter, final FishType fishType) {
-        catchRepository.save(
+    public Long newCatch(final NewCatchDTO newCatchDTO, final Hunter hunter, final FishType fishType) {
+        final var newCatch = catchRepository.save(
                 new Catch(
                         getCatchTimestamp(newCatchDTO.time()),
                         newCatchDTO.size() == null ? 0 : newCatchDTO.size(),
@@ -54,6 +54,8 @@ public class CatchService {
                         newCatchDTO.note(),
                         hunter,
                         fishType));
+
+        return newCatch.getId();
     }
 
     private static LocalDateTime getCatchTimestamp(final LocalDateTime time) {
@@ -103,14 +105,15 @@ public class CatchService {
                 .collect(Collectors.toList());
     }
 
-    public void attachImage(final Long catchId, final Image savedImage) {
+    public void removeImage(final Long catchId, final Long imageId) {
         final var catchy = catchRepository.findById(catchId).orElse(null);
 
         if (catchy == null) {
             return;
         }
 
-        catchy.getImageList().add(savedImage);
+        catchy.getImageList().removeIf(i -> Objects.equals(i.getId(), imageId));
+        catchRepository.saveAndFlush(catchy);
     }
 
     public List<CatchDTO> getAllCatches(final LocalDate date) {
