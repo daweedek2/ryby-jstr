@@ -11,6 +11,8 @@
   <div class="row">
     <div class="col-sm-12 col-md-12 col-lg-6">
       <a class="btn btn-primary" href="#" th:href="@{/photos}">Přehled s fotkama</a>
+      <a class="btn btn-primary" href="#" th:href="@{/allCatches}">Přehled bez fotek</a>
+      <br>
       <a class="btn btn-secondary" href="#" th:href="@{/statistics/hunter}">Statistiky lovců</a>
       <a class="btn btn-secondary" href="#" th:href="@{/statistics/fish}">Statistiky ryb</a>
       <a class="btn btn-secondary" href="#" th:href="@{/statistics/day}">Statistiky dnů</a>
@@ -73,35 +75,6 @@
         </div>
         <button type="submit" class="btn btn-primary">Uložit úlovek</button>
       </form>
-    </div>
-  </div>
-  <div class="row cypher-list">
-    <div class="col-sm-12">
-      <h2 th:text="|Všechny úlovky (${allCatches.size()})|"></h2>
-      <table class="table">
-        <thead>
-        <tr>
-          <th scope="col">Čas</th>
-          <th scope="col">Lovec</th>
-          <th scope="col">Ryba</th>
-          <th scope="col">Akce</th>
-        </tr>
-        </thead>
-        <tbody>
-        <th:block th:each="catch : ${allCatches}">
-          <a href="#" th:href="@{/catch/{id}(id=${catch.id})}">
-            <tr>
-              <th th:text="${#temporals.format(catch.timestamp, ' dd.MM HH:mm')}">1</th>
-              <td th:text="${catch.hunter}">Jan</td>
-              <td th:text="|${catch.fish} (${catch.size} cm)|">120 cm</td>
-              <td>
-                <a class="btn btn-secondary" href="#" th:href="@{/catch/{id}(id=${catch.id})}">Detail</a>
-              </td>
-            </tr>
-          </a>
-        </th:block>
-        </tbody>
-      </table>
     </div>
   </div>
 </div>

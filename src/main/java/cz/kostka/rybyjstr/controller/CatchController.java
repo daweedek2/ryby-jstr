@@ -40,9 +40,14 @@ public class CatchController {
         return "catches";
     }
 
+    @GetMapping("/allCatches")
+    public String getAllCatches(final Model model) {
+        model.addAttribute("allCatches", catchService.getAllCatches());
+        return "allCatches";
+    }
+
     private void addCatchModelAttributes(Model model) {
         model.addAttribute("newCatchDTO", NewCatchDTO.empty());
-        model.addAttribute("allCatches", catchService.getAllCatches());
         model.addAttribute("allFishTypes", fishTypeService.getAllFishTypes());
         model.addAttribute("allHunters", hunterService.getAllHunters());
         model.addAttribute("topThree", statisticsService.getTopN(catchService.getAllCatches(), 3));
