@@ -11,7 +11,7 @@
     <div class="row cypher-list">
         <th:block th:each="catchDTO : ${allCatches}">
             <div class="col-sm-12">
-                <h2 th:text="|${#temporals.format(catchDTO.timestamp(), ' dd.MM.yyyy HH:mm')} ${catchDTO.hunter()} ${catchDTO.fish()} ${catchDTO.size()}|"></h2>
+                <h2 th:text="|${#temporals.format(catchDTO.timestamp(), ' dd.MM.yyyy HH:mm')} ${catchDTO.hunter()} ${catchDTO.fish()} ${catchDTO.size()} cm ${catchDTO.note()}|"></h2>
                 <th:block th:each="imageId : ${catchDTO.imageIds()}">
                     <div class="form-group">
                         <a th:href="@{/image/{id}(id=${imageId})}">
