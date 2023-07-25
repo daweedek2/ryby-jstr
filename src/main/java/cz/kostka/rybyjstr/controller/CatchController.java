@@ -42,7 +42,7 @@ public class CatchController {
 
     @GetMapping("/allCatches")
     public String getAllCatches(final Model model) {
-        model.addAttribute("allCatches", catchService.getAllCatches());
+        model.addAttribute("allCatches", catchService.getAllCatchesLatestFirst());
         return "allCatches";
     }
 

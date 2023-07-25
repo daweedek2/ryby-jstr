@@ -45,6 +45,23 @@ public class CatchService {
                 .collect(Collectors.toList());
     }
 
+    public List<CatchDTO> getAllCatchesLatestFirst() {
+        return catchRepository.findAllByOrderByTimestampDesc()
+                .stream()
+                .map(c -> new CatchDTO(
+                        c.getId(),
+                        c.getTimestamp(),
+                        c.getFishType().getType(),
+                        c.getFishType().getId(),
+                        c.getHunter().getName(),
+                        c.getHunter().getId(),
+                        c.getSize(),
+                        c.getWeight(),
+                        c.getNote(),
+                        getImageIds(c)))
+                .collect(Collectors.toList());
+    }
+
     public Long newCatch(final NewCatchDTO newCatchDTO, final Hunter hunter, final FishType fishType) {
         final var newCatch = catchRepository.save(
                 new Catch(
