@@ -20,7 +20,7 @@ public class PhotosController {
 
     @GetMapping
     public String viewAllPhotos(final Model model) {
-        model.addAttribute("allCatches", catchService.getAllCatches());
+        model.addAttribute("allCatches", catchService.getAllCatchesWithImage());
         return "photos";
     }
 }

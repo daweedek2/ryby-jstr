@@ -1,5 +1,6 @@
 package cz.kostka.rybyjstr.controller;
 
+import cz.kostka.rybyjstr.domain.Catch;
 import cz.kostka.rybyjstr.dto.NewCatchDTO;
 import cz.kostka.rybyjstr.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,19 +60,19 @@ public class CatchController {
             final @RequestParam("image") MultipartFile image,
             final Model model) throws IOException {
 
-        final Long newCatchId = catchService.newCatch(
+        final Catch newCatch = catchService.newCatch(
                 newCatchDTO,
                 hunterService.getHunter(newCatchDTO.hunterId()),
                 fishTypeService.getFishType(newCatchDTO.fishTypeId()));
 
-        imageService.saveImage(newCatchId, image);
+        imageService.saveImage(newCatch, image);
 
-        return "redirect:/catch/" + newCatchId;
+        return "redirect:/catch/" + newCatch.getId();
     }
 
     @GetMapping("/catch/{id}")
     public String getCatchDetail(@PathVariable final Long id, final Model model) {
-        model.addAttribute("catchDTO", catchService.getCatchDTO(id));
+        model.addAttribute("catchDTO", catchService.getCatchDetailWithPhotos(id));
         return "catchDetail";
     }
 

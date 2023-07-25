@@ -1,5 +1,6 @@
 package cz.kostka.rybyjstr.controller;
 
+import cz.kostka.rybyjstr.service.CatchService;
 import cz.kostka.rybyjstr.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,10 +15,12 @@ import java.io.IOException;
 public class ImageController {
 
     private final ImageService imageService;
+    private final CatchService catchService;
 
     @Autowired
-    public ImageController(final ImageService imageService) {
+    public ImageController(final ImageService imageService, final CatchService catchService) {
         this.imageService = imageService;
+        this.catchService = catchService;
     }
 
     @PostMapping("/new/{catchId}")
@@ -27,7 +30,7 @@ public class ImageController {
             final Model model)
             throws IOException {
 
-        imageService.saveImage(catchId, image);
+        imageService.saveImage(catchService.getCatch(catchId), image);
         return "redirect:/catch/" + catchId;
     }
 
@@ -37,7 +40,7 @@ public class ImageController {
             @PathVariable final Long imageId,
             final Model model) {
 
-        imageService.delete(catchId, imageId);
+        imageService.delete(imageId);
         return "redirect:/catch/" + catchId;
     }
 }

@@ -22,48 +22,37 @@ import java.util.stream.Collectors;
 public class CatchService {
 
     private final CatchRepository catchRepository;
+    private final ImageService imageService;
 
     @Autowired
-    public CatchService(CatchRepository catchRepository) {
+    public CatchService(final CatchRepository catchRepository, final ImageService imageService) {
         this.catchRepository = catchRepository;
+        this.imageService = imageService;
     }
 
     public List<CatchDTO> getAllCatches() {
         return catchRepository.findAll(Sort.by("timestamp"))
                 .stream()
-                .map(c -> new CatchDTO(
-                        c.getId(),
-                        c.getTimestamp(),
-                        c.getFishType().getType(),
-                        c.getFishType().getId(),
-                        c.getHunter().getName(),
-                        c.getHunter().getId(),
-                        c.getSize(),
-                        c.getWeight(),
-                        c.getNote(),
-                        getImageIds(c)))
+                .map(this::mapToCatchDTOWithoutImage)
+                .collect(Collectors.toList());
+    }
+
+    public List<CatchDTO> getAllCatchesWithImage() {
+        return catchRepository.findAll(Sort.by("timestamp"))
+                .stream()
+                .map(this::mapToCatchDTOWithImage)
                 .collect(Collectors.toList());
     }
 
     public List<CatchDTO> getAllCatchesLatestFirst() {
         return catchRepository.findAllByOrderByTimestampDesc()
                 .stream()
-                .map(c -> new CatchDTO(
-                        c.getId(),
-                        c.getTimestamp(),
-                        c.getFishType().getType(),
-                        c.getFishType().getId(),
-                        c.getHunter().getName(),
-                        c.getHunter().getId(),
-                        c.getSize(),
-                        c.getWeight(),
-                        c.getNote(),
-                        getImageIds(c)))
+                .map(this::mapToCatchDTOWithoutImage)
                 .collect(Collectors.toList());
     }
 
-    public Long newCatch(final NewCatchDTO newCatchDTO, final Hunter hunter, final FishType fishType) {
-        final var newCatch = catchRepository.save(
+    public Catch newCatch(final NewCatchDTO newCatchDTO, final Hunter hunter, final FishType fishType) {
+        return catchRepository.save(
                 new Catch(
                         getCatchTimestamp(newCatchDTO.time()),
                         newCatchDTO.size() == null ? 0 : newCatchDTO.size(),
@@ -71,8 +60,6 @@ public class CatchService {
                         newCatchDTO.note(),
                         hunter,
                         fishType));
-
-        return newCatch.getId();
     }
 
     private static LocalDateTime getCatchTimestamp(final LocalDateTime time) {
@@ -81,24 +68,14 @@ public class CatchService {
                 : LocalDateTime.now();
     }
 
-    public CatchDTO getCatchDTO(final Long catchId) {
+    public CatchDTO getCatchDetailWithPhotos(final Long catchId) {
         return catchRepository.findById(catchId)
-                .map(c -> new CatchDTO(
-                        c.getId(),
-                        c.getTimestamp(),
-                        c.getFishType().getType(),
-                        c.getFishType().getId(),
-                        c.getHunter().getName(),
-                        c.getHunter().getId(),
-                        c.getSize(),
-                        c.getWeight(),
-                        c.getNote(),
-                        getImageIds(c)))
+                .map(this::mapToCatchDTOWithImage)
                 .orElse(CatchDTO.empty());
     }
 
-    private static Set<Long> getImageIds(Catch c) {
-        return c.getImageList().stream().map(Image::getId).collect(Collectors.toSet());
+    private Set<Long> getImageIds(Catch theCatch) {
+        return imageService.getImagesForCatch(theCatch).stream().map(Image::getId).collect(Collectors.toSet());
     }
 
     public Catch getCatch(final Long catchId) {
@@ -122,20 +99,37 @@ public class CatchService {
                 .collect(Collectors.toList());
     }
 
-    public void removeImage(final Long catchId, final Long imageId) {
-        final var catchy = catchRepository.findById(catchId).orElse(null);
-
-        if (catchy == null) {
-            return;
-        }
-
-        catchy.getImageList().removeIf(i -> Objects.equals(i.getId(), imageId));
-        catchRepository.saveAndFlush(catchy);
-    }
-
     public List<CatchDTO> getAllCatches(final LocalDate date) {
         return getAllCatches().stream()
                 .filter(c -> c.timestamp().toLocalDate().isEqual(date))
                 .collect(Collectors.toList());
+    }
+
+    private CatchDTO mapToCatchDTOWithoutImage(Catch catchy) {
+        return new CatchDTO(
+                catchy.getId(),
+                catchy.getTimestamp(),
+                catchy.getFishType().getType(),
+                catchy.getFishType().getId(),
+                catchy.getHunter().getName(),
+                catchy.getHunter().getId(),
+                catchy.getSize(),
+                catchy.getWeight(),
+                catchy.getNote(),
+                Set.of());
+    }
+
+    private CatchDTO mapToCatchDTOWithImage(Catch catchy) {
+        return new CatchDTO(
+                catchy.getId(),
+                catchy.getTimestamp(),
+                catchy.getFishType().getType(),
+                catchy.getFishType().getId(),
+                catchy.getHunter().getName(),
+                catchy.getHunter().getId(),
+                catchy.getSize(),
+                catchy.getWeight(),
+                catchy.getNote(),
+                getImageIds(catchy));
     }
 }
