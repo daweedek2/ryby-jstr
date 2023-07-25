@@ -1,14 +1,14 @@
 package cz.kostka.rybyjstr.controller;
 
 import cz.kostka.rybyjstr.dto.NewCatchDTO;
-import cz.kostka.rybyjstr.service.CatchService;
-import cz.kostka.rybyjstr.service.FishTypeService;
-import cz.kostka.rybyjstr.service.HunterService;
-import cz.kostka.rybyjstr.service.StatisticsService;
+import cz.kostka.rybyjstr.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 
 @Controller
@@ -17,17 +17,20 @@ public class CatchController {
     private final FishTypeService fishTypeService;
     private final HunterService hunterService;
     private final StatisticsService statisticsService;
+    private final ImageService imageService;
 
     @Autowired
     public CatchController(
             final CatchService catchService,
             final FishTypeService fishTypeService,
             final HunterService hunterService,
-            final StatisticsService statisticsService) {
+            final StatisticsService statisticsService,
+            final ImageService imageService) {
         this.catchService = catchService;
         this.fishTypeService = fishTypeService;
         this.hunterService = hunterService;
         this.statisticsService = statisticsService;
+        this.imageService = imageService;
     }
 
     @GetMapping
@@ -46,12 +49,19 @@ public class CatchController {
     }
 
     @PostMapping("/catch/new")
-    public String newCatch(final @ModelAttribute("newCatchDTO") NewCatchDTO newCatchDTO, final Model model) {
-        catchService.newCatch(
+    public String newCatch(
+            final @ModelAttribute("newCatchDTO") NewCatchDTO newCatchDTO,
+            final @RequestParam("image") MultipartFile image,
+            final Model model) throws IOException {
+
+        final Long newCatchId = catchService.newCatch(
                 newCatchDTO,
                 hunterService.getHunter(newCatchDTO.hunterId()),
                 fishTypeService.getFishType(newCatchDTO.fishTypeId()));
-        return "redirect:/";
+
+        imageService.saveImage(newCatchId, image);
+
+        return "redirect:/catch/" + newCatchId;
     }
 
     @GetMapping("/catch/{id}")

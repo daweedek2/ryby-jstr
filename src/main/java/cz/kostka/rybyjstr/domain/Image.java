@@ -17,7 +17,7 @@ public class Image {
     @Column
     private byte[] imageData;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="catch_id", nullable = false)
     private Catch theCatch;
 

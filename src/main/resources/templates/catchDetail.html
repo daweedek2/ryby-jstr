@@ -28,6 +28,12 @@
                         <img class="card-img-top" th:src="@{/image/{id}(id=${imageId})}" alt="">
                     </a>
                 </div>
+                <div>
+                    <a class="btn btn-secondary" href="#" th:href="@{/image/delete/{catchId}/{imageId}(catchId=${catchDTO.id}, imageId=${imageId})}"
+                       th:attr="onclick='return confirm(\'' + 'Opravdu chcete smazat fotku?' + '\');'">
+                        Smazat fotku
+                    </a>
+                </div>
             </th:block>
             <br>
             <br>

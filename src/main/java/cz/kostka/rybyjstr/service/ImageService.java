@@ -29,4 +29,10 @@ public class ImageService {
     public void saveImage(final Long catchId, final MultipartFile image) throws IOException {
         imageRepository.save(new Image(ImageUtil.compressImage(image.getBytes()), catchService.getCatch(catchId)));
     }
+
+    public void delete(final Long catchId, final Long imageId) {
+        catchService.removeImage(catchId, imageId);
+
+        imageRepository.deleteById(imageId);
+    }
 }
