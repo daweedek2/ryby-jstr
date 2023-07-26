@@ -13,7 +13,17 @@
             <h1>Statistiky dnů (TOP 5)</h1>
             <th:block th:each="catchesInDay : ${allStats}">
                 <div class="cypher">
-                    <h2 th:text="${#temporals.format(catchesInDay.key, 'dd.MM. yyyy')}">15.4. 2023</h2>
+                    <h2 th:text="|${#temporals.format(catchesInDay.key, 'dd.MM. yyyy')} (${totalCountMap.get(catchesInDay.key)} celkem)|">15.4. 2023</h2>
+                    <div class="row align-items-center">
+                        <th:block th:each="catch : ${fishStats.get(catchesInDay.key)}">
+                            <div class="col" th:text="|${catch.key} : ${catch.value} ks|">kapr : 5</div>
+                        </th:block>
+                    </div>
+                    <div class="row align-items-center">
+                        <th:block th:each="catch : ${hunterStats.get(catchesInDay.key)}">
+                            <div class="col" th:text="|${catch.key} : ${catch.value} ks|">Jan : 5</div>
+                        </th:block>
+                    </div>
                     <div class="row align-items-center">
                         <div class="col-sm-12">
                             <th:block th:each="maxCatch : ${catchesInDay.value}">

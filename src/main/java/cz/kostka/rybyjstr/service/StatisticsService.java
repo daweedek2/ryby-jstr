@@ -110,4 +110,28 @@ public class StatisticsService {
                         Map.Entry::getValue,
                         (oldValue, newValue) -> oldValue, LinkedHashMap::new));
     }
+
+    public Map<LocalDate, Map<String, Integer>> getHunterStatisticsPerDay() {
+        return catchService.getAllCatches().stream()
+                .collect(Collectors.groupingBy(c -> c.timestamp().toLocalDate()))
+                .entrySet().stream()
+                .map(entry -> Map.entry(entry.getKey(), getHunterCatchesMapFromDTO(entry.getValue())))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    public Map<LocalDate, Map<String, Integer>> getFishStatisticsPerDay() {
+        return catchService.getAllCatches().stream()
+                .collect(Collectors.groupingBy(c -> c.timestamp().toLocalDate()))
+                .entrySet().stream()
+                .map(entry -> Map.entry(entry.getKey(), getFishCatchesMapFromDTO(entry.getValue())))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    public Map<LocalDate, Integer> getTotalCountPerDay() {
+        return catchService.getAllCatches().stream()
+                .collect(Collectors.groupingBy(c -> c.timestamp().toLocalDate()))
+                .entrySet().stream()
+                .map(entry -> Map.entry(entry.getKey(), entry.getValue().size()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
 }

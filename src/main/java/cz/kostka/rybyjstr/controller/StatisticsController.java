@@ -35,6 +35,9 @@ public class StatisticsController {
     @GetMapping("/day")
     public String getDayStats(final Model model) {
         model.addAttribute("allStats", statisticsService.getDayStatistics());
+        model.addAttribute("hunterStats", statisticsService.getHunterStatisticsPerDay());
+        model.addAttribute("fishStats", statisticsService.getFishStatisticsPerDay());
+        model.addAttribute("totalCountMap", statisticsService.getTotalCountPerDay());
         return "dayStatistic";
     }
 }
