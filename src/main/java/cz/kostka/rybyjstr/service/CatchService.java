@@ -84,6 +84,7 @@ public class CatchService {
     }
 
     public void deleteCatch(final Long catchId) {
+        getImageIds(getCatch(catchId)).forEach(imageService::delete);
         catchRepository.deleteById(catchId);
     }
 
