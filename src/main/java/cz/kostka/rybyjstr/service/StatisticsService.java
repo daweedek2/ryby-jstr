@@ -99,7 +99,7 @@ public class StatisticsService {
                 .collect(Collectors.toList());
     }
 
-    public Map<LocalDate, List<CatchDTO>> getDayStatistics() {
+    public Map<LocalDate, List<CatchDTO>> getDayStatisticsTop5() {
         return catchService.getAllCatches().stream()
                 .collect(Collectors.groupingBy(c -> c.timestamp().toLocalDate()))
                 .entrySet().stream()
@@ -130,6 +130,42 @@ public class StatisticsService {
     public Map<LocalDate, Integer> getTotalCountPerDay() {
         return catchService.getAllCatches().stream()
                 .collect(Collectors.groupingBy(c -> c.timestamp().toLocalDate()))
+                .entrySet().stream()
+                .map(entry -> Map.entry(entry.getKey(), entry.getValue().size()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    public Map<Integer, List<CatchDTO>> getHourStatisticsTop5() {
+        return catchService.getAllCatches().stream()
+                .collect(Collectors.groupingBy(c -> c.timestamp().toLocalTime().getHour()))
+                .entrySet().stream()
+                .map(entry -> Map.entry(entry.getKey(), getTopN(entry.getValue(), 5)))
+                .sorted(Map.Entry.comparingByKey())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+    }
+
+    public Map<Integer, Map<String, Integer>> getHunterStatisticsPerHour() {
+        return catchService.getAllCatches().stream()
+                .collect(Collectors.groupingBy(c -> c.timestamp().toLocalTime().getHour()))
+                .entrySet().stream()
+                .map(entry -> Map.entry(entry.getKey(), getHunterCatchesMapFromDTO(entry.getValue())))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    public Map<Integer, Map<String, Integer>> getFishStatisticsPerHour() {
+        return catchService.getAllCatches().stream()
+                .collect(Collectors.groupingBy(c -> c.timestamp().toLocalTime().getHour()))
+                .entrySet().stream()
+                .map(entry -> Map.entry(entry.getKey(), getFishCatchesMapFromDTO(entry.getValue())))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    public Map<Integer, Integer> getTotalCountPerHour() {
+        return catchService.getAllCatches().stream()
+                .collect(Collectors.groupingBy(c -> c.timestamp().toLocalTime().getHour()))
                 .entrySet().stream()
                 .map(entry -> Map.entry(entry.getKey(), entry.getValue().size()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));

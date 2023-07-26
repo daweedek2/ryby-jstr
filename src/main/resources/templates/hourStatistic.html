@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}"></head>
+<body>
+<div class="container">
+    <a th:href="@{/}">
+        <div class="row">
+            <h1 class="login-form-header">Jestřabice 2023</h1>
+        </div>
+    </a>
+    <div class="row cypher-list">
+        <div class="col-sm-12">
+            <h1>Statistiky podle hodin (TOP 5)</h1>
+            <th:block th:each="catchesInHour : ${allStats}">
+                <div class="cypher">
+                    <h2 th:text="|${catchesInHour.key}:00 (${totalCountMap.get(catchesInHour.key)} celkem)|">12:00 (6 celkem)</h2>
+                    <div class="row align-items-center">
+                        <th:block th:each="catch : ${fishStats.get(catchesInHour.key)}">
+                            <div class="col" th:text="|${catch.key} : ${catch.value} ks|">kapr : 5</div>
+                        </th:block>
+                    </div>
+                    <div class="row align-items-center">
+                        <th:block th:each="catch : ${hunterStats.get(catchesInHour.key)}">
+                            <div class="col" th:text="|${catch.key} : ${catch.value} ks|">Jan : 5</div>
+                        </th:block>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-sm-12">
+                            <th:block th:each="maxCatch : ${catchesInHour.value}">
+                            <a class="btn btn-secondary" th:href="@{/catch/{id}(id=${maxCatch.id()})}">
+                                <div class="col" th:text="|${maxCatch.hunter()} ${maxCatch.fish()} ${maxCatch.size()} cm|">150 cm</div>
+                            </a>
+                            </th:block>
+                        </div>
+                    </div>
+                    <div class="row align-items-center">
+                        <div class="col-sm-12">
+                            <a class="btn btn-primary" th:href="@{/catch/hour/{hour}(hour=${catchesInHour.key})}">
+                                <div class="col">Všechny úlovky za hodinu</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+    </div>
+</div>
+</body>
+</html>

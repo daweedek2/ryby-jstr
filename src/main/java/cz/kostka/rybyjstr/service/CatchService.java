@@ -34,21 +34,21 @@ public class CatchService {
         return catchRepository.findAll(Sort.by("timestamp"))
                 .stream()
                 .map(this::mapToCatchDTOWithoutImage)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<CatchDTO> getAllCatchesWithImage() {
         return catchRepository.findAll(Sort.by("timestamp"))
                 .stream()
                 .map(this::mapToCatchDTOWithImage)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<CatchDTO> getAllCatchesLatestFirst() {
         return catchRepository.findAllByOrderByTimestampDesc()
                 .stream()
                 .map(this::mapToCatchDTOWithoutImage)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public Catch newCatch(final NewCatchDTO newCatchDTO, final Hunter hunter, final FishType fishType) {
@@ -90,19 +90,25 @@ public class CatchService {
     public List<CatchDTO> getAllCatches(final Hunter hunter) {
         return getAllCatches().stream()
                 .filter(catchDTO -> Objects.equals(catchDTO.hunter(), hunter.getName()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<CatchDTO> getAllCatches(final FishType fish) {
         return getAllCatches().stream()
                 .filter(catchDTO -> Objects.equals(catchDTO.fish(), fish.getType()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<CatchDTO> getAllCatches(final LocalDate date) {
         return getAllCatches().stream()
                 .filter(c -> c.timestamp().toLocalDate().isEqual(date))
-                .collect(Collectors.toList());
+                .toList();
+    }
+
+    public List<CatchDTO> getAllCatches(final Integer hour) {
+        return getAllCatches().stream()
+                .filter(c -> c.timestamp().toLocalTime().getHour() == hour)
+                .toList();
     }
 
     private CatchDTO mapToCatchDTOWithoutImage(Catch catchy) {

@@ -34,10 +34,19 @@ public class StatisticsController {
 
     @GetMapping("/day")
     public String getDayStats(final Model model) {
-        model.addAttribute("allStats", statisticsService.getDayStatistics());
+        model.addAttribute("allStats", statisticsService.getDayStatisticsTop5());
         model.addAttribute("hunterStats", statisticsService.getHunterStatisticsPerDay());
         model.addAttribute("fishStats", statisticsService.getFishStatisticsPerDay());
         model.addAttribute("totalCountMap", statisticsService.getTotalCountPerDay());
         return "dayStatistic";
+    }
+
+    @GetMapping("/hour")
+    public String getHourStats(final Model model) {
+        model.addAttribute("allStats", statisticsService.getHourStatisticsTop5());
+        model.addAttribute("hunterStats", statisticsService.getHunterStatisticsPerHour());
+        model.addAttribute("fishStats", statisticsService.getFishStatisticsPerHour());
+        model.addAttribute("totalCountMap", statisticsService.getTotalCountPerHour());
+        return "hourStatistic";
     }
 }
