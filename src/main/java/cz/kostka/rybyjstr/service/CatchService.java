@@ -37,8 +37,8 @@ public class CatchService {
                 .toList();
     }
 
-    public List<CatchDTO> getAllCatchesWithImage() {
-        return catchRepository.findAll(Sort.by("timestamp"))
+    public List<CatchDTO> getAllCatchesWithImageLatestFirst() {
+        return catchRepository.findAllByOrderByTimestampDesc()
                 .stream()
                 .map(this::mapToCatchDTOWithImage)
                 .toList();
