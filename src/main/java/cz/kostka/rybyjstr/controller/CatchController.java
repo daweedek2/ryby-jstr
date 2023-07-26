@@ -1,6 +1,7 @@
 package cz.kostka.rybyjstr.controller;
 
 import cz.kostka.rybyjstr.domain.Catch;
+import cz.kostka.rybyjstr.dto.CatchDTO;
 import cz.kostka.rybyjstr.dto.NewCatchDTO;
 import cz.kostka.rybyjstr.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +75,15 @@ public class CatchController {
     public String getCatchDetail(@PathVariable final Long id, final Model model) {
         model.addAttribute("catchDTO", catchService.getCatchDetailWithPhotos(id));
         return "catchDetail";
+    }
+
+    @PostMapping("/catch/{id}/update")
+    public String updateCatchDetail(
+            final @PathVariable Long id,
+            final @ModelAttribute("newCatchDTO") CatchDTO catchDTO,
+            final Model model) {
+        catchService.updateCatch(catchDTO);
+        return "redirect:/catch/" + id;
     }
 
     @GetMapping("/catch/{id}/delete")

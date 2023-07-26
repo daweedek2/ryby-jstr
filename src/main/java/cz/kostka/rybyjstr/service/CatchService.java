@@ -139,4 +139,12 @@ public class CatchService {
                 catchy.getNote(),
                 getImageIds(catchy));
     }
+
+    public Catch updateCatch(final CatchDTO catchDTO) {
+        final Catch theCatch = getCatch(catchDTO.id());
+        theCatch.setNote(catchDTO.note());
+        theCatch.setSize(catchDTO.size());
+        theCatch.setWeight(catchDTO.weight());
+        return catchRepository.save(theCatch);
+    }
 }
