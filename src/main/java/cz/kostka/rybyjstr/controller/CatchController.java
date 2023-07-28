@@ -7,6 +7,7 @@ import cz.kostka.rybyjstr.service.CatchService;
 import cz.kostka.rybyjstr.service.FishTypeService;
 import cz.kostka.rybyjstr.service.HunterService;
 import cz.kostka.rybyjstr.service.ImageService;
+import cz.kostka.rybyjstr.service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,17 +23,20 @@ public class CatchController {
     private final FishTypeService fishTypeService;
     private final HunterService hunterService;
     private final ImageService imageService;
+    private final StatisticsService statisticsService;
 
     @Autowired
     public CatchController(
             final CatchService catchService,
             final FishTypeService fishTypeService,
             final HunterService hunterService,
-            final ImageService imageService) {
+            final ImageService imageService,
+            final StatisticsService statisticsService) {
         this.catchService = catchService;
         this.fishTypeService = fishTypeService;
         this.hunterService = hunterService;
         this.imageService = imageService;
+        this.statisticsService = statisticsService;
     }
 
     @GetMapping
@@ -53,6 +57,7 @@ public class CatchController {
         model.addAttribute("allFishTypes", fishTypeService.getAllFishTypes());
         model.addAttribute("allHunters", hunterService.getAllHunters());
         model.addAttribute("allCatchCount", catchService.getAllCatchesCount());
+        model.addAttribute("topN", statisticsService.getTopN(catchService.getAllCatches(), 10));
     }
 
     @PostMapping("/catch/new")
