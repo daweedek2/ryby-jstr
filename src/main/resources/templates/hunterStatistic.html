@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="cs" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/head :: head}"></head>
+<div th:replace="~{fragments/head :: head}"></div>
 <body>
 <div class="container">
     <a th:href="@{/}">
@@ -13,7 +13,7 @@
             <form action="#" th:action="@{/hunter}" th:object="${newHunterDTO}" method="post">
                 <div class="form-group">
                     <label for="name" class="input-value-required">Nový lovec</label>
-                    <input th:field="*{name}" id="name" required></input>
+                    <input th:field="*{name}" id="name" required>
                     <p class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Chyba - Lovec</p>
                 </div>
                 <button type="submit" class="btn btn-primary">Vytvořit</button>
@@ -27,15 +27,18 @@
                             <div class="col" th:text="|${catch.key} : ${catch.value} ks|">Kapr : 5</div>
                         </th:block>
                     </div>
-                    <div class="row align-items-center">
-                        <div class="col-sm-12">
-                            <th:block th:each="maxCatch : ${hunterStats.maxSizeCatches()}">
-                            <a class="btn btn-secondary" th:href="@{/catch/{id}(id=${maxCatch.id()})}">
-                                <div class="col" th:text="|${maxCatch.fish()} ${maxCatch.size()} cm|">150 cm</div>
-                            </a>
-                            </th:block>
+                    <th:block th:each="maxCatchMap : ${hunterStats.maxSizeCatchesMap()}">
+                        <div class="row align-items-center">
+                            <div class="col-sm-12">
+                                <h2 th:text="${maxCatchMap.key}">kapr</h2>
+                                <th:block th:each="maxCatch : ${maxCatchMap.value}">
+                                <a class="btn btn-secondary" th:href="@{/catch/{id}(id=${maxCatch.id()})}">
+                                    <div class="col" th:text="|${maxCatch.fish()} ${maxCatch.size()} cm|">150 cm</div>
+                                </a>
+                                </th:block>
+                            </div>
                         </div>
-                    </div>
+                    </th:block>
                     <div class="row align-items-center">
                         <div class="col-sm-12">
                             <a class="btn btn-primary" th:href="@{/catch/hunter/{id}(id=${hunterStats.hunterId()})}">

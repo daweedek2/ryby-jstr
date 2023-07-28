@@ -140,11 +140,15 @@ public class CatchService {
                 getImageIds(catchy));
     }
 
-    public Catch updateCatch(final CatchDTO catchDTO) {
+    public void updateCatch(final CatchDTO catchDTO) {
         final Catch theCatch = getCatch(catchDTO.id());
         theCatch.setNote(catchDTO.note());
         theCatch.setSize(catchDTO.size());
         theCatch.setWeight(catchDTO.weight());
-        return catchRepository.save(theCatch);
+        catchRepository.save(theCatch);
+    }
+
+    public long getAllCatchesCount() {
+        return catchRepository.count();
     }
 }

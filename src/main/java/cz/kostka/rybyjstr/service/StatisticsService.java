@@ -34,7 +34,7 @@ public class StatisticsService {
                 .collect(Collectors.groupingBy(CatchDTO::hunter)).entrySet().stream()
                 .map(this::provideHunterStatistic)
                 .sorted(Comparator.comparingInt(HunterStatisticDTO::totalFishCount).reversed())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private HunterStatisticDTO provideHunterStatistic(Map.Entry<String, List<CatchDTO>> entry) {
@@ -44,7 +44,7 @@ public class StatisticsService {
                 hunter.getName(),
                 entry.getValue().size(),
                 getHunterCatchesMapFromDTO(entry.getValue()),
-                findMaxSizeCatch(entry.getValue()),
+                getTopNByFishMap(entry.getValue(), 3),
                 findMaxWeightCatch(entry.getValue()));
     }
 
@@ -55,7 +55,7 @@ public class StatisticsService {
                 fish.getType(),
                 entry.getValue().size(),
                 getFishCatchesMapFromDTO(entry.getValue()),
-                findMaxSizeCatch(entry.getValue()),
+                getTopN(entry.getValue(), 3),
                 findMaxWeightCatch(entry.getValue()));
     }
 
@@ -63,13 +63,6 @@ public class StatisticsService {
         return allCatches.stream()
                 .max(Comparator.comparingLong(CatchDTO::weight))
                 .orElse(CatchDTO.empty());
-    }
-
-    private static List<CatchDTO> findMaxSizeCatch(final List<CatchDTO> allCatches) {
-        return allCatches.stream()
-                .sorted(Comparator.comparingInt(CatchDTO::size).reversed())
-                .limit(3)
-                .collect(Collectors.toList());
     }
 
     private static Map<String, Integer> getHunterCatchesMapFromDTO(List<CatchDTO> catchDTOList) {
@@ -89,21 +82,33 @@ public class StatisticsService {
                 .collect(Collectors.groupingBy(CatchDTO::fish)).entrySet().stream()
                 .map(this::provideFishStatistic)
                 .sorted(Comparator.comparingInt(FishStatisticDTO::totalFishCount).reversed())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<CatchDTO> getTopN(final List<CatchDTO> catchDTOs, final long numberOfCatches) {
         return catchDTOs.stream()
                 .sorted(Comparator.comparingInt(CatchDTO::size).reversed())
                 .limit(numberOfCatches)
-                .collect(Collectors.toList());
+                .toList();
     }
 
-    public Map<LocalDate, List<CatchDTO>> getDayStatisticsTop5() {
+    public Map<String, List<CatchDTO>> getTopNByFishMap(final List<CatchDTO> catchDTOs, final long topN) {
+        return catchDTOs.stream()
+                .collect(Collectors.groupingBy(CatchDTO::fish)) // map entries by fish
+                .entrySet().stream()
+                .map(entry -> Map.entry(entry.getKey(), getTopN(entry.getValue(), topN)))
+                .sorted(Map.Entry.comparingByKey())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+    }
+
+    public Map<LocalDate, Map<String, List<CatchDTO>>> getDayStatisticsTopN(final int topN) {
         return catchService.getAllCatches().stream()
                 .collect(Collectors.groupingBy(c -> c.timestamp().toLocalDate()))
                 .entrySet().stream()
-                .map(entry -> Map.entry(entry.getKey(), getTopN(entry.getValue(), 5)))
+                .map(entry -> Map.entry(entry.getKey(), getTopNByFishMap(entry.getValue(), topN)))
                 .sorted(Map.Entry.comparingByKey())
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
@@ -135,11 +140,11 @@ public class StatisticsService {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    public Map<Integer, List<CatchDTO>> getHourStatisticsTop5() {
+    public Map<Integer, Map<String, List<CatchDTO>>> getHourStatisticsTopN(final int topN) {
         return catchService.getAllCatches().stream()
                 .collect(Collectors.groupingBy(c -> c.timestamp().toLocalTime().getHour()))
                 .entrySet().stream()
-                .map(entry -> Map.entry(entry.getKey(), getTopN(entry.getValue(), 5)))
+                .map(entry -> Map.entry(entry.getKey(), getTopNByFishMap(entry.getValue(), topN)))
                 .sorted(Map.Entry.comparingByKey())
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,

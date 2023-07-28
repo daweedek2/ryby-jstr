@@ -5,5 +5,5 @@ import java.util.Map;
 
 public record HunterStatisticDTO(
         Long hunterId, String name, Integer totalFishCount,
-        Map<String, Integer> catchesMap, List<CatchDTO> maxSizeCatches, CatchDTO maxWeightCatch) {
+        Map<String, Integer> catchesMap, Map<String, List<CatchDTO>> maxSizeCatchesMap, CatchDTO maxWeightCatch) {
 }

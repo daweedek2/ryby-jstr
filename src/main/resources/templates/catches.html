@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="cs" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/head :: head}"></head>
+<div th:replace="~{fragments/head :: head}"></div>
 <body>
 <div class="container">
   <a th:href="@{/}">
@@ -13,69 +13,64 @@
       <a class="btn btn-primary" href="#" th:href="@{/photos}">Přehled s fotkama</a>
       <a class="btn btn-primary" href="#" th:href="@{/allCatches}">Přehled bez fotek</a>
       <br>
-      <a class="btn btn-secondary" href="#" th:href="@{/statistics/hunter}">Statistiky lovců</a>
       <a class="btn btn-secondary" href="#" th:href="@{/statistics/fish}">Statistiky ryb</a>
+      <a class="btn btn-secondary" href="#" th:href="@{/statistics/hunter}">Statistiky lovců</a>
       <a class="btn btn-secondary" href="#" th:href="@{/statistics/day}">Statistiky dnů</a>
       <a class="btn btn-secondary" href="#" th:href="@{/statistics/hour}">Statistiky hodin</a>
-      <h2>TOP 3</h2>
-      <th:block th:each="top : ${topThree}">
-        <div class="cypher">
-          <div class="row align-items-center">
-              <a class="btn btn-secondary" th:href="@{/catch/{id}(id=${top.id()})}">
-                <div class="col" th:text="|${top.hunter()} ${top.fish()} ${top.size()} cm|"> Karel 150 cm</div>
-              </a>
-          </div>
-        </div>
-      </th:block>
       <br>
+      <h1 th:text="|Celkem uloveno ${allCatchCount} ryb|">Celkem uloveno 155 ryb</h1>
       <h2>Nový úlovek</h2>
-      <form action="#" th:action="@{/catch/new}" th:object="${newCatchDTO}" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-          <label for="hunterId" class="input-value-required">Lovec</label>
-          <select th:field="*{hunterId}" id="hunterId" required>
-            <option th:each="hunter : ${allHunters}" th:value="${hunter.id}" th:text="${hunter.name}"/>
-          </select>
-          <p class="error" th:if="${#fields.hasErrors('hunterId')}" th:errors="*{hunterId}">Chyba - Lovec
-          </p>
+      <div class="cypher">
+        <div class="align-items-center">
+        <form action="#" th:action="@{/catch/new}" th:object="${newCatchDTO}" method="post" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="hunterId" class="input-value-required">Lovec</label>
+            <select th:field="*{hunterId}" id="hunterId" required>
+              <option th:each="hunter : ${allHunters}" th:value="${hunter.id}" th:text="${hunter.name}"/>
+            </select>
+            <p class="error" th:if="${#fields.hasErrors('hunterId')}" th:errors="*{hunterId}">Chyba - Lovec
+            </p>
+          </div>
+          <div class="form-group">
+            <label for="fishTypeId" class="input-value-required">Ryba</label>
+            <select th:field="*{fishTypeId}" id="fishTypeId" required>
+              <option th:each="fish : ${allFishTypes}" th:value="${fish.id}" th:text="${fish.type}"/>
+            </select>
+            <p class="error" th:if="${#fields.hasErrors('fishTypeId')}" th:errors="*{fishTypeId}">Chyba - Ryba
+            </p>
+          </div>
+          <div class="form-group">
+            <label for="size" class="login-form-label">Velikost (cm)</label>
+            <input id="size" class="form-control" type="number" th:field="*{size}" min="0"/>
+            <p class="error" th:if="${#fields.hasErrors('size')}" th:errors="*{size}">Chyba - Velikost
+            </p>
+          </div>
+          <div class="form-group">
+            <label for="weight" class="login-form-label">Váha (g)</label>
+            <input id="weight" class="form-control" type="number" th:field="*{weight}" min="0"/>
+            <p class="error" th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}">Chyba - Vaha
+            </p>
+          </div>
+          <div class="form-group">
+            <label for="time" class="login-form-label">Čas</label>
+            <input id="time" class="form-control" type="datetime-local" th:field="*{time}"/>
+            <p class="error" th:if="${#fields.hasErrors('time')}" th:errors="*{time}">Chyba - Čas
+            </p>
+          </div>
+          <div class="form-group">
+            <label for="image" class="login-form-label">Fotka</label>
+            <input type="file" name="image" id="image" accept="image/jpeg">
+          </div>
+          <div class="form-group">
+            <label for="note" class="login-form-label">Poznámka</label>
+            <input id="note" class="form-control" type="text" th:field="*{note}"/>
+            <p class="error" th:if="${#fields.hasErrors('note')}" th:errors="*{note}">Chyba - Poznámka
+            </p>
+          </div>
+          <button type="submit" class="btn btn-primary">Uložit úlovek</button>
+        </form>
         </div>
-        <div class="form-group">
-          <label for="fishTypeId" class="input-value-required">Ryba</label>
-          <select th:field="*{fishTypeId}" id="fishTypeId" required>
-            <option th:each="fish : ${allFishTypes}" th:value="${fish.id}" th:text="${fish.type}"/>
-          </select>
-          <p class="error" th:if="${#fields.hasErrors('fishTypeId')}" th:errors="*{fishTypeId}">Chyba - Ryba
-          </p>
-        </div>
-        <div class="form-group">
-          <label for="size" class="login-form-label">Velikost (cm)</label>
-          <input id="size" class="form-control" type="number" th:field="*{size}" min="0"/>
-          <p class="error" th:if="${#fields.hasErrors('size')}" th:errors="*{size}">Chyba - Velikost
-          </p>
-        </div>
-        <div class="form-group">
-          <label for="weight" class="login-form-label">Váha (g)</label>
-          <input id="weight" class="form-control" type="number" th:field="*{weight}" min="0"/>
-          <p class="error" th:if="${#fields.hasErrors('weight')}" th:errors="*{weight}">Chyba - Vaha
-          </p>
-        </div>
-        <div class="form-group">
-          <label for="time" class="login-form-label">Čas</label>
-          <input id="time" class="form-control" type="datetime-local" th:field="*{time}"/>
-          <p class="error" th:if="${#fields.hasErrors('time')}" th:errors="*{time}">Chyba - Čas
-          </p>
-        </div>
-        <div class="form-group">
-          <label for="image" class="login-form-label">Fotka</label>
-          <input type="file" name="image" id="image" accept="image/jpeg">
-        </div>
-        <div class="form-group">
-          <label for="note" class="login-form-label">Poznámka</label>
-          <input id="note" class="form-control" type="text" th:field="*{note}"/>
-          <p class="error" th:if="${#fields.hasErrors('note')}" th:errors="*{note}">Chyba - Poznámka
-          </p>
-        </div>
-        <button type="submit" class="btn btn-primary">Uložit úlovek</button>
-      </form>
+      </div>
     </div>
   </div>
 </div>

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="cs" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/head :: head}"></head>
+<div th:replace="~{fragments/head :: head}"></div>
 <body>
 <div class="container">
     <a th:href="@{/}">
@@ -10,7 +10,7 @@
     </a>
     <div class="row cypher-list">
         <div class="col-sm-12">
-            <h1>Statistiky dnů (TOP 5)</h1>
+            <h1>Statistiky dnů (TOP 3)</h1>
             <th:block th:each="catchesInDay : ${allStats}">
                 <div class="cypher">
                     <h2 th:text="|${#temporals.format(catchesInDay.key, 'dd.MM. yyyy')} (${totalCountMap.get(catchesInDay.key)} celkem)|">15.4. 2023</h2>
@@ -24,15 +24,18 @@
                             <div class="col" th:text="|${catch.key} : ${catch.value} ks|">Jan : 5</div>
                         </th:block>
                     </div>
-                    <div class="row align-items-center">
-                        <div class="col-sm-12">
-                            <th:block th:each="maxCatch : ${catchesInDay.value}">
-                            <a class="btn btn-secondary" th:href="@{/catch/{id}(id=${maxCatch.id()})}">
-                                <div class="col" th:text="|${maxCatch.hunter()} ${maxCatch.fish()} ${maxCatch.size()} cm|">150 cm</div>
-                            </a>
-                            </th:block>
+                    <th:block th:each="maxCatchMap : ${catchesInDay.value}">
+                        <div class="row align-items-center">
+                            <div class="col-sm-12">
+                                <h2 th:text="${maxCatchMap.key}">kapr</h2>
+                                <th:block th:each="maxCatch : ${maxCatchMap.value}">
+                                <a class="btn btn-secondary" th:href="@{/catch/{id}(id=${maxCatch.id()})}">
+                                    <div class="col" th:text="|${maxCatch.hunter()} ${maxCatch.fish()} ${maxCatch.size()} cm|">150 cm</div>
+                                </a>
+                                </th:block>
+                            </div>
                         </div>
-                    </div>
+                    </th:block>
                     <div class="row align-items-center">
                         <div class="col-sm-12">
                             <a class="btn btn-primary" th:href="@{/catch/day/{date}(date=${catchesInDay.key})}">
