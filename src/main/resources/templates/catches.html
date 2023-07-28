@@ -17,6 +17,7 @@
       <a class="btn btn-secondary" href="#" th:href="@{/statistics/hunter}">Statistiky lovců</a>
       <a class="btn btn-secondary" href="#" th:href="@{/statistics/day}">Statistiky dnů</a>
       <a class="btn btn-secondary" href="#" th:href="@{/statistics/hour}">Statistiky hodin</a>
+      <a class="btn btn-primary" href="#" th:href="@{/top}">Ryby podle velikosti</a>
       <br>
       <h1 th:text="|Celkem uloveno ${allCatchCount} ryb|">Celkem uloveno 155 ryb</h1>
       <h2>Nový úlovek</h2>
@@ -71,20 +72,6 @@
         </form>
         </div>
       </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-sm-12 col-md-12 col-lg-6">
-      <h2>TOP 10</h2>
-      <th:block th:each="top : ${topN}">
-        <div class="cypher">
-          <div class="align-items-center">
-            <a class="btn btn-secondary" th:href="@{/catch/{id}(id=${top.id()})}">
-              <div class="col" th:text="|${top.hunter()} ${top.fish()} ${top.size()} cm|"> Karel 150 cm</div>
-            </a>
-          </div>
-        </div>
-      </th:block>
     </div>
   </div>
 </div>

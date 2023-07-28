@@ -52,6 +52,12 @@ public class CatchController {
         return "allCatches";
     }
 
+    @GetMapping("/top")
+    public String getAllCatchesSorted(final Model model) {
+        model.addAttribute("topN", catchService.getAllCatchesBySize());
+        return "topCatch";
+    }
+
     private void addCatchModelAttributes(Model model) {
         model.addAttribute("newCatchDTO", NewCatchDTO.empty());
         model.addAttribute("allFishTypes", fishTypeService.getAllFishTypes());

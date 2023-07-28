@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{fragments/head :: head}"></div>
+<body>
+<div class="container">
+  <a th:href="@{/}">
+    <div class="row">
+      <h1 class="login-form-header">Jestřabice 2023</h1>
+    </div>
+  </a>
+  <div class="row">
+    <div class="col-sm-12 col-md-12 col-lg-6">
+      <h2>Úlovky podle velikosti</h2>
+      <th:block th:each="top : ${topN}">
+        <div class="cypher">
+          <div class="align-items-center">
+            <a class="btn btn-secondary" th:href="@{/catch/{id}(id=${top.id()})}">
+              <div class="col" th:text="|${top.hunter()} ${top.fish()} ${top.size()} cm|"> Karel 150 cm</div>
+            </a>
+          </div>
+        </div>
+      </th:block>
+    </div>
+  </div>
+</div>
+</body>
+</html>

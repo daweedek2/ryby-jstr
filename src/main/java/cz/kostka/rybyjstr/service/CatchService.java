@@ -151,4 +151,10 @@ public class CatchService {
     public long getAllCatchesCount() {
         return catchRepository.count();
     }
+
+    public List<CatchDTO> getAllCatchesBySize() {
+        return catchRepository.findAllByOrderBySizeDesc().stream()
+                .map(this::mapToCatchDTOWithoutImage)
+                .toList();
+    }
 }
