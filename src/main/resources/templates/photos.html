@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="cs" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/head :: head}"></head>
+<div th:replace="~{fragments/head :: head}"></div>
 <body>
 <div class="container">
     <a th:href="@{/}">
@@ -21,6 +21,11 @@
                 </th:block>
             </div>
         </th:block>
+    </div>
+    <div class="row" th:if="${nextPhotoIndex > 0}">
+        <div class="col-sm-12 col-md-12 col-lg-6">
+            <a class="btn btn-primary" href="#" th:href="@{/photos/{index}(index=${nextPhotoIndex})}">Další fotky</a>
+        </div>
     </div>
 </div>
 </body>

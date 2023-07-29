@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -20,7 +21,15 @@ public class PhotosController {
 
     @GetMapping
     public String viewAllPhotos(final Model model) {
-        model.addAttribute("allCatches", catchService.getAllCatchesWithImageLatestFirst());
+        model.addAttribute("allCatches", catchService.getAllCatchesWithImageLatestFirst(0));
+        model.addAttribute("nextPhotoIndex", catchService.getIndexForNextCatches(0));
+        return "photos";
+    }
+
+    @GetMapping("/{index}")
+    public String viewNextPhotos(@PathVariable final int index, final Model model) {
+        model.addAttribute("allCatches", catchService.getAllCatchesWithImageLatestFirst(index));
+        model.addAttribute("nextPhotoIndex", catchService.getIndexForNextCatches(index));
         return "photos";
     }
 }

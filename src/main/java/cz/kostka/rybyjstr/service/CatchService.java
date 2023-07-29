@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 @Service
 public class CatchService {
 
+    public static final int CATCHES_PER_PAGE = 50;
     private final CatchRepository catchRepository;
     private final ImageService imageService;
 
@@ -34,13 +35,6 @@ public class CatchService {
         return catchRepository.findAll(Sort.by("timestamp"))
                 .stream()
                 .map(this::mapToCatchDTOWithoutImage)
-                .toList();
-    }
-
-    public List<CatchDTO> getAllCatchesWithImageLatestFirst() {
-        return catchRepository.findAllByOrderByTimestampDesc()
-                .stream()
-                .map(this::mapToCatchDTOWithImage)
                 .toList();
     }
 
@@ -156,5 +150,28 @@ public class CatchService {
         return catchRepository.findAllByOrderBySizeDesc().stream()
                 .map(this::mapToCatchDTOWithoutImage)
                 .toList();
+    }
+
+    public List<CatchDTO> getAllCatchesWithImageLatestFirst(final int index) {
+        final long allCatches = getAllCatchesCount();
+        return catchRepository.findAllByOrderByTimestampDesc()
+                .subList(
+                        index * CATCHES_PER_PAGE,
+                        calculateNextCatchBorder(index) < allCatches ? calculateNextCatchBorder(index) : ((int) allCatches))
+                .stream()
+                .map(this::mapToCatchDTOWithImage)
+                .toList();
+    }
+
+    private static int calculateNextCatchBorder(int index) {
+        return (index + 1) * CATCHES_PER_PAGE;
+    }
+
+    public int getIndexForNextCatches(final int currentIndex) {
+        if (getAllCatchesCount() - calculateNextCatchBorder(currentIndex) >= 0) {
+            return currentIndex + 1;
+        }
+
+        return 0;
     }
 }
