@@ -5,6 +5,7 @@ import cz.kostka.rybyjstr.domain.FishType;
 import cz.kostka.rybyjstr.domain.Hunter;
 import cz.kostka.rybyjstr.domain.Image;
 import cz.kostka.rybyjstr.dto.CatchDTO;
+import cz.kostka.rybyjstr.dto.CatchViewDTO;
 import cz.kostka.rybyjstr.dto.NewCatchDTO;
 import cz.kostka.rybyjstr.repository.CatchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -146,9 +147,27 @@ public class CatchService {
         return catchRepository.count();
     }
 
-    public List<CatchDTO> getAllCatchesBySize() {
+    public List<CatchViewDTO> getAllCatchesBySize() {
         return catchRepository.findAllByOrderBySizeDesc().stream()
-                .map(this::mapToCatchDTOWithoutImage)
+                .map(this::mapToCatchViewDTO)
+                .toList();
+    }
+
+    private CatchViewDTO mapToCatchViewDTO(Catch catchy) {
+        return new CatchViewDTO(catchy.getId(), catchy.getHunter().getName(), catchy.getFishType().getType(), buildSize(catchy.getSize()), buildWeight(catchy.getWeight()));
+    }
+
+    private String buildWeight(final long weight) {
+        return weight > 0 ? weight + " g" : "";
+    }
+
+    private String buildSize(final int size) {
+        return size > 0 ? size + " cm" : "";
+    }
+
+    public List<CatchViewDTO> getAllCatchesByWeight() {
+        return catchRepository.findAllByOrderByWeightDesc().stream()
+                .map(this::mapToCatchViewDTO)
                 .toList();
     }
 

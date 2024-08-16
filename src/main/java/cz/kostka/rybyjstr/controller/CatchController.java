@@ -52,9 +52,17 @@ public class CatchController {
         return "allCatches";
     }
 
-    @GetMapping("/top")
-    public String getAllCatchesSorted(final Model model) {
+    @GetMapping("/top/size")
+    public String getAllCatchesBySizeSorted(final Model model) {
         model.addAttribute("topN", catchService.getAllCatchesBySize());
+        model.addAttribute("title", "Úlovky podle velikosti");
+        return "topCatch";
+    }
+
+    @GetMapping("/top/weight")
+    public String getAllCatchesByWeightSorted(final Model model) {
+        model.addAttribute("topN", catchService.getAllCatchesByWeight());
+        model.addAttribute("title", "Úlovky podle váhy");
         return "topCatch";
     }
 

@@ -10,12 +10,12 @@
   </a>
   <div class="row">
     <div class="col-sm-12 col-md-12 col-lg-6">
-      <h2>Úlovky podle velikosti</h2>
+      <h2 th:text="${title}">Úlovky podle velikosti</h2>
       <th:block th:each="top : ${topN}">
         <div class="cypher">
           <div class="align-items-center">
             <a class="btn btn-secondary" th:href="@{/catch/{id}(id=${top.id()})}">
-              <div class="col" th:text="|${top.hunter()} ${top.fish()} ${top.size()} cm|"> Karel 150 cm</div>
+              <div class="col" th:text="|${top.hunter()} ${top.fish()} ${top.size()} ${top.weight()}|"> Karel 150 cm 1000 g</div>
             </a>
           </div>
         </div>

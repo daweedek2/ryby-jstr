@@ -10,4 +10,5 @@ import java.util.List;
 public interface CatchRepository extends JpaRepository<Catch, Long> {
     List<Catch> findAllByOrderByTimestampDesc();
     List<Catch> findAllByOrderBySizeDesc();
+    List<Catch> findAllByOrderByWeightDesc();
 }
