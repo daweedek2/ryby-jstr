@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}"></head>
+<body>
+<div class="container">
+  <a th:href="@{/}">
+    <div class="row">
+      <h1 class="login-form-header">Jestřabice 2024</h1>
+    </div>
+  </a>
+  <div class="row cypher-list">
+    <div class="col-sm-12">
+      <h2 th:text="|Všechny úlovky (${allCatches.size()})|"></h2>
+      <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">Čas</th>
+          <th scope="col">Lovec</th>
+          <th scope="col">Ryba</th>
+        </tr>
+        </thead>
+        <tbody>
+        <th:block th:each="catch : ${allCatches}">
+            <tr>
+              <th th:text="${#temporals.format(catch.timestamp(), ' dd.MM HH:mm')}">1</th>
+              <td th:text="${catch.hunter()}">Jan</td>
+              <td th:text="|${catch.fish()} ${catch.size()} ${catch.weight()}|">Kapr 120 cm 60000 g</td>
+            </tr>
+        </th:block>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="row cypher-list">
+    <div class="col-sm-12">
+      <h1>Statistiky ryb</h1>
+      <th:block th:each="fishStats : ${allFishStats}">
+        <div class="cypher">
+          <h2 th:text="|${fishStats.name()} (${fishStats.totalFishCount()} celkem)|">kapr (7 celkem)</h2>
+          <div class="row align-items-center">
+            <th:block th:each="catch : ${fishStats.catchesMap()}">
+              <div class="col" th:text="|${catch.key} : ${catch.value} ks|">Jan : 5</div>
+            </th:block>
+          </div>
+          <div class="row align-items-center">
+            <div class="col-sm-12">
+              <th:block th:each="maxCatch : ${fishStats.maxSizeCatches()}">
+                <a class="btn btn-secondary">
+                  <div class="col" th:text="|${maxCatch.hunter()} ${maxCatch.size()} cm|">150 cm</div>
+                </a>
+              </th:block>
+            </div>
+          </div>
+        </div>
+      </th:block>
+    </div>
+  </div>
+  <div class="row cypher-list">
+    <div class="col-sm-12">
+      <h1>Statistiky lovců</h1>
+      <th:block th:each="hunterStats : ${allHunterStats}">
+        <div class="cypher">
+          <h2 th:text="|${hunterStats.name()} (${hunterStats.totalFishCount()} celkem)|">Jan</h2>
+          <div class="row align-items-center">
+            <th:block th:each="catch : ${hunterStats.catchesMap()}">
+              <div class="col" th:text="|${catch.key} : ${catch.value} ks|">Kapr : 5</div>
+            </th:block>
+          </div>
+          <th:block th:each="maxCatchMap : ${hunterStats.maxSizeCatchesMap()}">
+            <div class="row align-items-center">
+              <div class="col-sm-12">
+                <h2 th:text="${maxCatchMap.key}">kapr</h2>
+                <th:block th:each="maxCatch : ${maxCatchMap.value}">
+                  <a class="btn btn-secondary">
+                    <div class="col" th:text="|${maxCatch.fish()} ${maxCatch.size()} cm|">150 cm</div>
+                  </a>
+                </th:block>
+              </div>
+            </div>
+          </th:block>
+        </div>
+      </th:block>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -9,6 +9,7 @@ import java.util.List;
 @Repository
 public interface CatchRepository extends JpaRepository<Catch, Long> {
     List<Catch> findAllByOrderByTimestampDesc();
+    List<Catch> findAllByOrderByTimestampAsc();
     List<Catch> findAllByOrderBySizeDesc();
     List<Catch> findAllByOrderByWeightDesc();
 }

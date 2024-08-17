@@ -46,6 +46,13 @@ public class CatchService {
                 .toList();
     }
 
+    public List<CatchViewDTO> getAllCatchesOldestFirst() {
+        return catchRepository.findAllByOrderByTimestampAsc()
+                .stream()
+                .map(this::mapToCatchViewDTO)
+                .toList();
+    }
+
     public Catch newCatch(final NewCatchDTO newCatchDTO, final Hunter hunter, final FishType fishType) {
         return catchRepository.save(
                 new Catch(
@@ -154,7 +161,7 @@ public class CatchService {
     }
 
     private CatchViewDTO mapToCatchViewDTO(Catch catchy) {
-        return new CatchViewDTO(catchy.getId(), catchy.getHunter().getName(), catchy.getFishType().getType(), buildSize(catchy.getSize()), buildWeight(catchy.getWeight()));
+        return new CatchViewDTO(catchy.getId(), catchy.getTimestamp(), catchy.getHunter().getName(), catchy.getFishType().getType(), buildSize(catchy.getSize()), buildWeight(catchy.getWeight()));
     }
 
     private String buildWeight(final long weight) {
