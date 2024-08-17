@@ -82,6 +82,34 @@
       </th:block>
     </div>
   </div>
+  <div class="row cypher-list">
+    <div class="col-sm-12">
+      <h2>Úlovky podle velikosti</h2>
+      <th:block th:each="top : ${top10Size}">
+        <div class="cypher">
+          <div class="align-items-center">
+            <a class="btn btn-secondary">
+              <div class="col" th:text="|${top.hunter()} ${top.fish()} ${top.size()} ${top.weight()}|"> Karel 150 cm 1000 g</div>
+            </a>
+          </div>
+        </div>
+      </th:block>
+    </div>
+  </div>
+  <div class="row cypher-list">
+    <div class="col-sm-12">
+      <h2>Úlovky podle váhy</h2>
+      <th:block th:each="top : ${top10Weight}">
+        <div class="cypher">
+          <div class="align-items-center">
+            <a class="btn btn-secondary">
+              <div class="col" th:text="|${top.hunter()} ${top.fish()} ${top.size()} ${top.weight()}|"> Karel 150 cm 1000 g</div>
+            </a>
+          </div>
+        </div>
+      </th:block>
+    </div>
+  </div>
 </div>
 </body>
 </html>

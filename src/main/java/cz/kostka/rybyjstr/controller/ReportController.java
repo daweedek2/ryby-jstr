@@ -24,7 +24,8 @@ public class ReportController {
         model.addAttribute("allCatches", catchService.getAllCatchesOldestFirst()); // all catches ordered by date ASC
         model.addAttribute("allFishStats", statisticsService.getFishStatistics());
         model.addAttribute("allHunterStats", statisticsService.getHunterStatistics());
-
+        model.addAttribute("top10Size", catchService.getAllCatchesBySize().stream().limit(10));
+        model.addAttribute("top10Weight", catchService.getAllCatchesByWeight().stream().limit(10));
         return "report";
     }
 }
