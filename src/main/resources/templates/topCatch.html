@@ -3,11 +3,7 @@
 <div th:replace="~{fragments/head :: head}"></div>
 <body>
 <div class="container">
-  <a th:href="@{/}">
-    <div class="row">
-      <h1 class="login-form-header">Jestřabice 2024</h1>
-    </div>
-  </a>
+  <div th:insert="fragments/title :: title()"></div>
   <div class="row">
     <div class="col-sm-12 col-md-12 col-lg-6">
       <h2 th:text="${title}">Úlovky podle velikosti</h2>
