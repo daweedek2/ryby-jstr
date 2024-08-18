@@ -15,6 +15,15 @@ INSERT INTO hunter(id, name)
 SELECT 1004, 'Tomáš P.'
 WHERE NOT EXISTS(
     SELECT * FROM hunter WHERE id = 1004);
+INSERT INTO hunter(id, name)
+SELECT 1005, 'Tomášek'
+    WHERE NOT EXISTS(
+    SELECT * FROM hunter WHERE id = 1005);
+INSERT INTO hunter(id, name)
+SELECT 1006, 'Jirka'
+    WHERE NOT EXISTS(
+    SELECT * FROM hunter WHERE id = 1006);
+
 -- hunter - women
 INSERT INTO hunter(id, name)
 SELECT 1011, 'Ivana'
