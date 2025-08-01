@@ -3,7 +3,7 @@
 <head th:replace="~{fragments/head :: head}"></head>
 <body>
 <div class="container">
-    <div th:insert="fragments/title :: title()"></div>
+    <div th:insert="~{fragments/title :: title}"></div>
     <div class="row cypher-list">
         <div class="col-sm-12">
             <form action="#" th:action="@{/fishtype}" th:object="${newFishTypeDTO}" method="post">
