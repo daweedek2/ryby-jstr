@@ -27,6 +27,10 @@ public class ImageService {
     }
 
     public void saveImage(final Catch catchy, final MultipartFile image) throws IOException {
+        if (image.isEmpty()) {
+            return;
+        }
+
         imageRepository.save(new Image(ImageUtil.compressImage(image.getBytes()), catchy));
     }
 

@@ -49,10 +49,10 @@
                 <h2>Nahrát fotku</h2>
                 <form action="#" th:action="@{/image/new/{id}(id=${catchDTO.id})}" method="post" enctype="multipart/form-data">
                     <div class="form-group">
-                      <label for="image" class="login-form-label">Fotka</label>
-                      <input type="file" name="image" id="image" accept="image/jpeg" >
+                        <label for="image" class="login-form-label">Fotka</label>
+                        <input type="file" name="image" id="image" accept="image/jpeg">
                     </div>
-                    <button type="submit" class="btn btn-primary">Uložit</button>
+                    <button type="submit" id="submitBtn" class="btn btn-primary" disabled>Uložit fotku</button>
                 </form>
             </div>
             <br>
@@ -65,5 +65,13 @@
         </div>
     </div>
 </div>
+<script>
+    const fileInput = document.getElementById('image');
+    const submitBtn = document.getElementById('submitBtn');
+
+    fileInput.addEventListener('change', function () {
+        submitBtn.disabled = !fileInput.files.length;
+    });
+</script>
 </body>
 </html>
