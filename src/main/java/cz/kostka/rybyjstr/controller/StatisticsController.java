@@ -32,7 +32,7 @@ public class StatisticsController {
     public String getGraph(final Model model) {
         model.addAttribute(ALL_HUNTER_STATS_KEY, statisticsService.getHunterGraph());
         model.addAttribute(ALL_FISH_STATS_KEY, statisticsService.getFishGraph());
-        model.addAttribute("totalCountDayMap", statisticsService.getTotalCountPerDay());
+        model.addAttribute("totalCountDayMap", statisticsService.getTotalCountPerDayForGraph());
         model.addAttribute("totalCountHourMap", statisticsService.getTotalCountPerHour());
         return "graph";
     }
