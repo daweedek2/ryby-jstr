@@ -4,6 +4,7 @@ import cz.kostka.rybyjstr.domain.FishType;
 import cz.kostka.rybyjstr.domain.Hunter;
 import cz.kostka.rybyjstr.dto.CatchDTO;
 import cz.kostka.rybyjstr.dto.FishStatisticDTO;
+import cz.kostka.rybyjstr.dto.GraphDTO;
 import cz.kostka.rybyjstr.dto.HunterStatisticDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -174,5 +175,35 @@ public class StatisticsService {
                 .entrySet().stream()
                 .map(entry -> Map.entry(entry.getKey(), entry.getValue().size()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    public GraphDTO getHunterGraph() {
+        final List<String> hunterNames = getHunterStatistics().stream()
+                .map(HunterStatisticDTO::name)
+                .toList();
+        final Map<String, List<Integer>> fishCounts = getFishStatistics().stream()
+                .collect(Collectors.toMap(
+                        FishStatisticDTO::name,
+                        fishStat -> hunterNames.stream()
+                                .map(hunterName -> fishStat.catchesMap().getOrDefault(hunterName, 0))
+                                .toList()));
+
+
+        return new GraphDTO(hunterNames, fishCounts);
+    }
+
+    public GraphDTO getFishGraph() {
+        final List<String> fishNames = getFishStatistics().stream()
+                .map(FishStatisticDTO::name)
+                .toList();
+        final Map<String, List<Integer>> hunterCounts = getHunterStatistics().stream()
+                .collect(Collectors.toMap(
+                        HunterStatisticDTO::name,
+                        hunterStat -> fishNames.stream()
+                                .map(fishName -> hunterStat.catchesMap().getOrDefault(fishName, 0))
+                                .toList()));
+
+
+        return new GraphDTO(fishNames, hunterCounts);
     }
 }

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}"></head>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/graphs.js"></script>
+</head>
+<body>
+<div class="container">
+    <div th:insert="~{fragments/title :: title}"></div>
+    <div class="row cypher-list">
+        <div class="col-sm-12">
+            <h1>Graf lovců</h1>
+                <div class="cypher">
+                    <div class="row align-items-center">
+                        <canvas th:attr="id='graf-lovci'"></canvas>
+                    </div>
+                        <script th:inline="javascript">
+                            /*<![CDATA[*/
+                            let hunters = [[${allHunterStats.names()}]];
+                            let data = [[${allHunterStats.nameWithCounts()}]];
+
+                            createStackedBarGraph('graf-lovci', hunters, data);
+                            /*]]>*/
+                        </script>
+                </div>
+        </div>
+
+        <div class="col-sm-12">
+            <h1>Graf ryb</h1>
+            <div class="cypher">
+                <div class="row align-items-center">
+                    <canvas th:attr="id='graf-ryby'"></canvas>
+                </div>
+                <script th:inline="javascript">
+                    /*<![CDATA[*/
+                    let fishNames = [[${allFishStats.names()}]];
+                    let hunterData = [[${allFishStats.nameWithCounts()}]];
+
+                    createStackedBarGraph('graf-ryby', fishNames, hunterData);
+                    /*]]>*/
+                </script>
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+            <h1>Ryby za hodinu</h1>
+            <div class="cypher">
+                <div class="row align-items-center">
+                    <canvas th:attr="id='graf-ryby-hodina'"></canvas>
+                </div>
+                <script th:inline="javascript">
+                    /*<![CDATA[*/
+                    let hodiny = [[${totalCountHourMap.keySet()}]];
+                    let hodinyCount = [[${totalCountHourMap.values()}]];
+
+                    createLineGraph('graf-ryby-hodina', hodiny, hodinyCount);
+                    /*]]>*/
+                </script>
+            </div>
+        </div>
+
+
+        <div class="col-sm-12">
+            <h1>Ryby za den</h1>
+            <div class="cypher">
+                <div class="row align-items-center">
+                    <canvas th:attr="id='graf-ryby-den'"></canvas>
+                </div>
+                <script th:inline="javascript">
+                    /*<![CDATA[*/
+                    let dny = [[${totalCountDayMap.keySet()}]];
+                    let dnyData = [[${totalCountDayMap.values()}]];
+
+                    createLineGraph('graf-ryby-den', dny, dnyData);
+                    /*]]>*/
+                </script>
+            </div>
+        </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

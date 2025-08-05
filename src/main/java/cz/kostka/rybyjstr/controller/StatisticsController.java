@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class StatisticsController {
 
     private static final String ALL_STATS_KEY = "allStats";
+    private static final String ALL_FISH_STATS_KEY = "allFishStats";
+    private static final String ALL_HUNTER_STATS_KEY = "allHunterStats";
     private final StatisticsService statisticsService;
 
     public StatisticsController(final StatisticsService statisticsService) {
@@ -21,9 +23,18 @@ public class StatisticsController {
 
     @GetMapping("/hunter")
     public String getHunterStats(final Model model) {
-        model.addAttribute(ALL_STATS_KEY, statisticsService.getHunterStatistics());
+        model.addAttribute(ALL_HUNTER_STATS_KEY, statisticsService.getHunterStatistics());
         model.addAttribute("newHunterDTO", NewHunterDTO.empty());
         return "hunterStatistic";
+    }
+
+    @GetMapping("/graph")
+    public String getGraph(final Model model) {
+        model.addAttribute(ALL_HUNTER_STATS_KEY, statisticsService.getHunterGraph());
+        model.addAttribute(ALL_FISH_STATS_KEY, statisticsService.getFishGraph());
+        model.addAttribute("totalCountDayMap", statisticsService.getTotalCountPerDay());
+        model.addAttribute("totalCountHourMap", statisticsService.getTotalCountPerHour());
+        return "graph";
     }
 
     @GetMapping("/fish")
