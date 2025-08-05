@@ -23,7 +23,7 @@ public class StatisticsController {
 
     @GetMapping("/hunter")
     public String getHunterStats(final Model model) {
-        model.addAttribute(ALL_HUNTER_STATS_KEY, statisticsService.getHunterStatistics());
+        model.addAttribute(ALL_STATS_KEY, statisticsService.getHunterStatistics());
         model.addAttribute("newHunterDTO", NewHunterDTO.empty());
         return "hunterStatistic";
     }
