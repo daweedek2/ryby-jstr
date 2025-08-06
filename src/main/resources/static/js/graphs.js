@@ -63,8 +63,7 @@ function createLineGraph(canvasId, labels, datasetMap) {
         responsive: true,
         plugins: {
             title: {
-                display: true,
-                text: 'Vývoj návštěvnosti webu'
+                display: false
             },
             legend: {
                 display: true,
