@@ -142,11 +142,7 @@ public class StatisticsService {
     }
 
     public Map<LocalDate, Integer> getTotalCountPerDayForGraph() {
-        return catchService.getAllCatches().stream()
-                .collect(Collectors.groupingBy(c -> c.timestamp().toLocalDate()))
-                .entrySet().stream()
-                .map(entry -> Map.entry(entry.getKey(), entry.getValue().size()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
+        return getTotalCountPerDay()
                 .entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
                 .collect(Collectors.toMap(
