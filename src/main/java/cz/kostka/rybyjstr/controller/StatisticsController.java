@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class StatisticsController {
 
     private static final String ALL_STATS_KEY = "allStats";
-    private static final String ALL_FISH_STATS_KEY = "allFishStats";
-    private static final String ALL_HUNTER_STATS_KEY = "allHunterStats";
+    public static final String ALL_FISH_STATS_GRAPH_KEY = "allFishStatsGraph";
+    public static final String ALL_HUNTER_STATS_GRAPH_KEY = "allHunterStatsGraph";
     private final StatisticsService statisticsService;
     private final CatchService catchService;
 
@@ -35,8 +35,8 @@ public class StatisticsController {
 
     @GetMapping("/graph")
     public String getGraph(final Model model) {
-        model.addAttribute(ALL_HUNTER_STATS_KEY, statisticsService.getHunterGraph());
-        model.addAttribute(ALL_FISH_STATS_KEY, statisticsService.getFishGraph());
+        model.addAttribute(ALL_HUNTER_STATS_GRAPH_KEY, statisticsService.getHunterGraph());
+        model.addAttribute(ALL_FISH_STATS_GRAPH_KEY, statisticsService.getFishGraph());
         model.addAttribute("totalCountDayMap", statisticsService.getTotalCountPerDayForGraph());
         model.addAttribute("totalCountHourMap", statisticsService.getTotalCountPerHour());
         model.addAttribute("totalCatchSize", catchService.getAllCatchesSize());

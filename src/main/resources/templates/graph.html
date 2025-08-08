@@ -51,13 +51,13 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     // Create the graphs for hunters by fish
-    let hunters = [[${allHunterStats.names()}]];
-    let data = [[${allHunterStats.nameWithCounts()}]];
+    let hunters = [[${allHunterStatsGraph.names()}]];
+    let data = [[${allHunterStatsGraph.nameWithCounts()}]];
     createStackedBarGraph('graf-lovci', hunters, data);
 
     // Create the graphs for fish by hunter
-    let fishNames = [[${allFishStats.names()}]];
-    let hunterData = [[${allFishStats.nameWithCounts()}]];
+    let fishNames = [[${allFishStatsGraph.names()}]];
+    let hunterData = [[${allFishStatsGraph.nameWithCounts()}]];
     createStackedBarGraph('graf-ryby', fishNames, hunterData);
 
     // Create the graphs for fish by hour

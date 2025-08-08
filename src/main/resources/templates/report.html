@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="cs" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head}"></head>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/graphs.js"></script>
+    <script src="/js/fish-length.js"></script>
+</head>
 <body>
 <div class="container">
   <div th:insert="~{fragments/title :: title}"></div>
@@ -106,6 +111,81 @@
       </th:block>
     </div>
   </div>
+  <div class="row cypher-list">
+      <div class="col-sm-12">
+          <div class="cypher">
+            <div th:insert="~{fragments/fishLength :: fishLength()}"></div>
+          </div>
+      </div>
+  </div>
+    <div class="row cypher-list">
+        <div class="col-sm-12">
+            <h1>Graf lovců</h1>
+            <div class="cypher">
+                <div class="row align-items-center">
+                    <canvas th:attr="id='graf-lovci'"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row cypher-list">
+        <div class="col-sm-12">
+            <h1>Graf ryb</h1>
+            <div class="cypher">
+                <div class="row align-items-center">
+                    <canvas th:attr="id='graf-ryby'"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row cypher-list">
+        <div class="col-sm-12">
+            <h1>Ryby za hodinu</h1>
+            <div class="cypher">
+                <div class="row align-items-center">
+                    <canvas th:attr="id='graf-ryby-hodina'"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row cypher-list">
+        <div class="col-sm-12">
+            <h1>Ryby za den</h1>
+            <div class="cypher">
+                <div class="row align-items-center">
+                    <canvas th:attr="id='graf-ryby-den'"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
 </div>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    // Create the graphs for hunters by fish
+    let hunters = [[${allHunterStatsGraph.names()}]];
+    let data = [[${allHunterStatsGraph.nameWithCounts()}]];
+    createStackedBarGraph('graf-lovci', hunters, data);
+
+    // Create the graphs for fish by hunter
+    let fishNames = [[${allFishStatsGraph.names()}]];
+    let hunterData = [[${allFishStatsGraph.nameWithCounts()}]];
+    createStackedBarGraph('graf-ryby', fishNames, hunterData);
+
+    // Create the graphs for fish by hour
+    let hodiny = [[${totalCountHourMap.keySet()}]];
+    let hodinyCount = [[${totalCountHourMap.values()}]];
+    createLineGraph('graf-ryby-hodina', hodiny, hodinyCount);
+
+    // Create the graphs for fish by day
+    let dny = [[${totalCountDayMap.keySet()}]];
+    let dnyData = [[${totalCountDayMap.values()}]];
+    createLineGraph('graf-ryby-den', dny, dnyData);
+
+    // Add fish length info
+    let cm = [[${totalCatchSize}]];
+    addFishLengthInfo(cm);
+    /*]]>*/
+</script>
 </body>
 </html>
