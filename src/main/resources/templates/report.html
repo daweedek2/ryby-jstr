@@ -158,7 +158,28 @@
             </div>
         </div>
     </div>
-  </div>
+    <div class="row cypher-list">
+        <div class="col-sm-12">
+            <h1>Kapři podle velikosti</h1>
+            <div class="cypher">
+                <div class="row align-items-center">
+                    <canvas th:attr="id='graf-kapr'"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row cypher-list">
+
+        <div class="col-sm-12">
+            <h1>Jeseteři podle velikosti</h1>
+            <div class="cypher">
+                <div class="row align-items-center">
+                    <canvas th:attr="id='graf-jeseter'"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
 </div>
 <script th:inline="javascript">
     /*<![CDATA[*/
@@ -185,6 +206,16 @@
     // Add fish length info
     let cm = [[${totalCatchSize}]];
     addFishLengthInfo(cm);
+
+    // Create the graphs for carp
+    let kapriVelikost = [[${carpMap.keySet()}]];
+    let kapriData = [[${carpMap.values()}]];
+    createLineGraph('graf-kapr', kapriVelikost, kapriData);
+
+    // Create the graphs for jeseter
+    let jeseterVelikost = [[${jeseterMap.keySet()}]];
+    let jeseterData = [[${jeseterMap.values()}]];
+    createLineGraph('graf-jeseter', jeseterVelikost, jeseterData);
     /*]]>*/
 </script>
 </body>

@@ -187,6 +187,20 @@ public class StatisticsService {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
+    public Map<Integer, Integer> getFishCountPerSize(final String fishType) {
+        return catchService.getAllCatches().stream()
+                .filter(catchDTO -> catchDTO.fish().equals(fishType))
+                .collect(Collectors.groupingBy(CatchDTO::size))
+                .entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().size()))
+                .entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+    }
+
     public GraphDTO getHunterGraph() {
         final List<String> hunterNames = getHunterStatistics().stream()
                 .map(HunterStatisticDTO::name)

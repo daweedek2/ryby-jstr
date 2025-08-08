@@ -41,6 +41,7 @@ public class ReportController {
         model.addAttribute("totalCountDayMap", statisticsService.getTotalCountPerDayForGraph());
         model.addAttribute("totalCountHourMap", statisticsService.getTotalCountPerHour());
         model.addAttribute("totalCatchSize", catchService.getAllCatchesSize());
-
+        model.addAttribute("carpMap", statisticsService.getFishCountPerSize("kapr"));
+        model.addAttribute("jeseterMap", statisticsService.getFishCountPerSize("jeseter"));
     }
 }
