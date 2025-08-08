@@ -71,6 +71,7 @@ public class CatchController {
         model.addAttribute("allFishTypes", fishTypeService.getAllFishTypes());
         model.addAttribute("allHunters", hunterService.getAllHunters());
         model.addAttribute("allCatchCount", catchService.getAllCatchesCount());
+        model.addAttribute("allCatchSize", catchService.getAllCatchesSize());
         model.addAttribute("topN", statisticsService.getTopN(catchService.getAllCatches(), 10));
     }
 

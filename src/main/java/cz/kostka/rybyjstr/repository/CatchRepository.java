@@ -2,6 +2,7 @@ package cz.kostka.rybyjstr.repository;
 
 import cz.kostka.rybyjstr.domain.Catch;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,4 +13,6 @@ public interface CatchRepository extends JpaRepository<Catch, Long> {
     List<Catch> findAllByOrderByTimestampAsc();
     List<Catch> findAllByOrderBySizeDesc();
     List<Catch> findAllByOrderByWeightDesc();
+    @Query("SELECT SUM(c.size) FROM Catch c")
+    Integer sumAllSizes();
 }
