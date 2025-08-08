@@ -2,6 +2,7 @@ package cz.kostka.rybyjstr.controller;
 
 import cz.kostka.rybyjstr.dto.NewFishTypeDTO;
 import cz.kostka.rybyjstr.dto.NewHunterDTO;
+import cz.kostka.rybyjstr.service.CatchService;
 import cz.kostka.rybyjstr.service.StatisticsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,9 +17,13 @@ public class StatisticsController {
     private static final String ALL_FISH_STATS_KEY = "allFishStats";
     private static final String ALL_HUNTER_STATS_KEY = "allHunterStats";
     private final StatisticsService statisticsService;
+    private final CatchService catchService;
 
-    public StatisticsController(final StatisticsService statisticsService) {
+    public StatisticsController(
+            final StatisticsService statisticsService,
+            final CatchService catchService) {
         this.statisticsService = statisticsService;
+        this.catchService = catchService;
     }
 
     @GetMapping("/hunter")
@@ -34,6 +39,7 @@ public class StatisticsController {
         model.addAttribute(ALL_FISH_STATS_KEY, statisticsService.getFishGraph());
         model.addAttribute("totalCountDayMap", statisticsService.getTotalCountPerDayForGraph());
         model.addAttribute("totalCountHourMap", statisticsService.getTotalCountPerHour());
+        model.addAttribute("totalCatchSize", catchService.getAllCatchesSize());
         return "graph";
     }
 

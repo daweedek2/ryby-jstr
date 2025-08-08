@@ -881,3 +881,36 @@ ul.contact i {
     --bs-bg-opacity: 1;
     background-color: red !important;
 }
+
+.length-box {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 1rem 2rem;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    text-align: center;
+    /*font-family: sans-serif;*/
+}
+
+.emoji {
+    font-size: 2rem;
+}
+
+.progress-container {
+    background-color: #eee;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 24px;
+    margin-top: 1rem;
+}
+
+.progress-bar {
+    height: 100%;
+    transition: width 0.6s ease-in-out;
+}
+
+.legend {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #666;
+}

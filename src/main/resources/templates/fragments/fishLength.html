@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="/js/fish-length.js"></script>
+</head>
+<body>
+    <div th:fragment="fishLength()" class="length-box">
+        <div id="fish-length-description" class="emoji"></div>
+        <div class="progress-container">
+            <div id="progress-bar" class="progress-bar" style="background-color: #6ab04c; width: 0%"></div>
+        </div>
+        <div class="legend" id="length-legend"></div>
+    </div>
+</body>
+</html>
