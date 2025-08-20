@@ -154,7 +154,7 @@ public class CatchService {
         return catchRepository.count();
     }
 
-    public long getAllCatchesSize() {
+    public int getAllCatchesSize() {
         return catchRepository.sumAllSizes();
     }
 

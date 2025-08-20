@@ -16,10 +16,11 @@
       <a class="btn btn-primary" href="#" th:href="@{/top/size}">Ryby podle velikosti</a>
       <a class="btn btn-primary" href="#" th:href="@{/top/weight}">Ryby podle váhy</a>
       <a class="btn btn-secondary" href="#" th:href="@{/statistics/graph}">Grafy</a>
-      <a class="btn btn-secondary" href="#" th:href="@{/report}">Report</a>
+        <a class="btn btn-secondary" href="#" th:href="@{/history}">Historie</a>
+        <a class="btn btn-secondary" href="#" th:href="@{/report}">Report</a>
       <br>
       <h1 th:text="|Celkem uloveno ${allCatchCount} ryb|">Celkem uloveno 155 ryb</h1>
-      <h1 th:text="|V celkové délce ${allCatchSize} cm|">V celkové délce 1000 cm</h1>
+      <h1 th:text="|V celkové délce ${#numbers.formatDecimal(allCatchSize, 0, 'WHITESPACE', 0, 'POINT')} cm|">V celkové délce 1000 cm</h1>
       <h2>Nový úlovek</h2>
       <div class="cypher">
         <div class="align-items-center">

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}"></head>
+<body>
+<div class="container">
+  <div th:insert="~{fragments/title :: title}"></div>
+  <div class="row cypher-list">
+    <div class="col-sm-12">
+      <h2 th:text="Historie"></h2>
+      <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">Rok</th>
+          <th scope="col">Počet ryb</th>
+          <th scope="col">Počet cm celkem</th>
+            <th scope="col">Druhy</th>
+            <th scope="col">Lovci</th>
+        </tr>
+        </thead>
+        <tbody>
+        <th:block th:each="history : ${historyList}">
+            <tr>
+              <th th:text="${history.year}">2024</th>
+              <td th:text="|${history.totalFishCount} ks|">120 ks</td>
+              <td th:text="|${#numbers.formatDecimal(history.totalFishSize, 0, 'WHITESPACE', 0, 'POINT')} cm|">120 cm</td>
+              <td th:text="${history.fishTypeNames}">Kapr, Jeseter</td>
+              <td th:text="${history.hunterNames}">David, Jirka</td>
+            </tr>
+        </th:block>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>

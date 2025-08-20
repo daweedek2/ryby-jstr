@@ -1,11 +1,15 @@
 package cz.kostka.rybyjstr.controller;
 
 import cz.kostka.rybyjstr.service.CatchService;
+import cz.kostka.rybyjstr.service.HistoryService;
 import cz.kostka.rybyjstr.service.StatisticsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.time.LocalDate;
+import java.util.List;
 
 import static cz.kostka.rybyjstr.controller.StatisticsController.ALL_FISH_STATS_GRAPH_KEY;
 import static cz.kostka.rybyjstr.controller.StatisticsController.ALL_HUNTER_STATS_GRAPH_KEY;
@@ -16,10 +20,15 @@ public class ReportController {
 
     private final CatchService catchService;
     private final StatisticsService statisticsService;
+    private final HistoryService historyService;
 
-    public ReportController(final CatchService catchService, final StatisticsService statisticsService) {
+    public ReportController(
+            final CatchService catchService,
+            final StatisticsService statisticsService,
+            final HistoryService historyService) {
         this.catchService = catchService;
         this.statisticsService = statisticsService;
+        this.historyService = historyService;
     }
 
     @GetMapping
@@ -29,7 +38,7 @@ public class ReportController {
         model.addAttribute("allHunterStats", statisticsService.getHunterStatistics());
         model.addAttribute("top10Size", catchService.getAllCatchesBySize().stream().limit(10));
         model.addAttribute("top10Weight", catchService.getAllCatchesByWeight().stream().limit(10));
-
+        model.addAttribute("historyList", List.of(historyService.getHistoryByYear(LocalDate.now().getYear())));
         addGraphData(model);
 
         return "report";
