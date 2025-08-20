@@ -914,3 +914,10 @@ ul.contact i {
     font-size: 0.9rem;
     color: #666;
 }
+
+@media print {
+    canvas {
+        max-width: 100%;
+        height: auto;
+    }
+}
