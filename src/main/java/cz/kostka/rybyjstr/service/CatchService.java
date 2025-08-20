@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -75,16 +74,6 @@ public class CatchService {
         return catchRepository.findById(catchId)
                 .map(this::mapToCatchDTOWithImage)
                 .orElse(CatchDTO.empty());
-    }
-
-    private Map<Long, List<Image>> fetchCatchesWithImageIdsMap() {
-        final List<Long> catchIds = catchRepository.findAllByOrderByTimestampDesc()
-                .stream()
-                .map(Catch::getId)
-                .toList();
-
-        return imageService.getAllImages().stream()
-                .collect(Collectors.groupingBy(image -> image.getTheCatch().getId()));
     }
 
     private Set<Long> getImageIds(Catch theCatch) {
@@ -153,20 +142,6 @@ public class CatchService {
                 getImageIds(catchy));
     }
 
-    private CatchDTO mapToCatchDTOWithImageFromMap(Catch catchy, Map<Long, List<Image>> theMap) {
-        return new CatchDTO(
-                catchy.getId(),
-                catchy.getTimestamp(),
-                catchy.getFishType().getType(),
-                catchy.getFishType().getId(),
-                catchy.getHunter().getName(),
-                catchy.getHunter().getId(),
-                catchy.getSize(),
-                catchy.getWeight(),
-                catchy.getNote(),
-                theMap.get(catchy.getId()).stream().map(Image::getId).collect(Collectors.toSet()));
-    }
-
     public void updateCatch(final CatchDTO catchDTO) {
         final Catch theCatch = getCatch(catchDTO.id());
         theCatch.setNote(catchDTO.note());
@@ -215,15 +190,6 @@ public class CatchService {
                         calculateNextCatchBorder(index) < allCatches ? calculateNextCatchBorder(index) : ((int) allCatches))
                 .stream()
                 .map(this::mapToCatchDTOWithImage)
-                .toList();
-    }
-
-    public List<CatchDTO> getAllCatchesWithImageLatestFirst() {
-        final Map<Long, List<Image>> catchesWithImages = fetchCatchesWithImageIdsMap();
-
-        return catchRepository.findAllByOrderByTimestampDesc()
-                .stream()
-                .map(leCatch -> mapToCatchDTOWithImageFromMap(leCatch, catchesWithImages))
                 .toList();
     }
 
