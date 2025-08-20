@@ -24,7 +24,7 @@
               <th th:text="${#temporals.format(catch.timestamp, ' dd.MM.yyyy HH:mm')}">1</th>
               <td th:text="${catch.fish}">kapr</td>
               <td th:text="|${catch.size} cm|">120 cm</td>
-              <td th:text="|${catch.weight} g|">2500 g</td>
+              <td th:text="|${#numbers.formatDecimal(catch.weight, 0, 'WHITESPACE', 0, 'POINT')} g|">2500 g</td>
               <td>
                 <a class="btn btn-secondary" href="#" th:href="@{/catch/{id}(id=${catch.id})}">Detail</a>
               </td>

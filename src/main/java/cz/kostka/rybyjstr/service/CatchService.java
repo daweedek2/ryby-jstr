@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -169,7 +171,16 @@ public class CatchService {
     }
 
     private String buildWeight(final long weight) {
-        return weight > 0 ? weight + " g" : "";
+
+        if (weight <= 0) {
+            return "";
+        }
+
+        final DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setGroupingSeparator(' ');
+        final DecimalFormat df = new DecimalFormat("#,###", symbols);
+
+        return df.format(weight) + " g";
     }
 
     private String buildSize(final int size) {
