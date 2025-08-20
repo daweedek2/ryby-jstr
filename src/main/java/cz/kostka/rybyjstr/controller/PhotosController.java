@@ -32,4 +32,10 @@ public class PhotosController {
         model.addAttribute("nextPhotoIndex", catchService.getIndexForNextCatches(index));
         return "photos";
     }
+
+    @GetMapping("/all")
+    public String viewAllPhotosAtOnce(final Model model) {
+        model.addAttribute("allCatches", catchService.getAllCatchesWithImageLatestFirst());
+        return "photos";
+    }
 }
