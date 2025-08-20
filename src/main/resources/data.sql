@@ -128,3 +128,13 @@ INSERT INTO fish_type(id, type)
 SELECT 121, 'vyza'
     WHERE NOT EXISTS(
     SELECT * FROM fish_type WHERE id = 121);
+
+-- history
+INSERT INTO history(id, year, total_fish_count, total_fish_size, fish_type_names, hunter_names)
+SELECT 1, 2024, 128, 0, 'kapr cejn jeseter amur', 'Vojta Tomáš P. Tomáš K. Štěpán David Jirka'
+WHERE NOT EXISTS(
+    SELECT * FROM history WHERE id = 1);
+INSERT INTO history(id, year, total_fish_count, total_fish_size, fish_type_names, hunter_names)
+SELECT 2, 2025, 209, 12490, 'kapr cejn jeseter štika', 'Vojta Tomáš P. Tomáš K. Štěpán Štěpánka David Tomášek Jirka'
+WHERE NOT EXISTS(
+    SELECT * FROM history WHERE id = 2);
