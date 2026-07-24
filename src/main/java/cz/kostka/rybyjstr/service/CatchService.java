@@ -157,7 +157,7 @@ public class CatchService {
     }
 
     public int getAllCatchesSize() {
-        return catchRepository.sumAllSizes();
+        return catchRepository.sumAllSizes() == null ?  0 : catchRepository.sumAllSizes();
     }
 
     public List<CatchViewDTO> getAllCatchesBySize() {
