@@ -24,6 +24,10 @@
                         <input id="weight" class="form-control" type="number" th:field="*{weight}" min="0" required/>
                     </div>
                     <div class="form-group">
+                        <label for="points" class="input-value">Body</label>
+                        <input readonly id="points" class="form-control" type="text" th:field="*{points}"/>
+                    </div>
+                    <div class="form-group">
                         <label for="note" class="input-value">Poznámka</label>
                         <input id="note" class="form-control" type="text" th:field="*{note}"/>
                     </div>

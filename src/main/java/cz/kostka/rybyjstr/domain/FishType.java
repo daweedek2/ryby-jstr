@@ -13,6 +13,9 @@ public class FishType {
     @Column
     private String type;
 
+    @Column
+    private int bonus;
+
     public FishType() {
     }
 
@@ -39,5 +42,13 @@ public class FishType {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public int getBonus() {
+        return bonus;
+    }
+
+    public void setBonus(final int bonus) {
+        this.bonus = bonus;
     }
 }

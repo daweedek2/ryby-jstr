@@ -13,11 +13,12 @@ public record CatchDTO(
         Integer size,
         Long weight,
         String note,
+        Integer points,
         Set<Long> imageIds) {
 
     public static CatchDTO empty() {
         return new CatchDTO(
                 null, null, null, null,
-                null, null, null, null, null, Set.of());
+                null, null, null, null, null, null, Set.of());
     }
 }

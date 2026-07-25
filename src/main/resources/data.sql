@@ -43,91 +43,90 @@ WHERE NOT EXISTS(
     SELECT * FROM hunter WHERE id = 1014);
 
 
--- fish types
-INSERT INTO fish_type(id, type)
-SELECT 101, 'kapr'
-    WHERE NOT EXISTS(
-    SELECT * FROM fish_type WHERE id = 101);
-INSERT INTO fish_type(id, type)
-SELECT 102, 'jeseter'
-    WHERE NOT EXISTS(
-    SELECT * FROM fish_type WHERE id = 102);
-INSERT INTO fish_type(id, type)
-SELECT 103, 'cejn'
-    WHERE NOT EXISTS(
-    SELECT * FROM fish_type WHERE id = 103);
-INSERT INTO fish_type(id, type)
-SELECT 104, 'amur'
-    WHERE NOT EXISTS(
-    SELECT * FROM fish_type WHERE id = 104);
-INSERT INTO fish_type(id, type)
-SELECT 105, 'štika'
-    WHERE NOT EXISTS(
-    SELECT * FROM fish_type WHERE id = 105);
-INSERT INTO fish_type(id, type)
-SELECT 106, 'pstruh'
-    WHERE NOT EXISTS(
-    SELECT * FROM fish_type WHERE id = 106);
-INSERT INTO fish_type(id, type)
-SELECT 107, 'candát'
-    WHERE NOT EXISTS(
-    SELECT * FROM fish_type WHERE id = 107);
-INSERT INTO fish_type(id, type)
-SELECT 108, 'karas'
-    WHERE NOT EXISTS(
-    SELECT * FROM fish_type WHERE id = 108);
-INSERT INTO fish_type(id, type)
-SELECT 109, 'lín'
-    WHERE NOT EXISTS(
-    SELECT * FROM fish_type WHERE id = 109);
-INSERT INTO fish_type(id, type)
-SELECT 110, 'okoun'
-    WHERE NOT EXISTS(
-    SELECT * FROM fish_type WHERE id = 110);
-INSERT INTO fish_type(id, type)
-SELECT 111, 'plotice'
-    WHERE NOT EXISTS(
-    SELECT * FROM fish_type WHERE id = 111);
-INSERT INTO fish_type(id, type)
-SELECT 112, 'siven'
-    WHERE NOT EXISTS(
-    SELECT * FROM fish_type WHERE id = 112);
-INSERT INTO fish_type(id, type)
-SELECT 113, 'sumeček'
-    WHERE NOT EXISTS(
-    SELECT * FROM fish_type WHERE id = 113);
-INSERT INTO fish_type(id, type)
-SELECT 114, 'úhoř'
-    WHERE NOT EXISTS(
-    SELECT * FROM fish_type WHERE id = 114);
-INSERT INTO fish_type(id, type)
-SELECT 115, 'bolen'
-    WHERE NOT EXISTS(
-    SELECT * FROM fish_type WHERE id = 115);
-INSERT INTO fish_type(id, type)
-SELECT 116, 'koi-kapr'
-    WHERE NOT EXISTS(
-    SELECT * FROM fish_type WHERE id = 116);
-INSERT INTO fish_type(id, type)
-SELECT 117, 'mník'
-    WHERE NOT EXISTS(
-    SELECT * FROM fish_type WHERE id = 117);
-INSERT INTO fish_type(id, type)
-SELECT 118, 'okounek'
-    WHERE NOT EXISTS(
-    SELECT * FROM fish_type WHERE id = 118);
-INSERT INTO fish_type(id, type)
-SELECT 119, 'tolstolobik'
-    WHERE NOT EXISTS(
-    SELECT * FROM fish_type WHERE id = 119);
-INSERT INTO fish_type(id, type)
-SELECT 120, 'sumec'
-    WHERE NOT EXISTS(
-    SELECT * FROM fish_type WHERE id = 120);
-INSERT INTO fish_type(id, type)
-SELECT 121, 'vyza'
-    WHERE NOT EXISTS(
-    SELECT * FROM fish_type WHERE id = 121);
+-- fish types with bonus
+INSERT INTO fish_type(id, type, bonus)
+SELECT 101, 'kapr', 20
+WHERE NOT EXISTS(SELECT * FROM fish_type WHERE id = 101);
+
+INSERT INTO fish_type(id, type, bonus)
+SELECT 102, 'jeseter', 35
+WHERE NOT EXISTS(SELECT * FROM fish_type WHERE id = 102);
+
+INSERT INTO fish_type(id, type, bonus)
+SELECT 103, 'cejn', 10
+WHERE NOT EXISTS(SELECT * FROM fish_type WHERE id = 103);
+
+INSERT INTO fish_type(id, type, bonus)
+SELECT 104, 'amur', 25
+WHERE NOT EXISTS(SELECT * FROM fish_type WHERE id = 104);
+
+INSERT INTO fish_type(id, type, bonus)
+SELECT 105, 'štika', 30
+WHERE NOT EXISTS(SELECT * FROM fish_type WHERE id = 105);
+
+INSERT INTO fish_type(id, type, bonus)
+SELECT 106, 'pstruh', 25
+WHERE NOT EXISTS(SELECT * FROM fish_type WHERE id = 106);
+
+INSERT INTO fish_type(id, type, bonus)
+SELECT 107, 'candát', 30
+WHERE NOT EXISTS(SELECT * FROM fish_type WHERE id = 107);
+
+INSERT INTO fish_type(id, type, bonus)
+SELECT 108, 'karas', 15
+WHERE NOT EXISTS(SELECT * FROM fish_type WHERE id = 108);
+
+INSERT INTO fish_type(id, type, bonus)
+SELECT 109, 'lín', 25
+WHERE NOT EXISTS(SELECT * FROM fish_type WHERE id = 109);
+
+INSERT INTO fish_type(id, type, bonus)
+SELECT 110, 'okoun', 15
+WHERE NOT EXISTS(SELECT * FROM fish_type WHERE id = 110);
+
+INSERT INTO fish_type(id, type, bonus)
+SELECT 111, 'plotice', 10
+WHERE NOT EXISTS(SELECT * FROM fish_type WHERE id = 111);
+
+INSERT INTO fish_type(id, type, bonus)
+SELECT 112, 'siven', 25
+WHERE NOT EXISTS(SELECT * FROM fish_type WHERE id = 112);
+
+INSERT INTO fish_type(id, type, bonus)
+SELECT 113, 'sumeček', 15
+WHERE NOT EXISTS(SELECT * FROM fish_type WHERE id = 113);
+
+INSERT INTO fish_type(id, type, bonus)
+SELECT 114, 'úhoř', 35
+WHERE NOT EXISTS(SELECT * FROM fish_type WHERE id = 114);
+
+INSERT INTO fish_type(id, type, bonus)
+SELECT 115, 'bolen', 25
+WHERE NOT EXISTS(SELECT * FROM fish_type WHERE id = 115);
+
+INSERT INTO fish_type(id, type, bonus)
+SELECT 116, 'koi-kapr', 30
+WHERE NOT EXISTS(SELECT * FROM fish_type WHERE id = 116);
+
+INSERT INTO fish_type(id, type, bonus)
+SELECT 117, 'mník', 30
+WHERE NOT EXISTS(SELECT * FROM fish_type WHERE id = 117);
+
+INSERT INTO fish_type(id, type, bonus)
+SELECT 118, 'okounek', 15
+WHERE NOT EXISTS(SELECT * FROM fish_type WHERE id = 118);
+
+INSERT INTO fish_type(id, type, bonus)
+SELECT 119, 'tolstolobik', 20
+WHERE NOT EXISTS(SELECT * FROM fish_type WHERE id = 119);
+
+INSERT INTO fish_type(id, type, bonus)
+SELECT 120, 'sumec', 35
+WHERE NOT EXISTS(SELECT * FROM fish_type WHERE id = 120);
+
+INSERT INTO fish_type(id, type, bonus)
+SELECT 121, 'vyza', 40
+WHERE NOT EXISTS(SELECT * FROM fish_type WHERE id = 121);
 
 -- history
 INSERT INTO history(id, year, total_fish_count, total_fish_size, fish_type_names, hunter_names)

@@ -24,6 +24,9 @@ public class Catch {
     @Column
     private String note;
 
+    @Column
+    private int points;
+
     @ManyToOne
     @JoinColumn(name = "hunter_id", nullable = false)
     private Hunter hunter;
@@ -58,12 +61,14 @@ public class Catch {
             final int size,
             final long weight,
             final String note,
+            final int points,
             final Hunter hunter,
             final FishType fishType) {
         this.timestamp = timestamp;
         this.size = size;
         this.weight = weight;
         this.note = note;
+        this.points = points;
         this.hunter = hunter;
         this.fishType = fishType;
     }
@@ -106,6 +111,14 @@ public class Catch {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(final int points) {
+        this.points = points;
     }
 
     public Hunter getHunter() {

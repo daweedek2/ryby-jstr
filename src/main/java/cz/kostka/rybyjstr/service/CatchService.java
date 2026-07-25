@@ -62,8 +62,17 @@ public class CatchService {
                         newCatchDTO.size() == null ? 0 : newCatchDTO.size(),
                         newCatchDTO.weight() == null ? 0 : newCatchDTO.weight(),
                         newCatchDTO.note(),
+                        calculatePoints(newCatchDTO.size(), fishType),
                         hunter,
                         fishType));
+    }
+
+    private int calculatePoints(final Integer size, final FishType fishType) {
+        if (size == null || fishType == null) {
+            return 0;
+        }
+
+        return size + fishType.getBonus();
     }
 
     private static LocalDateTime getCatchTimestamp(final LocalDateTime time) {
@@ -127,6 +136,7 @@ public class CatchService {
                 catchy.getSize(),
                 catchy.getWeight(),
                 catchy.getNote(),
+                catchy.getPoints(),
                 Set.of());
     }
 
@@ -141,6 +151,7 @@ public class CatchService {
                 catchy.getSize(),
                 catchy.getWeight(),
                 catchy.getNote(),
+                catchy.getPoints(),
                 getImageIds(catchy));
     }
 
@@ -167,7 +178,10 @@ public class CatchService {
     }
 
     private CatchViewDTO mapToCatchViewDTO(Catch catchy) {
-        return new CatchViewDTO(catchy.getId(), catchy.getTimestamp(), catchy.getHunter().getName(), catchy.getFishType().getType(), buildSize(catchy.getSize()), buildWeight(catchy.getWeight()));
+        return new CatchViewDTO(catchy.getId(), catchy.getTimestamp(),
+                catchy.getHunter().getName(), catchy.getFishType().getType(),
+                buildSize(catchy.getSize()), buildWeight(catchy.getWeight()),
+                buildPoints(catchy.getPoints()));
     }
 
     private String buildWeight(final long weight) {
@@ -185,6 +199,11 @@ public class CatchService {
 
     private String buildSize(final int size) {
         return size > 0 ? size + " cm" : "";
+    }
+
+
+    private String buildPoints(final int points) {
+        return points > 0 ? points + " b." : "";
     }
 
     public List<CatchViewDTO> getAllCatchesByWeight() {

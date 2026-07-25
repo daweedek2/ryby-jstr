@@ -14,6 +14,7 @@
           <th scope="col">Ryba</th>
           <th scope="col">Délka</th>
           <th scope="col">Váha</th>
+          <th scope="col">Body</th>
           <th scope="col">Akce</th>
         </tr>
         </thead>
@@ -25,6 +26,7 @@
               <td th:text="${catch.fish}">kapr</td>
               <td th:text="|${catch.size} cm|">120 cm</td>
               <td th:text="|${#numbers.formatDecimal(catch.weight, 0, 'WHITESPACE', 0, 'POINT')} g|">2500 g</td>
+              <td th:text="${catch.points}">10</td>
               <td>
                 <a class="btn btn-secondary" href="#" th:href="@{/catch/{id}(id=${catch.id})}">Detail</a>
               </td>
