@@ -1,6 +1,7 @@
 package cz.kostka.rybyjstr.repository;
 
 import cz.kostka.rybyjstr.domain.Catch;
+import cz.kostka.rybyjstr.dto.HunterLeaderboardDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -15,4 +16,12 @@ public interface CatchRepository extends JpaRepository<Catch, Long> {
     List<Catch> findAllByOrderByWeightDesc();
     @Query("SELECT SUM(c.size) FROM Catch c")
     Integer sumAllSizes();
+
+    @Query("SELECT new cz.kostka.rybyjstr.dto.HunterLeaderboardDto(c.hunter.name, SUM(c.points)) " +
+            "FROM Catch c " +
+            "GROUP BY c.hunter.id, c.hunter.name " +
+            "ORDER BY SUM(c.points) DESC")
+    List<HunterLeaderboardDto> getLeaderboard();
+
+
 }

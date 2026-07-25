@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}"></head>
+<body>
+<div class="container">
+  <div th:insert="~{fragments/title :: title}"></div>
+
+  <div class="card mb-4 p-3 bg-light">
+    <h3 class="mb-2">🏆 Pravidla bodování a Žebříček</h3>
+    <p class="mb-2">
+      Výsledné skóre tvoří délka ryby v centimetrech + připisovací bonus za druh ryby.
+    </p>
+
+    <small class="text-muted">
+      <strong>Příklady:</strong><br>
+      • <strong>Cejn (30 cm):</strong> 30 + 10 B bonus = <strong>40 bodů</strong><br>
+      • <strong>Kapr (60 cm):</strong> 60 + 20 B bonus = <strong>80 bodů</strong><br>
+      • <strong>Jeseter (90 cm):</strong> 90 + 35 B bonus = <strong>125 bodů</strong>
+    </small>
+  </div>
+
+  <div class="row cypher-list">
+    <div class="col-sm-12">
+      <h2 th:text="Tabulka"></h2>
+      <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Lovec</th>
+          <th scope="col">Celkem bodů</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr th:each="row, iter : ${leaderboard}">
+              <td th:text="${iter.count}">1</td>
+              <td th:text="${row.hunterName}">Petr</td>
+              <td th:text="${row.totalPoints}">150</td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>
