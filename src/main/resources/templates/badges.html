@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}"></head>
+<body>
+<div class="container">
+  <div th:insert="~{fragments/title :: title}"></div>
+
+  <div class="row cypher-list">
+    <div class="col-sm-12">
+
+      <div class="container my-4">
+        <div class="card shadow-sm border-0">
+          <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
+            <h4 class="mb-0">🎖️ Trofeje</h4>
+            <span class="badge bg-success">Živé aktualizace</span>
+          </div>
+          <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+              <tr>
+                <th style="width: 70px;" class="text-center">Trofej</th>
+                <th>Název odznaku</th>
+                <th>Podmínka / Popis</th>
+                <th class="text-center">Aktuální držitel</th>
+                <th class="text-end pe-4">Hodnota</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr th:each="badge : ${badges}">
+                <!-- Ikonka -->
+                <td class="text-center fs-3 py-2" th:text="${badge.icon}">📏</td>
+
+                <!-- Název -->
+                <td>
+                  <strong class="fs-6" th:text="${badge.title}">Pán metrů</strong>
+                </td>
+
+                <!-- Popis -->
+                <td class="text-muted small" th:text="${badge.description}">Nejdelší ulovená ryba výpravy</td>
+
+                <!-- Držitel -->
+                <td class="text-center">
+                                <span th:if="${badge.winnerName != 'Zatím nikdo'}"
+                                      class="badge bg-primary fs-6 px-3 py-2"
+                                      th:text="${badge.winnerName}">
+                                    David
+                                </span>
+                  <span th:if="${badge.winnerName == 'Zatím nikdo'}"
+                        class="badge bg-light text-muted border px-3 py-2">
+                                    Zatím nikdo
+                                </span>
+                </td>
+
+                <!-- Hodnota -->
+                <td class="text-end pe-4 fw-bold text-secondary" th:text="${badge.value}">
+                  98 cm (Kapr)
+                </td>
+              </tr>
+              <tr th:if="${#lists.isEmpty(badges)}">
+                <td colspan="5" class="text-center py-4 text-muted">Žádné odznaky zatím nebyly načteny.</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
