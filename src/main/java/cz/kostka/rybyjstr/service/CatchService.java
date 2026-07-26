@@ -69,11 +69,11 @@ public class CatchService {
     }
 
     private int calculatePoints(final Integer size, final FishType fishType) {
-        if (size == null || fishType == null) {
+        if (fishType == null) {
             return 0;
         }
 
-        return size + fishType.getBonus();
+        return (size == null ? 0 : size) + fishType.getBonus();
     }
 
     private static LocalDateTime getCatchTimestamp(final LocalDateTime time) {
