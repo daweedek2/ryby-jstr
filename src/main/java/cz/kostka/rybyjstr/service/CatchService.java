@@ -4,10 +4,7 @@ import cz.kostka.rybyjstr.domain.Catch;
 import cz.kostka.rybyjstr.domain.FishType;
 import cz.kostka.rybyjstr.domain.Hunter;
 import cz.kostka.rybyjstr.domain.Image;
-import cz.kostka.rybyjstr.dto.CatchDTO;
-import cz.kostka.rybyjstr.dto.CatchViewDTO;
-import cz.kostka.rybyjstr.dto.HunterLeaderboardDto;
-import cz.kostka.rybyjstr.dto.NewCatchDTO;
+import cz.kostka.rybyjstr.dto.*;
 import cz.kostka.rybyjstr.repository.CatchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -236,7 +233,7 @@ public class CatchService {
         return 0;
     }
 
-    public List<HunterLeaderboardDto> getAllHunterLeaderboard() {
-        return catchRepository.getLeaderboard();
+    public List<HunterStatsDto> getAllHunterLeaderboard() {
+        return catchRepository.getFullLeaderboard();
     }
 }

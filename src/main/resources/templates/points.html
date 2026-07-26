@@ -21,25 +21,96 @@
 
   <div class="row cypher-list">
     <div class="col-sm-12">
-      <h2 th:text="Tabulka"></h2>
-      <table class="table">
-        <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Lovec</th>
-          <th scope="col">Celkem bodů</th>
-        </tr>
-        </thead>
-        <tbody>
-            <tr th:each="row, iter : ${leaderboard}">
-              <td th:text="${iter.count}">1</td>
-              <td th:text="${row.hunterName}">Petr</td>
-              <td th:text="${row.totalPoints}">150</td>
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-dark text-white">
+          <h4 class="mb-0">🏆 Celkový žebříček</h4>
+        </div>
+        <div class="card-body p-0">
+          <table class="table table-hover align-middle mb-0" id="leaderboardTable">
+            <thead class="table-light">
+            <tr>
+              <th style="width: 50px;" class="ps-3">#</th>
+              <th onclick="sortTable(1, 'string', this)" style="cursor: pointer;" class="user-select-none">
+                Lovec <span class="sort-icon">↕</span>
+              </th>
+              <th onclick="sortTable(2, 'number', this)" style="cursor: pointer;" class="text-end user-select-none">
+                Celkem bodů <span class="sort-icon">▼</span>
+              </th>
+              <th onclick="sortTable(3, 'number', this)" style="cursor: pointer;" class="text-end user-select-none">
+                Průměr bodů <span class="sort-icon">↕</span>
+              </th>
+              <th onclick="sortTable(4, 'number', this)" style="cursor: pointer;" class="text-center user-select-none">
+                Počet ryb <span class="sort-icon">↕</span>
+              </th>
+              <th onclick="sortTable(5, 'number', this)" style="cursor: pointer;" class="text-end pe-3 user-select-none">
+                Nejdelší ryba <span class="sort-icon">↕</span>
+              </th>
             </tr>
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+            <tr th:each="row, iter : ${leaderboard}">
+              <td class="row-number ps-3 fw-bold text-muted" th:text="${iter.count}">1</td>
+              <td class="fw-bold" th:text="${row.hunterName}">David</td>
+              <td class="text-end fw-bold text-primary fs-5" th:text="${row.totalPoints}">340</td>
+              <td class="text-end" th:text="${row.avgPoints}">85.0</td>
+              <td class="text-center" th:text="${row.totalCatches}">4</td>
+              <td class="text-end pe-3" th:text="${row.maxSize + ' cm'}">95 cm</td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(leaderboard)}">
+              <td colspan="6" class="text-center py-4 text-muted">Zatím nebyl zapsán žádný úlovek.</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 </body>
+
+<script>
+  let currentColumn = 2; // Výchozí řazení podle Celkem bodů (sloupec index 2)
+  let isAscending = false; // Výchozí směr od nejvyššího po nejnižší (DESC)
+
+  function sortTable(columnIndex, dataType, headerElement) {
+    const table = document.getElementById("leaderboardTable");
+    const tbody = table.querySelector("tbody");
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+
+    // Pokud je v tabulce jen hláška o prázdnotě, nereagovat
+    if (rows.length === 1 && rows[0].cells.length === 1) return;
+
+    if (currentColumn === columnIndex) {
+      isAscending = !isAscending;
+    } else {
+      currentColumn = columnIndex;
+      isAscending = dataType === 'string'; // Texty A-Z, čísla DESC
+    }
+
+    // Aktualizace ikonek
+    document.querySelectorAll('.sort-icon').forEach(icon => icon.textContent = '↕');
+    headerElement.querySelector('.sort-icon').textContent = isAscending ? '▲' : '▼';
+
+    // Seřazení řádků
+    rows.sort((rowA, rowB) => {
+      let textA = rowA.children[columnIndex].innerText.trim();
+      let textB = rowB.children[columnIndex].innerText.trim();
+
+      if (dataType === 'number') {
+        let valA = parseFloat(textA.replace(/[^0-9.-]+/g, "")) || 0;
+        let valB = parseFloat(textB.replace(/[^0-9.-]+/g, "")) || 0;
+        return isAscending ? valA - valB : valB - valA;
+      } else {
+        return isAscending ? textA.localeCompare(textB) : textB.localeCompare(textA);
+      }
+    });
+
+    // Vložení zpět + aktualizace pořadí #
+    rows.forEach((row, index) => {
+      row.querySelector('.row-number').textContent = index + 1;
+      tbody.appendChild(row);
+    });
+  }
+</script>
+
 </html>
