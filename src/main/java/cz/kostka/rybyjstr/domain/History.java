@@ -14,12 +14,15 @@ public class History {
     private int year;
 
     @Column
+    private String termin;
+
+    @Column
     private int totalFishCount;
 
     @Column
     private int totalFishSize;
 
-    @Column
+        @Column
     private String fishTypeNames;
 
     @Column
@@ -28,9 +31,10 @@ public class History {
     public History() {
     }
 
-    public History(final int year, final int totalFishCount, final int totalFishSize,
+    public History(final int year, final String termin, final int totalFishCount, final int totalFishSize,
                    final String fishTypeNames,final String hunterNames) {
         this.year = year;
+        this.termin = termin;
         this.totalFishCount = totalFishCount;
         this.totalFishSize = totalFishSize;
         this.fishTypeNames = fishTypeNames;
@@ -51,6 +55,14 @@ public class History {
 
     public void setYear(final int year) {
         this.year = year;
+    }
+
+    public String getTermin() {
+        return termin;
+    }
+
+    public void setTermin(final String termin) {
+        this.termin = termin;
     }
 
     public int getTotalFishCount() {

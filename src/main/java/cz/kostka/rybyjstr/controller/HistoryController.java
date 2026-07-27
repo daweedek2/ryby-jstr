@@ -17,15 +17,9 @@ public class HistoryController {
     }
 
 
-    @GetMapping("/recalculate")
-    public String recalculateHistory(final Model model) {
-        historyService.recalculate();
-        model.addAttribute("historyList", historyService.findAllByOrderByYearDesc());
-        return "history";
-    }
-
     @GetMapping()
     public String showHistory(final Model model) {
+        historyService.recalculate();
         model.addAttribute("historyList", historyService.findAllByOrderByYearDesc());
         return "history";
     }

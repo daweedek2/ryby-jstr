@@ -11,6 +11,7 @@
         <thead>
         <tr>
           <th scope="col">Rok</th>
+          <th scope="col">Termín</th>
           <th scope="col">Počet ryb</th>
           <th scope="col">Počet cm celkem</th>
             <th scope="col">Druhy</th>
@@ -21,6 +22,7 @@
         <th:block th:each="history : ${historyList}">
             <tr>
               <th th:text="${history.year}">2024</th>
+              <th th:text="${history.termin}">10.8. - 17.8.</th>
               <td th:text="|${history.totalFishCount} ks|">120 ks</td>
               <td th:text="|${#numbers.formatDecimal(history.totalFishSize, 0, 'WHITESPACE', 0, 'POINT')} cm|">120 cm</td>
               <td th:text="${history.fishTypeNames}">Kapr, Jeseter</td>
