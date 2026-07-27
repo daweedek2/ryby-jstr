@@ -43,6 +43,12 @@ public enum BadgeType {
                 "Mikro-lovec",
                 "🤏",
                 "Nejmenší ulovená ryba"
+        ),
+        TOTAL_LENGTH(
+                "TOTAL_LENGTH",
+                "Nekonečný metr",
+                "🧵",
+                "Nejvyšší celkový součet délek všech ryb"
         );
 
         private final String code;

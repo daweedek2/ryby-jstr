@@ -52,4 +52,12 @@ public interface CatchRepository extends JpaRepository<Catch, Long> {
     // 7. Mikro-lovec (Nejmenší size > 0)
     Optional<Catch> findFirstBySizeGreaterThanOrderBySizeAsc(int minSize);
 
+    // Vrátí seřazený seznam lovců podle celkového součtu délek jejich ryb
+    @Query("SELECT c.hunter.name, SUM(c.size) " +
+            "FROM Catch c " +
+            "WHERE c.size > 0 " +
+            "GROUP BY c.hunter.id, c.hunter.name " +
+            "ORDER BY SUM(c.size) DESC")
+    List<Object[]> findTopHuntersByTotalSizeForYear();
+
 }
