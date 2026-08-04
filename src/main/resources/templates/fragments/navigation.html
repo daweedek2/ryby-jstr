@@ -29,13 +29,10 @@
     <div class="collapse bg-dark text-white p-3 shadow-lg" id="sidebarMenu" style="position: fixed; top: 48px; left: 0; right: 0; z-index: 1050; max-height: 85vh; overflow-y: auto;">
         <div class="list-group list-group-flush rounded bg-dark">
 
-            <!-- 1. PŘEHLEDKY -->
+            <!-- 1. PŘEHLED ÚLOVKŮ (Sloučeno do jednoho odkazu) -->
             <div class="text-uppercase text-muted font-weight-bold small px-3 mt-2 mb-1">Úlovky</div>
-            <a th:href="@{/photos}" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-2">
-                <i class="fas fa-images text-info mr-3"></i>Přehled s fotkami
-            </a>
             <a th:href="@{/allCatches}" class="list-group-item list-group-item-action bg-dark text-white border-secondary py-2">
-                <i class="fas fa-list-ul text-info mr-3"></i>Přehled bez fotek
+                <i class="fas fa-images text-info mr-3"></i>Přehled úlovků
             </a>
 
             <!-- 2. SOUTĚŽ -->

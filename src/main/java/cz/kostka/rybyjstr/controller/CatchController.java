@@ -35,12 +35,6 @@ public class CatchController {
         this.imageService = imageService;
     }
 
-    @GetMapping("/allCatches")
-    public String getAllCatches(final Model model) {
-        model.addAttribute("allCatches", catchService.getAllCatchesLatestFirst());
-        return "allCatches";
-    }
-
     @GetMapping("/top/size")
     public String getAllCatchesBySizeSorted(final Model model) {
         model.addAttribute("topN", catchService.getAllCatchesBySize());

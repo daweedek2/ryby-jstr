@@ -4,7 +4,10 @@ import cz.kostka.rybyjstr.domain.Catch;
 import cz.kostka.rybyjstr.domain.FishType;
 import cz.kostka.rybyjstr.domain.Hunter;
 import cz.kostka.rybyjstr.domain.Image;
-import cz.kostka.rybyjstr.dto.*;
+import cz.kostka.rybyjstr.dto.CatchDTO;
+import cz.kostka.rybyjstr.dto.CatchViewDTO;
+import cz.kostka.rybyjstr.dto.HunterStatsDto;
+import cz.kostka.rybyjstr.dto.NewCatchDTO;
 import cz.kostka.rybyjstr.repository.CatchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -22,7 +25,7 @@ import java.util.stream.Collectors;
 @Service
 public class CatchService {
 
-    public static final int CATCHES_PER_PAGE = 50;
+    public static final int CATCHES_PER_PAGE = 20;
     private final CatchRepository catchRepository;
     private final ImageService imageService;
 

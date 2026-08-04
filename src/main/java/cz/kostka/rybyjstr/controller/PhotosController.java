@@ -19,13 +19,6 @@ public class PhotosController {
         this.catchService = catchService;
     }
 
-    @GetMapping
-    public String viewAllPhotos(final Model model) {
-        model.addAttribute("allCatches", catchService.getAllCatchesWithImageLatestFirst(0));
-        model.addAttribute("nextPhotoIndex", catchService.getIndexForNextCatches(0));
-        return "photos";
-    }
-
     @GetMapping("/{index}")
     public String viewNextPhotos(@PathVariable final int index, final Model model) {
         model.addAttribute("allCatches", catchService.getAllCatchesWithImageLatestFirst(index));
