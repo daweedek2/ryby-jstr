@@ -14,7 +14,6 @@ import java.util.Optional;
 
 @Repository
 public interface CatchRepository extends JpaRepository<Catch, Long> {
-    List<Catch> findAllByOrderByTimestampDesc();
     List<Catch> findAllByOrderByTimestampAsc();
     List<Catch> findAllByOrderBySizeDesc();
     List<Catch> findAllByOrderByWeightDesc();
