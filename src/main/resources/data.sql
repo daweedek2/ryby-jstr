@@ -137,3 +137,7 @@ INSERT INTO history(id, year, termin, total_fish_count, total_fish_size, fish_ty
 SELECT 1002, 2025, '2.8. - 9.8.', 209, 12490, 'kapr cejn jeseter štika', 'Vojta Tomáš P. Tomáš K. Štěpán Štěpánka David Tomášek Jirka'
 WHERE NOT EXISTS(
     SELECT * FROM history WHERE id = 1002);
+INSERT INTO history(id, year, termin, total_fish_count, total_fish_size, fish_type_names, hunter_names)
+SELECT 1003, 2026, '25.7. - 1.8.', 255, 17200, 'kapr cejn jeseter amur štika sumeček lín vyza', 'Tomáš P. Tomáš K. Vojta Štěpán Tomášek Romča Jeník Laďa Štěpánka Barča'
+WHERE NOT EXISTS(
+    SELECT * FROM history WHERE id = 1003);
