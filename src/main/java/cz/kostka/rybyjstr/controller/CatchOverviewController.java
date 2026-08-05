@@ -18,7 +18,7 @@ public class CatchOverviewController {
         this.hunterService = hunterService;
     }
 
-    @GetMapping({"/allCatches", "/photos"})
+    @GetMapping("/allCatches")
     public String showCatches(@RequestParam(defaultValue = "0") final int page, final Model model) {
 
         model.addAttribute("catches", catchService.getAllCatchesWithImageLatestFirst(page));

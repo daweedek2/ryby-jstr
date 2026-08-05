@@ -93,9 +93,13 @@ public class CatchService {
     }
 
     private Set<Long> getImageIds(Catch theCatch) {
+        if (theCatch == null || theCatch.getId() == null) {
+            return Set.of();
+        }
+
         return imageService.getImageIds(List.of(theCatch.getId()))
                 .stream()
-                .flatMap(row -> ((Set<Long>) row[1]).stream())
+                .map(row -> (Long) row[1]) // row[1] je přímo ID fotky (Long)
                 .collect(Collectors.toSet());
     }
 
@@ -299,5 +303,17 @@ public class CatchService {
         return catches.stream()
                 .map(c -> mapToCatchDTOWithImage(c, imageIdsByCatchId.getOrDefault(c.getId(), Set.of())))
                 .toList();
+    }
+
+    /**
+     * Spočíta index pro následující stránku FOTOKNIHY (pouze úlovky s fotkou).
+     * Pokud existuje další stránka v DB, vrátí (currentPage + 1).
+     * Pokud už další úlovky s fotkou NEJSOU, vrátí currentPage.
+     */
+    public int getNextPageIndexForCatchesWithImages(final int currentPage) {
+        Pageable pageable = PageRequest.of(currentPage, CATCHES_PER_PAGE);
+        Page<Catch> page = catchRepository.findAllOnlyWithImagesOrderByTimestampDesc(pageable);
+
+        return page.hasNext() ? currentPage + 1 : currentPage;
     }
 }
