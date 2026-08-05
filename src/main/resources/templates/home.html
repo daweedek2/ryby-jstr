@@ -98,7 +98,7 @@
                     <small class="text-danger" th:if="${#fields.hasErrors('note')}" th:errors="*{note}">Chyba poznámky</small>
                 </div>
 
-                <button type="submit" class="btn btn-success btn-lg btn-block font-weight-bold shadow-sm mt-4">
+                <button type="submit" id="btnSubmitCatch" class="btn btn-success btn-lg btn-block font-weight-bold shadow-sm mt-4">
                     <i class="fas fa-check-circle mr-2"></i>Uložit úlovek
                 </button>
             </form>
@@ -166,7 +166,7 @@
         // DETEKCE VÝBĚRU "NOVÝ LOVEC" V DROPDOWNU
         $('#hunterId').on('change', function() {
             if ($(this).val() === 'NEW_HUNTER') {
-                $(this).val(''); // Vrátime select na prázdnou hodnotu
+                $(this).val('');
                 $('#addHunterModal').modal('show');
             }
         });
@@ -190,7 +190,6 @@
                 contentType: 'application/json',
                 data: JSON.stringify({ name: name }),
                 success: function(savedHunter) {
-                    // Vložíme nového lovce PŘED položku "Nový lovec..." a vybereme ho
                     $('#hunterId option[value="NEW_HUNTER"]').before(new Option(savedHunter.name, savedHunter.id, true, true));
                     $('#newHunterName').val('');
                     $('#addHunterModal').modal('hide');
@@ -230,7 +229,7 @@
         });
     });
 
-    // Nastavení aktuálního času
+    // NASTAVENÍ AKTUÁLNÍHO ČASU
     document.addEventListener("DOMContentLoaded", function() {
         const timeInput = document.getElementById('time');
         if (timeInput && !timeInput.value) {
@@ -239,6 +238,95 @@
             timeInput.value = now.toISOString().slice(0, 16);
         }
     });
+
+    // KLIENTSKÁ KOMPRESE FOTKY PŘED ODESLÁNÍM FORMULÁŘE
+    const catchForm = document.querySelector('form');
+    const fileInput = document.getElementById('image');
+
+    if (catchForm && fileInput) {
+        catchForm.addEventListener('submit', async function(e) {
+            const files = fileInput.files;
+
+            if (!files || files.length === 0) return;
+
+            const file = files[0];
+
+            // Komprimujeme pouze obrázky větší než 500 KB
+            if (file.type.startsWith('image/') && file.size > 500 * 1024) {
+                e.preventDefault();
+
+                const submitBtn = document.getElementById('btnSubmitCatch');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-compress-arrows-alt fa-spin mr-2"></i>Zmenšuji fotku...';
+
+                try {
+                    // Zkomprimuje fotku na max. 1920px a kvalitu 80%
+                    const compressedFile = await compressImage(file, 1920, 0.8);
+
+                    // Nahradíme soubor v inputu zkomprimovanou verzí
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(compressedFile);
+                    fileInput.files = dataTransfer.files;
+
+                    console.log(`📸 Fotka zkomprimována: ${(file.size / 1024 / 1024).toFixed(2)} MB -> ${(compressedFile.size / 1024).toFixed(0)} KB`);
+
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Ukládám úlovek...';
+                    catchForm.submit();
+                } catch (err) {
+                    console.error('Chyba při kompresi fotky, odesílám originál:', err);
+                    catchForm.submit();
+                }
+            }
+        });
+    }
+
+    // POMOCNÁ FUNKCE PRO ZMENŠENÍ A KOMPRESI PŘES HTML5 CANVAS
+    function compressImage(file, maxWidthOrHeight, quality) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function(event) {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = function() {
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxWidthOrHeight) {
+                            height = Math.round((height * maxWidthOrHeight) / width);
+                            width = maxWidthOrHeight;
+                        }
+                    } else {
+                        if (height > maxWidthOrHeight) {
+                            width = Math.round((width * maxWidthOrHeight) / height);
+                            height = maxWidthOrHeight;
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    canvas.toBlob((blob) => {
+                        if (!blob) {
+                            reject(new Error('Canvas je prázdný'));
+                            return;
+                        }
+                        const compressedFile = new File([blob], file.name, {
+                            type: 'image/jpeg',
+                            lastModified: Date.now()
+                        });
+                        resolve(compressedFile);
+                    }, 'image/jpeg', quality);
+                };
+                img.onerror = (error) => reject(error);
+            };
+            reader.onerror = (error) => reject(error);
+        });
+    }
 </script>
 
 </body>
