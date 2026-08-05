@@ -1,5 +1,5 @@
-const CACHE_NAME = 'jestrabice-v1';
-const IMAGE_CACHE = 'jestrabice-images-v1';
+const CACHE_NAME = 'jestrabice-2027';
+const IMAGE_CACHE = 'jestrabice-images-2027';
 
 // Soubory k přednačtení při instalaci
 const STATIC_ASSETS = [
