@@ -25,21 +25,22 @@
     <link href='https://fonts.googleapis.com/css?family=Audiowide' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <!-- Apple Touch Ikony (přesměrováno na naši novou ikonu ve složce images) -->
+    <!-- Apple Touch Ikony -->
     <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-
     <link rel="icon" type="image/png" href="/images/icon-192.png">
 
     <!-- Apple Startup Images -->
     <link rel="apple-touch-startup-image" media="(width: 375px) and (height: 812px) and (-webkit-device-pixel-ratio: 3)" href="/apple-launch-1125x2436.png">
     <link rel="apple-touch-startup-image" media="(width: 375px) and (height: 667px) and (-webkit-device-pixel-ratio: 2)" href="/apple-launch-750x1334.png">
 
-    <!-- Skripty -->
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <!-- Centrální JS Knihovny (s defer pro plynulé načítání) -->
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous" defer></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous" defer></script>
 
     <title>Jestřabice 2026</title>
 
-    <!-- 🚀 TADY ZAČÍNÁ REGISTRACE SERVICE WORKERU PRO PWA 🚀 -->
+    <!-- Registrace Service Workeru pro PWA -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -49,7 +50,7 @@
             });
         }
 
-        // Požadavek na trvalé uložení fotek a dat v mobilu (aby to nesmazal čistící program)
+        // Požadavek na trvalé uložení fotek a dat v mobilu
         if (navigator.storage && navigator.storage.persist) {
             navigator.storage.persist().then(persistent => {
                 console.log(persistent ? "💾 Úložiště PWA je trvalé" : "⚠️ Úložiště je dočasné");
