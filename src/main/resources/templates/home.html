@@ -35,20 +35,26 @@
 
             <form action="#" th:action="@{/catch/new}" th:object="${newCatchDTO}" method="post" enctype="multipart/form-data">
 
-                <!-- LOVEC & RYBA V JEDNOM RÁDKU -->
+                <!-- LOVEC & RYBA V JEDNOM RÁDKU (ČISTÉ SELECTY) -->
                 <div class="form-row">
-                    <div class="form-group col-6">
+                    <!-- LOVEC -->
+                    <div class="form-group col-6 mb-3">
                         <label for="hunterId" class="font-weight-bold small text-muted">Lovec *</label>
                         <select th:field="*{hunterId}" id="hunterId" class="form-control form-control-lg" required>
+                            <option value="" disabled selected>-- Lovec --</option>
                             <option th:each="hunter : ${allHunters}" th:value="${hunter.id}" th:text="${hunter.name}"/>
+                            <option value="NEW_HUNTER" class="font-weight-bold text-success">➕ Nový lovec...</option>
                         </select>
                         <small class="text-danger" th:if="${#fields.hasErrors('hunterId')}" th:errors="*{hunterId}">Chyba lovce</small>
                     </div>
 
-                    <div class="form-group col-6">
+                    <!-- RYBA -->
+                    <div class="form-group col-6 mb-3">
                         <label for="fishTypeId" class="font-weight-bold small text-muted">Ryba *</label>
                         <select th:field="*{fishTypeId}" id="fishTypeId" class="form-control form-control-lg" required>
+                            <option value="" disabled selected>-- Ryba --</option>
                             <option th:each="fish : ${allFishTypes}" th:value="${fish.id}" th:text="${fish.type}"/>
+                            <option value="NEW_FISH_TYPE" class="font-weight-bold text-success">➕ Nový druh...</option>
                         </select>
                         <small class="text-danger" th:if="${#fields.hasErrors('fishTypeId')}" th:errors="*{fishTypeId}">Chyba ryby</small>
                     </div>
@@ -102,25 +108,133 @@
 
 </div>
 
+<!-- MODAL: NOVÝ LOVEC -->
+<div class="modal fade" id="addHunterModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content rounded-lg border-0 shadow">
+            <div class="modal-header bg-success text-white py-2 px-3">
+                <h6 class="modal-title font-weight-bold"><i class="fas fa-user-plus mr-2"></i>Nový lovec</h6>
+                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body p-3">
+                <div class="form-group mb-0">
+                    <label for="newHunterName" class="small font-weight-bold mb-1">Jméno lovce *</label>
+                    <input type="text" id="newHunterName" class="form-control form-control-sm" placeholder="např. Tomáš" required>
+                </div>
+            </div>
+            <div class="modal-footer p-2 bg-light">
+                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Zrušit</button>
+                <button type="button" id="btnSaveHunter" class="btn btn-sm btn-success px-3">Uložit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: NOVÝ DRUH RYBY -->
+<div class="modal fade" id="addFishTypeModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content rounded-lg border-0 shadow">
+            <div class="modal-header bg-success text-white py-2 px-3">
+                <h6 class="modal-title font-weight-bold"><i class="fas fa-fish mr-2"></i>Nový druh ryby</h6>
+                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body p-3">
+                <div class="form-group mb-2">
+                    <label for="newFishTypeName" class="small font-weight-bold mb-1">Název ryby *</label>
+                    <input type="text" id="newFishTypeName" class="form-control form-control-sm" placeholder="např. Jeseter" required>
+                </div>
+                <div class="form-group mb-0">
+                    <label for="newFishTypeBonus" class="small font-weight-bold mb-1">Bonusové body</label>
+                    <input type="number" id="newFishTypeBonus" class="form-control form-control-sm" value="0">
+                </div>
+            </div>
+            <div class="modal-footer p-2 bg-light">
+                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Zrušit</button>
+                <button type="button" id="btnSaveFishType" class="btn btn-sm btn-success px-3">Uložit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Bootstrap & Popper JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-<!-- Zobrazení názvu vybraného souboru u foto inputu -->
 <script>
-    $(".custom-file-input").on("change", function() {
-        var fileName = $(this).val().split("\\").pop();
-        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-    });
-</script>
+    $(document).ready(function() {
 
-<script>
+        // DETEKCE VÝBĚRU "NOVÝ LOVEC" V DROPDOWNU
+        $('#hunterId').on('change', function() {
+            if ($(this).val() === 'NEW_HUNTER') {
+                $(this).val(''); // Vrátime select na prázdnou hodnotu
+                $('#addHunterModal').modal('show');
+            }
+        });
+
+        // DETEKCE VÝBĚRU "NOVÝ DRUH" V DROPDOWNU
+        $('#fishTypeId').on('change', function() {
+            if ($(this).val() === 'NEW_FISH_TYPE') {
+                $(this).val('');
+                $('#addFishTypeModal').modal('show');
+            }
+        });
+
+        // ULOŽENÍ LOVCE CEZ AJAX
+        $('#btnSaveHunter').on('click', function() {
+            var name = $('#newHunterName').val().trim();
+            if (!name) return alert('Zadej jméno lovce.');
+
+            $.ajax({
+                url: '/api/hunters',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ name: name }),
+                success: function(savedHunter) {
+                    // Vložíme nového lovce PŘED položku "Nový lovec..." a vybereme ho
+                    $('#hunterId option[value="NEW_HUNTER"]').before(new Option(savedHunter.name, savedHunter.id, true, true));
+                    $('#newHunterName').val('');
+                    $('#addHunterModal').modal('hide');
+                },
+                error: function() {
+                    alert('Chyba při ukládání lovce.');
+                }
+            });
+        });
+
+        // ULOŽENÍ DRUHU RYBY CEZ AJAX
+        $('#btnSaveFishType').on('click', function() {
+            var type = $('#newFishTypeName').val().trim();
+            var bonus = parseInt($('#newFishTypeBonus').val()) || 0;
+            if (!type) return alert('Zadej název ryby.');
+
+            $.ajax({
+                url: '/api/fish-types',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ type: type, bonus: bonus }),
+                success: function(savedFishType) {
+                    $('#fishTypeId option[value="NEW_FISH_TYPE"]').before(new Option(savedFishType.type, savedFishType.id, true, true));
+                    $('#newFishTypeName').val('');
+                    $('#addFishTypeModal').modal('hide');
+                },
+                error: function() {
+                    alert('Chyba při ukládání druhu ryby.');
+                }
+            });
+        });
+
+        // Zobrazení názvu vybraného souboru
+        $(".custom-file-input").on("change", function() {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    });
+
+    // Nastavení aktuálního času
     document.addEventListener("DOMContentLoaded", function() {
         const timeInput = document.getElementById('time');
-        // Pokud pole zatím nemá vyplněnou hodnotu, předvyplníme aktuální lokální čas
         if (timeInput && !timeInput.value) {
             const now = new Date();
-            // Převedení na ISO formát požadovaný pro datetime-local (YYYY-MM-DDTHH:mm)
             now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
             timeInput.value = now.toISOString().slice(0, 16);
         }
