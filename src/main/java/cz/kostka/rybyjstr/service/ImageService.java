@@ -10,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class ImageService {
@@ -38,10 +37,6 @@ public class ImageService {
     public void delete(final Long imageId) {
 
         imageRepository.deleteById(imageId);
-    }
-
-    public List<Image> getImagesForCatch(final Catch theCatch) {
-        return imageRepository.findAllByTheCatch(theCatch);
     }
 
     public List<Object[]> getImageIds(List<Long> catchIds) {

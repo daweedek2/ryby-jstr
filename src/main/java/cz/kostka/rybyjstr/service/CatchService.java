@@ -46,13 +46,6 @@ public class CatchService {
                 .toList();
     }
 
-    public List<CatchDTO> getAllCatchesLatestFirst() {
-        return catchRepository.findAllByOrderByTimestampDesc()
-                .stream()
-                .map(this::mapToCatchDTOWithoutImage)
-                .toList();
-    }
-
     public List<CatchViewDTO> getAllCatchesOldestFirst() {
         return catchRepository.findAllByOrderByTimestampAsc()
                 .stream()
