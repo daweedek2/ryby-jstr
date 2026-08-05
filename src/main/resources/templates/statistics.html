@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="cs" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}"></head>
+<body class="bg-light">
+
+<!-- Horní Lišta a Sidebar -->
+<div th:replace="~{fragments/navigation :: navbar}"></div>
+
+<div class="container px-3 my-3">
+
+    <!-- ZÁHLAVÍ & NAVIGAČNÍ ZÁLOŽKY (TABY) -->
+    <div class="card shadow-sm border-0 mb-4 rounded-lg">
+        <div class="card-body p-3">
+
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-3">
+                <h3 class="font-weight-bold text-dark m-0 mb-2 mb-sm-0">
+                    <i class="fas fa-chart-pie text-primary mr-2"></i>Statistiky výpravy
+                </h3>
+            </div>
+
+            <!-- Přepínací Taby (4 Záložky) -->
+            <ul class="nav nav-pills nav-fill bg-light p-1 rounded-pill border" id="statsTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active font-weight-bold rounded-pill py-2" id="hour-tab" data-toggle="tab" href="#tab-hour" role="tab" aria-controls="tab-hour" aria-selected="true">
+                        <i class="fas fa-clock mr-1 text-primary"></i>HODINY
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link font-weight-bold rounded-pill py-2" id="day-tab" data-toggle="tab" href="#tab-day" role="tab" aria-controls="tab-day" aria-selected="false">
+                        <i class="fas fa-calendar-day mr-1 text-success"></i>DNY
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link font-weight-bold rounded-pill py-2" id="fish-tab" data-toggle="tab" href="#tab-fish" role="tab" aria-controls="tab-fish" aria-selected="false">
+                        <i class="fas fa-fish mr-1 text-info"></i>RYBY
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link font-weight-bold rounded-pill py-2" id="hunter-tab" data-toggle="tab" href="#tab-hunter" role="tab" aria-controls="tab-hunter" aria-selected="false">
+                        <i class="fas fa-users mr-1 text-warning"></i>LOVCI
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+
+    <!-- OBSAH ZÁLOŽEK -->
+    <div class="tab-content" id="statsTabContent">
+
+        <!-- 1. ZÁLOŽKA: PODLE HODIN -->
+        <div class="tab-pane fade show active" id="tab-hour" role="tabpanel" aria-labelledby="hour-tab">
+            <div class="row px-1">
+
+                <div class="col-12 col-md-6 mb-4 px-2" th:each="catchesInHour : ${allStatsHour}">
+                    <div class="card shadow-sm border-0 rounded-lg h-100 overflow-hidden">
+
+                        <!-- Hlavička karty s hodinou -->
+                        <div class="card-header bg-dark text-white p-3 d-flex justify-content-between align-items-center">
+                            <h4 class="font-weight-bold m-0 fs-5">
+                                <i class="far fa-clock text-primary mr-2"></i>
+                                <span th:text="|${catchesInHour.key}:00|">12:00</span>
+                            </h4>
+                            <span class="badge badge-primary px-3 py-2 font-weight-bold rounded-pill"
+                                  th:text="|${totalCountMapHour.get(catchesInHour.key)} celkem|">6 celkem</span>
+                        </div>
+
+                        <div class="card-body p-3">
+
+                            <!-- Rozdělení lovců za danou hodinu -->
+                            <div class="mb-3" th:if="${fishStatsHour != null and fishStatsHour.get(catchesInHour.key) != null}">
+                                <small class="text-muted d-block font-weight-bold text-uppercase mb-1">Aktivní lovci:</small>
+                                <div class="d-flex flex-wrap gap-1">
+                                        <span class="badge badge-info mr-1 mb-1 px-2 py-1 font-weight-bold"
+                                              th:each="f : ${fishStatsHour.get(catchesInHour.key)}"
+                                              th:text="|${f.key}: ${f.value} ks|">
+                                            Kapr: 5 ks
+                                        </span>
+                                </div>
+                            </div>
+
+                            <!-- Rozdělení ryb za danou hodinu -->
+                            <div class="mb-3" th:if="${hunterStatsHour != null and hunterStatsHour.get(catchesInHour.key) != null}">
+                                <small class="text-muted d-block font-weight-bold text-uppercase mb-1">Úlovky podle druhů:</small>
+                                <div class="d-flex flex-wrap gap-1">
+                                        <span class="badge badge-success mr-1 mb-1 px-2 py-1 font-weight-bold"
+                                              th:each="h : ${hunterStatsHour.get(catchesInHour.key)}"
+                                              th:text="|${h.key}: ${h.value} ks|">
+                                            Jan: 5 ks
+                                        </span>
+                                </div>
+                            </div>
+
+                            <hr class="my-2 border-light">
+
+                            <!-- TOP úlovky v této hodině -->
+                            <div class="mb-3" th:each="maxCatchMap : ${catchesInHour.value}">
+                                <small class="text-muted d-block font-weight-bold text-uppercase mb-1" th:text="|Největší ${maxCatchMap.key}:|">Největší kapr:</small>
+                                <div class="list-group list-group-flush">
+                                    <a th:each="maxCatch : ${maxCatchMap.value}"
+                                       th:href="@{/catch/{id}(id=${maxCatch.id()})}"
+                                       class="list-group-item list-group-item-action bg-light rounded mb-1 p-2 border d-flex justify-content-between align-items-center text-dark text-decoration-none">
+                                        <div>
+                                            <i class="fas fa-trophy text-warning mr-2"></i>
+                                            <strong th:text="${maxCatch.hunter()}">Jan</strong>
+                                        </div>
+                                        <span class="badge badge-dark font-weight-bold px-2 py-1" th:text="${maxCatch.size() + ' cm'}">150 cm</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Odkaz na detail hodiny -->
+                            <div class="mt-3">
+                                <a th:href="@{/catch/hour/{hour}(hour=${catchesInHour.key})}"
+                                   class="btn btn-outline-primary btn-sm btn-block font-weight-bold rounded-pill">
+                                    Zobrazit všechny úlovky v <span th:text="|${catchesInHour.key}:00|">12:00</span> <i class="fas fa-chevron-right ml-1"></i>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pokud chybí data -->
+                <div th:if="${allStatsHour == null or #lists.isEmpty(allStatsHour)}" class="col-12 text-center py-5 text-muted">
+                    <i class="fas fa-clock fa-3x mb-3 text-muted opacity-50"></i>
+                    <h5>Žádné hodinové statistiky nejsou k dispozici.</h5>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 2. ZÁLOŽKA: PODLE DNŮ -->
+        <div class="tab-pane fade" id="tab-day" role="tabpanel" aria-labelledby="day-tab">
+            <div class="row px-1">
+
+                <div class="col-12 col-md-6 mb-4 px-2" th:each="catchesInDay : ${allStatsDay}">
+                    <div class="card shadow-sm border-0 rounded-lg h-100 overflow-hidden">
+
+                        <!-- Hlavička karty s dnem -->
+                        <div class="card-header bg-dark text-white p-3 d-flex justify-content-between align-items-center">
+                            <h4 class="font-weight-bold m-0 fs-5">
+                                <i class="far fa-calendar-alt text-success mr-2"></i>
+                                <span th:text="${catchesInDay.key}">01.06.2026</span>
+                            </h4>
+                            <span class="badge badge-success px-3 py-2 font-weight-bold rounded-pill"
+                                  th:text="|${totalCountMapDay.get(catchesInDay.key)} celkem|">12 celkem</span>
+                        </div>
+
+                        <div class="card-body p-3">
+
+                            <!-- Rozdělení lovcu -->
+                            <div class="mb-3" th:if="${fishStatsDay != null and fishStatsDay.get(catchesInDay.key) != null}">
+                                <small class="text-muted d-block font-weight-bold text-uppercase mb-1">Aktivní lovci:</small>
+                                <div class="d-flex flex-wrap gap-1">
+                                        <span class="badge badge-info mr-1 mb-1 px-2 py-1 font-weight-bold"
+                                              th:each="f : ${fishStatsDay.get(catchesInDay.key)}"
+                                              th:text="|${f.key}: ${f.value} ks|">
+                                            Jan: 8 ks
+                                        </span>
+                                </div>
+                            </div>
+
+                            <!-- Rozdělení ryb -->
+                            <div class="mb-3" th:if="${hunterStatsDay != null and hunterStatsDay.get(catchesInDay.key) != null}">
+                                <small class="text-muted d-block font-weight-bold text-uppercase mb-1">Úlovky podle druhů:</small>
+                                <div class="d-flex flex-wrap gap-1">
+                                        <span class="badge badge-success mr-1 mb-1 px-2 py-1 font-weight-bold"
+                                              th:each="h : ${hunterStatsDay.get(catchesInDay.key)}"
+                                              th:text="|${h.key}: ${h.value} ks|">
+                                            Kapr: 4 ks
+                                        </span>
+                                </div>
+                            </div>
+
+                            <hr class="my-2 border-light">
+
+                            <!-- TOP úlovky v tomto dni -->
+                            <div class="mb-3" th:each="maxCatchMap : ${catchesInDay.value}">
+                                <small class="text-muted d-block font-weight-bold text-uppercase mb-1" th:text="|Největší ${maxCatchMap.key}:|">Největší kapr:</small>
+                                <div class="list-group list-group-flush">
+                                    <a th:each="maxCatch : ${maxCatchMap.value}"
+                                       th:href="@{/catch/{id}(id=${maxCatch.id()})}"
+                                       class="list-group-item list-group-item-action bg-light rounded mb-1 p-2 border d-flex justify-content-between align-items-center text-dark text-decoration-none">
+                                        <div>
+                                            <i class="fas fa-trophy text-warning mr-2"></i>
+                                            <strong th:text="${maxCatch.hunter()}">Jan</strong>
+                                        </div>
+                                        <span class="badge badge-dark font-weight-bold px-2 py-1" th:text="${maxCatch.size() + ' cm'}">150 cm</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Odkaz na detail dne -->
+                            <div class="mt-3">
+                                <a th:href="@{/catch/day/{day}(day=${catchesInDay.key})}"
+                                   class="btn btn-outline-success btn-sm btn-block font-weight-bold rounded-pill">
+                                    Zobrazit všechny úlovky za den <i class="fas fa-chevron-right ml-1"></i>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pokud chybí data -->
+                <div th:if="${allStatsDay == null or #lists.isEmpty(allStatsDay)}" class="col-12 text-center py-5 text-muted">
+                    <i class="fas fa-calendar-day fa-3x mb-3 text-muted opacity-50"></i>
+                    <h5>Žádné denní statistiky nejsou k dispozici.</h5>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 3. ZÁLOŽKA: PODLE RYB -->
+        <div class="tab-pane fade" id="tab-fish" role="tabpanel" aria-labelledby="fish-tab">
+            <div class="row px-1">
+
+                <div class="col-12 col-md-6 mb-4 px-2" th:each="fishStat : ${fishStats}">
+                    <div class="card shadow-sm border-0 rounded-lg h-100 overflow-hidden">
+
+                        <!-- Hlavička karty s názvem ryby -->
+                        <div class="card-header bg-dark text-white p-3 d-flex justify-content-between align-items-center">
+                            <h4 class="font-weight-bold m-0 fs-5">
+                                <i class="fas fa-fish text-info mr-2"></i>
+                                <span th:text="${fishStat.name()}">Kapr</span>
+                            </h4>
+                            <span class="badge badge-info px-3 py-2 font-weight-bold rounded-pill"
+                                  th:text="|${fishStat.totalFishCount()} úlovků|">10 úlovků</span>
+                        </div>
+
+                        <div class="card-body p-3">
+
+                            <!-- Rozdělení podle lovců (catchesMap) -->
+                            <div class="mb-3" th:if="${fishStat.catchesMap() != null and !fishStat.catchesMap().isEmpty()}">
+                                <small class="text-muted d-block font-weight-bold text-uppercase mb-1">Úlovky podle lovců:</small>
+                                <div class="d-flex flex-wrap gap-1">
+                                        <span class="badge badge-success mr-1 mb-1 px-2 py-1 font-weight-bold"
+                                              th:each="h : ${fishStat.catchesMap()}"
+                                              th:text="|${h.key}: ${h.value} ks|">
+                                            Jan: 5 ks
+                                        </span>
+                                </div>
+                            </div>
+
+                            <!-- Největší ulovený kus (maxSizeCatches) -->
+                            <div class="mb-3" th:if="${fishStat.maxSizeCatches() != null and !fishStat.maxSizeCatches().isEmpty()}">
+                                <small class="text-muted d-block font-weight-bold text-uppercase mb-1">Největší úlovek:</small>
+                                <div class="list-group list-group-flush">
+                                    <a th:each="c : ${fishStat.maxSizeCatches()}"
+                                       th:href="@{/catch/{id}(id=${c.id()})}"
+                                       class="list-group-item list-group-item-action bg-light rounded mb-1 p-2 border d-flex justify-content-between align-items-center text-dark text-decoration-none">
+                                        <div>
+                                            <i class="fas fa-trophy text-warning mr-2"></i>
+                                            <strong th:text="${c.hunter()}">Jan</strong>
+                                        </div>
+                                        <span class="badge badge-dark font-weight-bold px-2 py-1" th:text="${c.size() + ' cm'}">95 cm</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <hr class="my-2 border-light">
+
+                            <!-- Odkaz na filtr ryby -->
+                            <div class="mt-3">
+                                <a th:href="@{/catch/fish/{fishName}(fishName=${fishStat.name()})}"
+                                   class="btn btn-outline-info btn-sm btn-block font-weight-bold rounded-pill">
+                                    Zobrazit všechny úlovky ryby <i class="fas fa-chevron-right ml-1"></i>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pokud chybí data -->
+                <div th:if="${fishStats == null or #lists.isEmpty(fishStats)}" class="col-12 text-center py-5 text-muted">
+                    <i class="fas fa-fish fa-3x mb-3 text-muted opacity-50"></i>
+                    <h5>Žádné statistiky pro ryby nebyly nalezeny.</h5>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 4. ZÁLOŽKA: PODLE LOVCŮ -->
+        <div class="tab-pane fade" id="tab-hunter" role="tabpanel" aria-labelledby="hunter-tab">
+            <div class="row px-1">
+
+                <div class="col-12 col-md-6 mb-4 px-2" th:each="hunterStat : ${hunterStats}">
+                    <div class="card shadow-sm border-0 rounded-lg h-100 overflow-hidden">
+
+                        <!-- Hlavička karty se jménem lovce -->
+                        <div class="card-header bg-dark text-white p-3 d-flex justify-content-between align-items-center">
+                            <h4 class="font-weight-bold m-0 fs-5">
+                                <i class="fas fa-user-circle text-success mr-2"></i>
+                                <span th:text="${hunterStat.name()}">Jan</span>
+                            </h4>
+                            <span class="badge badge-success px-3 py-2 font-weight-bold rounded-pill"
+                                  th:text="|${hunterStat.totalFishCount()} úlovků|">8 úlovků</span>
+                        </div>
+
+                        <div class="card-body p-3">
+
+                            <!-- Rozdělení podle ulovených ryb (catchesMap) -->
+                            <div class="mb-3" th:if="${hunterStat.catchesMap() != null and !hunterStat.catchesMap().isEmpty()}">
+                                <small class="text-muted d-block font-weight-bold text-uppercase mb-1">Úlovky podle druhů:</small>
+                                <div class="d-flex flex-wrap gap-1">
+                                        <span class="badge badge-info mr-1 mb-1 px-2 py-1 font-weight-bold"
+                                              th:each="f : ${hunterStat.catchesMap()}"
+                                              th:text="|${f.key}: ${f.value} ks|">
+                                            Kapr: 5 ks
+                                        </span>
+                                </div>
+                            </div>
+
+                            <!-- Jeho trofejní úlovky (maxSizeCatchesMap) -->
+                            <div class="mb-3" th:if="${hunterStat.maxSizeCatchesMap() != null and !hunterStat.maxSizeCatchesMap().isEmpty()}">
+                                <small class="text-muted d-block font-weight-bold text-uppercase mb-1">Osobní rekordy:</small>
+                                <div class="list-group list-group-flush" th:each="entry : ${hunterStat.maxSizeCatchesMap()}">
+                                    <a th:each="c : ${entry.value}"
+                                       th:href="@{/catch/{id}(id=${c.id()})}"
+                                       class="list-group-item list-group-item-action bg-light rounded mb-1 p-2 border d-flex justify-content-between align-items-center text-dark text-decoration-none">
+                                        <div>
+                                            <i class="fas fa-award text-warning mr-2"></i>
+                                            <strong th:text="${c.fish()}">Kapr</strong>
+                                        </div>
+                                        <span class="badge badge-dark font-weight-bold px-2 py-1" th:text="${c.size() + ' cm'}">85 cm</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <hr class="my-2 border-light">
+
+                            <!-- Odkaz na detail lovce (použije ID) -->
+                            <div class="mt-3">
+                                <a th:href="@{/catch/hunter/{id}(id=${hunterStat.hunterId()})}"
+                                   class="btn btn-outline-success btn-sm btn-block font-weight-bold rounded-pill">
+                                    Zobrazit všechny úlovky lovce <i class="fas fa-chevron-right ml-1"></i>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pokud chybí data -->
+                <div th:if="${hunterStats == null or #lists.isEmpty(hunterStats)}" class="col-12 text-center py-5 text-muted">
+                    <i class="fas fa-users fa-3x mb-3 text-muted opacity-50"></i>
+                    <h5>Žádné statistiky pro lovce nebyly nalezeny.</h5>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- SKRIPT PRO SPOLEHLIVÉ PŘEPÍNÁNÍ TABŮ A HASHTAGY V URL -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 1. Aktivace klikání na záložky
+        $('#statsTabs a').on('click', function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+
+        // 2. Podpora přímého odkazu na záložku podle URL hashtagu (např. /statistics#tab-fish)
+        var hash = window.location.hash;
+        if (hash) {
+            $('#statsTabs a[href="' + hash + '"]').tab('show');
+        }
+
+        // 3. Aktualizace URL v prohlížeči při přepnutí tabu
+        $('#statsTabs a').on('shown.bs.tab', function (e) {
+            window.location.hash = e.target.hash;
+        });
+    });
+</script>
+</body>
+</html>
