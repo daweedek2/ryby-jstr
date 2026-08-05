@@ -35,19 +35,26 @@ public class CatchController {
         this.imageService = imageService;
     }
 
-    @GetMapping("/top/size")
-    public String getAllCatchesBySizeSorted(final Model model) {
-        model.addAttribute("topN", catchService.getAllCatchesBySize());
-        model.addAttribute("title", "Úlovky podle velikosti");
-        return "topCatch";
-    }
+//    @GetMapping("/top/size")
+//    public String getAllCatchesBySizeSorted(final Model model) {
+//        model.addAttribute("topN", catchService.getAllCatchesBySize());
+//        model.addAttribute("title", "Úlovky podle velikosti");
+//        return "topCatch";
+//    }
 
-    @GetMapping("/top/weight")
-    public String getAllCatchesByWeightSorted(final Model model) {
-        model.addAttribute("topN", catchService.getAllCatchesByWeight());
-        model.addAttribute("title", "Úlovky podle váhy");
+    @GetMapping("/top")
+    public String getTopCatches(final Model model) {
+        model.addAttribute("topBySize", catchService.getAllCatchesBySize());
+        model.addAttribute("topByWeight", catchService.getAllCatchesByWeight());
         return "topCatch";
     }
+//
+//    @GetMapping("/top/weight")
+//    public String getAllCatchesByWeightSorted(final Model model) {
+//        model.addAttribute("topN", catchService.getAllCatchesByWeight());
+//        model.addAttribute("title", "Úlovky podle váhy");
+//        return "topCatch";
+//    }
 
     @PostMapping("/catch/new")
     public String newCatch(
