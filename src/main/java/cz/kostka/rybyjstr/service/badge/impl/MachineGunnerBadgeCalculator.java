@@ -23,16 +23,18 @@ public class MachineGunnerBadgeCalculator implements BadgeCalculator {
 
         if (!result.isEmpty()) {
             Object[] row = result.get(0);
-            String hunterName = (String) row[0];
-            Long count = (Long) row[1];
+            Long hunterId = (Long) row[0];
+            String hunterName = (String) row[1];
+            Long count = (Long) row[2];
 
             return new BadgeDto(
                     BadgeType.MACHINE_GUNNER,
+                    hunterId,
                     hunterName,
                     count + " ks"
             );
         }
 
-        return new BadgeDto(BadgeType.MACHINE_GUNNER, null, null);
+        return new BadgeDto(BadgeType.MACHINE_GUNNER, null, null, null);
     }
 }

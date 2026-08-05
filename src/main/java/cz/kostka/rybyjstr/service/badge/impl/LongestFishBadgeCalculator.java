@@ -25,11 +25,12 @@ public class LongestFishBadgeCalculator implements BadgeCalculator {
         if (topCatch.isPresent() && topCatch.get().getSize() > 0) {
             Catch c = topCatch.get();
             return new BadgeDto(BadgeType.LONGEST_FISH,
+                    c.getHunter().getId(),
                     c.getHunter().getName(),
                     c.getSize() + " cm (" + c.getFishType().getType() + ")"
             );
         }
 
-        return new BadgeDto(BadgeType.LONGEST_FISH, null, null);
+        return new BadgeDto(BadgeType.LONGEST_FISH, null,null, null);
     }
 }

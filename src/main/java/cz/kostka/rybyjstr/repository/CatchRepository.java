@@ -34,26 +34,26 @@ public interface CatchRepository extends JpaRepository<Catch, Long> {
     Optional<Catch> findFirstByOrderByWeightDesc();
 
     // 3. Pán rybníků (Nejvyšší součet bodů)
-    @Query("SELECT c.hunter.name, SUM(c.points) FROM Catch c GROUP BY c.hunter.id, c.hunter.name ORDER BY SUM(c.points) DESC")
+    @Query("SELECT c.hunter.id, c.hunter.name, SUM(c.points) FROM Catch c GROUP BY c.hunter.id, c.hunter.name ORDER BY SUM(c.points) DESC")
     List<Object[]> findTopHunterByTotalPoints();
 
     // 4. Kulometčík (Nejvyšší počet ryb)
-    @Query("SELECT c.hunter.name, COUNT(c) FROM Catch c GROUP BY c.hunter.id, c.hunter.name ORDER BY COUNT(c) DESC")
+    @Query("SELECT c.hunter.id, c.hunter.name, COUNT(c) FROM Catch c GROUP BY c.hunter.id, c.hunter.name ORDER BY COUNT(c) DESC")
     List<Object[]> findTopHunterByCatchCount();
 
     // 5. Sniper (Nejvyšší průměr bodů při min. 3 rybách)
-    @Query("SELECT c.hunter.name, AVG(c.points) FROM Catch c GROUP BY c.hunter.id, c.hunter.name HAVING COUNT(c) >= 3 ORDER BY AVG(c.points) DESC")
+    @Query("SELECT c.hunter.id, c.hunter.name, AVG(c.points) FROM Catch c GROUP BY c.hunter.id, c.hunter.name HAVING COUNT(c) >= 3 ORDER BY AVG(c.points) DESC")
     List<Object[]> findTopHunterByAvgPoints();
 
     // 6. Noční sova (Úlovky mezi 22:00 a 04:00)
-    @Query("SELECT c.hunter.name, COUNT(c) FROM Catch c WHERE HOUR(c.timestamp) >= 22 OR HOUR(c.timestamp) < 4 GROUP BY c.hunter.id, c.hunter.name ORDER BY COUNT(c) DESC")
+    @Query("SELECT c.hunter.id, c.hunter.name, COUNT(c) FROM Catch c WHERE HOUR(c.timestamp) >= 22 OR HOUR(c.timestamp) < 4 GROUP BY c.hunter.id, c.hunter.name ORDER BY COUNT(c) DESC")
     List<Object[]> findTopNightOwlHunter();
 
     // 7. Mikro-lovec (Nejmenší size > 0)
     Optional<Catch> findFirstBySizeGreaterThanOrderBySizeAsc(int minSize);
 
     // Vrátí seřazený seznam lovců podle celkového součtu délek jejich ryb
-    @Query("SELECT c.hunter.name, SUM(c.size) " +
+    @Query("SELECT c.hunter.id, c.hunter.name, SUM(c.size) " +
             "FROM Catch c " +
             "WHERE c.size > 0 " +
             "GROUP BY c.hunter.id, c.hunter.name " +

@@ -24,19 +24,21 @@ public class TotalLengthBadgeCalculator implements BadgeCalculator {
 
             if (!result.isEmpty()) {
                 final Object[] row = result.get(0);
-                final String hunterName = (String) row[0];
-                final Long totalSizeCm = (Long) row[1];
+                final Long hunterId = (Long) row[0];
+                final String hunterName = (String) row[1];
+                final Long totalSizeCm = (Long) row[2];
 
                 final double meters = totalSizeCm / 100.0;
 
                 return new BadgeDto(
                         BadgeType.TOTAL_LENGTH,
+                        hunterId,
                         hunterName,
                         String.format("%.2f m celkem (%d cm)", meters, totalSizeCm)
                 );
             }
 
-            return new BadgeDto(BadgeType.TOTAL_LENGTH, null, null);
+            return new BadgeDto(BadgeType.TOTAL_LENGTH, null, null, null);
         }
 
 }

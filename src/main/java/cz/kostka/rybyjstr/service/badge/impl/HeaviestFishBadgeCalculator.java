@@ -26,11 +26,12 @@ public class HeaviestFishBadgeCalculator implements BadgeCalculator {
             Catch c = topCatch.get();
             double weightKg = c.getWeight() / 1000.0; // Převod z g na kg
             return new BadgeDto(BadgeType.HEAVIEST_FISH,
+                    c.getHunter().getId(),
                     c.getHunter().getName(),
                     String.format("%.2f kg (%s)", weightKg, c.getFishType().getType())
             );
         }
 
-        return new BadgeDto(BadgeType.HEAVIEST_FISH, null, null);
+        return new BadgeDto(BadgeType.HEAVIEST_FISH, null, null, null);
     }
 }
