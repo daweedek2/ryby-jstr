@@ -10,8 +10,12 @@ import cz.kostka.rybyjstr.dto.HunterStatsDto;
 import cz.kostka.rybyjstr.dto.NewCatchDTO;
 import cz.kostka.rybyjstr.repository.CatchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -89,7 +93,7 @@ public class CatchService {
     }
 
     private Set<Long> getImageIds(Catch theCatch) {
-        return imageService.getImagesForCatch(theCatch).stream().map(Image::getId).collect(Collectors.toSet());
+        return imageService.getImageIds(theCatch.getId());
     }
 
     public Catch getCatch(final Long catchId) {
@@ -213,27 +217,24 @@ public class CatchService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<CatchDTO> getAllCatchesWithImageLatestFirst(final int index) {
-        final long allCatches = getAllCatchesCount();
-        return catchRepository.findAllByOrderByTimestampDesc()
-                .subList(
-                        index * CATCHES_PER_PAGE,
-                        calculateNextCatchBorder(index) < allCatches ? calculateNextCatchBorder(index) : ((int) allCatches))
+        final Pageable pageable = PageRequest.of(index, CATCHES_PER_PAGE);
+
+        return catchRepository.findAllByOrderByTimestampDesc(pageable)
+                .getContent()
                 .stream()
                 .map(this::mapToCatchDTOWithImage)
                 .toList();
     }
 
-    private static int calculateNextCatchBorder(int index) {
-        return (index + 1) * CATCHES_PER_PAGE;
-    }
 
-    public int getIndexForNextCatches(final int currentIndex) {
-        if (getAllCatchesCount() - calculateNextCatchBorder(currentIndex) >= 0) {
-            return currentIndex + 1;
-        }
+    public int getIndexForNextCatches(final int currentPage) {
+        Pageable pageable = PageRequest.of(currentPage, CATCHES_PER_PAGE);
+        Page<Catch> page = catchRepository.findAllByOrderByTimestampDesc(pageable);
 
-        return 0;
+        // Pokud existuje další stránka v DB, vrátí currentPage + 1, jinak vrátí currentPage
+        return page.hasNext() ? currentPage + 1 : currentPage;
     }
 
     public List<HunterStatsDto> getAllHunterLeaderboard() {

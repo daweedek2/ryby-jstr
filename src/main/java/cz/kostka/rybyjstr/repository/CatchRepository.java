@@ -2,6 +2,9 @@ package cz.kostka.rybyjstr.repository;
 
 import cz.kostka.rybyjstr.domain.Catch;
 import cz.kostka.rybyjstr.dto.HunterStatsDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -59,5 +62,9 @@ public interface CatchRepository extends JpaRepository<Catch, Long> {
             "GROUP BY c.hunter.id, c.hunter.name " +
             "ORDER BY SUM(c.size) DESC")
     List<Object[]> findTopHuntersByTotalSizeForYear();
+
+
+    @EntityGraph(attributePaths = {"hunter", "fishType"})
+    Page<Catch> findAllByOrderByTimestampDesc(Pageable pageable);
 
 }

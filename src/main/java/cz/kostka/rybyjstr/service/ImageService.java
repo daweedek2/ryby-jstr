@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ImageService {
@@ -41,5 +42,9 @@ public class ImageService {
 
     public List<Image> getImagesForCatch(final Catch theCatch) {
         return imageRepository.findAllByTheCatch(theCatch);
+    }
+
+    public Set<Long> getImageIds(Long catchId) {
+        return imageRepository.findImageIdsByCatchId(catchId);
     }
 }

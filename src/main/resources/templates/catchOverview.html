@@ -126,37 +126,44 @@
         // TLAČÍTKO NAČÍST DALŠÍ ÚLOVKY
         $('#btn-load-more').on('click', function() {
             var $btn = $(this);
-            var currentPage = parseInt($btn.attr('data-next-page'));
+            var nextPage = parseInt($btn.attr('data-next-page'));
 
             $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-2"></i>Načítám...');
 
             $.ajax({
-                url: '/allCatches?page=' + currentPage,
+                url: '/allCatches?page=' + nextPage,
                 type: 'GET',
                 success: function(data) {
                     var $response = $(data);
 
-                    // 1. Najdeme a připojíme nové karty
+                    // 1. Najdeme nové karty úlovků z odpovědi
                     var $newCards = $response.find('#cards-container .catch-item');
+
                     if ($newCards.length > 0) {
+                        // Přidáme nové karty do mřížky
                         $('#cards-container').append($newCards);
-                    }
 
-                    // 2. Najdeme nové tlačítko v odpovědi
-                    var $newBtn = $response.find('#btn-load-more');
+                        // Aplikujeme případně aktivní filtr podle lovce
+                        applyHunterFilter(activeHunter);
 
-                    applyHunterFilter(activeHunter);
+                        // 2. Najdeme nové tlačítko v odpovědi a přečteme z něj nový index
+                        var $newBtn = $response.find('#btn-load-more');
+                        if ($newBtn.length > 0) {
+                            var newNextPage = parseInt($newBtn.attr('data-next-page'));
 
-                    if ($newBtn.length > 0) {
-                        var newNextPage = parseInt($newBtn.attr('data-next-page'));
-
-                        if (newNextPage > currentPage) {
-                            $btn.attr('data-next-page', newNextPage);
-                            $btn.prop('disabled', false).html('<i class="fas fa-arrow-down mr-2"></i>Načíst další úlovky');
+                            if (newNextPage > nextPage) {
+                                // Nastavíme nový index pro další kliknutí
+                                $btn.attr('data-next-page', newNextPage);
+                                $btn.prop('disabled', false).html('<i class="fas fa-arrow-down mr-2"></i>Načíst další úlovky');
+                            } else {
+                                // Už nejsou další stránky
+                                $('#load-more-wrapper').hide();
+                            }
                         } else {
                             $('#load-more-wrapper').hide();
                         }
                     } else {
+                        // Nebyly vráceny žádné nové karty
                         $('#load-more-wrapper').hide();
                     }
                 },
