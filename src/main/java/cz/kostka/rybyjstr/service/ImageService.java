@@ -39,7 +39,7 @@ public class ImageService {
         imageRepository.deleteById(imageId);
     }
 
-    public List<Image> getImagesForCatch(final Catch theCatch) {
-        return imageRepository.findAllByTheCatch(theCatch);
+    public List<Object[]> getImageIds(List<Long> catchIds) {
+        return imageRepository.findImageIdsByCatchIds(catchIds);
     }
 }

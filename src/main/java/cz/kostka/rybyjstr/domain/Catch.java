@@ -3,9 +3,13 @@ package cz.kostka.rybyjstr.domain;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table
+@Table(indexes = {
+        @Index(name = "idx_catch_timestamp", columnList = "timestamp DESC")
+})
 public class Catch {
 
     @Id
@@ -35,6 +39,9 @@ public class Catch {
     @ManyToOne
     @JoinColumn(name = "fishType_id", nullable = false)
     private FishType fishType;
+
+    @OneToMany(mappedBy = "theCatch", fetch = FetchType.LAZY)
+    private Set<Image> images = new HashSet<>();
 
     public Catch() {
     }
@@ -135,5 +142,13 @@ public class Catch {
 
     public void setFishType(FishType fishType) {
         this.fishType = fishType;
+    }
+
+    public Set<Image> getImages() {
+        return images == null ?  new HashSet<>() : images;
+    }
+
+    public void setImages(Set<Image> images) {
+        this.images = images;
     }
 }

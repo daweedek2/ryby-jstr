@@ -1,81 +1,174 @@
 <!DOCTYPE html>
 <html lang="cs" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head}"></head>
-<body>
-<div class="container">
-    <div th:insert="~{fragments/title :: title}"></div>
-    <div class="row cypher-list">
-        <div class="col-sm-12">
-            <h2 th:text="|Detail úlovku z ${#temporals.format(catchDTO.timestamp, ' dd.MM.yyyy HH:mm')}|"></h2>
-            <div class="cypher">
-                <a th:href="@{/catch/hunter/{id}(id=${catchDTO.hunterId()})}">
-                    <div class="btn btn-secondary"  th:text="|Lovec: ${catchDTO.hunter}|">Jan</div>
+<body class="bg-light">
+
+<!-- Horní Lišta a Sidebar -->
+<div th:replace="~{fragments/navigation :: navbar}"></div>
+
+<div class="container px-3 my-3" style="max-width: 720px;">
+
+    <!-- HLAVNÍ KARTA DETAILU -->
+    <div class="card shadow-sm border-0 rounded-lg overflow-hidden mb-4">
+
+        <!-- Hlavička karty s nadpisem -->
+        <div class="card-header bg-white border-bottom p-3 d-flex justify-content-between align-items-center">
+            <h5 class="font-weight-bold text-dark m-0">
+                <i class="fas fa-info-circle text-success mr-2"></i>Detail úlovku
+            </h5>
+            <span class="badge badge-dark p-2"
+                  th:text="${catchDTO.timestamp != null ? #temporals.format(catchDTO.timestamp, 'dd.MM.yyyy HH:mm') : ''}">
+                    01.06.2026 14:30
+                </span>
+        </div>
+
+        <div class="card-body p-3 p-md-4">
+
+            <!-- ODZNAKY: LOVEČ A RYBA -->
+            <div class="d-flex flex-wrap gap-2 mb-4">
+                <a th:href="@{/catch/hunter/{id}(id=${catchDTO.hunterId()})}" class="mr-2 mb-2">
+                        <span class="btn btn-sm btn-outline-success font-weight-bold rounded-pill px-3">
+                            <i class="fas fa-user mr-1"></i> Lovec: <strong th:text="${catchDTO.hunter}">Jan</strong>
+                        </span>
                 </a>
-                <a th:href="@{/catch/fish/{id}(id=${catchDTO.fishId()})}">
-                    <div class="btn btn-secondary"  th:text="|Ryba: ${catchDTO.fish}|">kapr</div>
+                <a th:href="@{/catch/fish/{id}(id=${catchDTO.fishId()})}" class="mb-2">
+                        <span class="btn btn-sm btn-outline-info font-weight-bold rounded-pill px-3">
+                            <i class="fas fa-fish mr-1"></i> Ryba: <strong th:text="${catchDTO.fish}">Kapr</strong>
+                        </span>
                 </a>
-                <form action="#" th:action="@{/catch/{id}/update(id=${catchDTO.id})}" th:object="${catchDTO}" method="post">
-                    <div class="form-group">
-                        <label for="size" class="input-value">Délka (cm)</label>
-                        <input id="size" class="form-control" type="number" th:field="*{size}" min="0" required/>
-                    </div>
-                    <div class="form-group">
-                        <label for="weight" class="input-value">Váha (g)</label>
-                        <input id="weight" class="form-control" type="number" th:field="*{weight}" min="0" required/>
-                    </div>
-                    <div class="form-group">
-                        <label for="points" class="input-value">Body</label>
-                        <input readonly id="points" class="form-control" type="text" th:field="*{points}"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="note" class="input-value">Poznámka</label>
-                        <input id="note" class="form-control" type="text" th:field="*{note}"/>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Upravit úlovek</button>
-                </form>
             </div>
-            <th:block th:each="imageId : ${catchDTO.imageIds()}">
+
+            <!-- FORMULÁŘ ROZMĚRŮ A POZNÁMKY -->
+            <form action="#" th:action="@{/catch/{id}/update(id=${catchDTO.id})}" th:object="${catchDTO}" method="post">
+
+                <div class="form-row">
+                    <div class="form-group col-6">
+                        <label for="size" class="small font-weight-bold text-muted">Délka (cm)</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-light border-right-0"><i class="fas fa-ruler-horizontal text-muted"></i></span>
+                            </div>
+                            <input id="size" class="form-control border-left-0 font-weight-bold text-dark" type="number" th:field="*{size}" min="0" required/>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-6">
+                        <label for="weight" class="small font-weight-bold text-muted">Váha (g)</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text bg-light border-right-0"><i class="fas fa-weight-hanging text-muted"></i></span>
+                            </div>
+                            <input id="weight" class="form-control border-left-0 font-weight-bold text-dark" type="number" th:field="*{weight}" min="0" required/>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-group">
-                    <a th:href="@{/image/{id}(id=${imageId})}">
-                        <img class="card-img-top" th:src="@{/image/{id}(id=${imageId})}" alt="">
-                    </a>
-                </div>
-                <div>
-                    <a class="btn btn-secondary" href="#" th:href="@{/image/delete/{catchId}/{imageId}(catchId=${catchDTO.id}, imageId=${imageId})}"
-                       th:attr="onclick='return confirm(\'' + 'Opravdu chcete smazat fotku?' + '\');'">
-                        Smazat fotku
-                    </a>
-                </div>
-            </th:block>
-            <br>
-            <br>
-            <div>
-                <h2>Nahrát fotku</h2>
-                <form action="#" th:action="@{/image/new/{id}(id=${catchDTO.id})}" method="post" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <label for="image" class="login-form-label">Fotka</label>
-                        <input type="file" name="image" id="image" accept="image/jpeg">
+                    <label for="points" class="small font-weight-bold text-muted">Body</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-light border-right-0"><i class="fas fa-star text-warning"></i></span>
+                        </div>
+                        <input readonly id="points" class="form-control border-left-0 bg-light font-weight-bold" type="text" th:field="*{points}"/>
                     </div>
-                    <button type="submit" id="submitBtn" class="btn btn-primary" disabled>Uložit fotku</button>
-                </form>
-            </div>
-            <br>
-            <div>
-                <a class="btn btn-primary" href="#" th:href="@{/catch/{id}/delete(id=${catchDTO.id})}"
-                   th:attr="onclick='return confirm(\'' + 'Opravdu chcete smazat úlovek?' + '\');'">
-                    Smazat úlovek
-                </a>
-            </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="note" class="small font-weight-bold text-muted">Poznámka</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text bg-light border-right-0"><i class="fas fa-comment-alt text-muted"></i></span>
+                        </div>
+                        <input id="note" class="form-control border-left-0" type="text" th:field="*{note}" placeholder="Místo, nástraha..."/>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-success btn-block font-weight-bold rounded-pill shadow-sm py-2 mt-4">
+                    <i class="fas fa-save mr-2"></i>Uložit změny
+                </button>
+            </form>
+
         </div>
     </div>
+
+    <!-- FOTOGALERIE ÚLOVKU -->
+    <div class="card shadow-sm border-0 rounded-lg overflow-hidden mb-4">
+        <div class="card-header bg-white border-bottom p-3">
+            <h6 class="font-weight-bold text-dark m-0">
+                <i class="fas fa-camera text-primary mr-2"></i>Fotky úlovku
+            </h6>
+        </div>
+        <div class="card-body p-3">
+
+            <!-- Zobrazené fotky -->
+            <div class="row" th:if="${catchDTO.imageIds() != null and !#sets.isEmpty(catchDTO.imageIds())}">
+                <div class="col-12 col-md-6 mb-3" th:each="imageId : ${catchDTO.imageIds()}">
+                    <div class="card border rounded-lg overflow-hidden shadow-sm h-100">
+                        <a th:href="@{/image/{id}(id=${imageId})}" target="_blank">
+                            <img class="card-img-top w-100" th:src="@{/image/{id}(id=${imageId})}" style="height: 200px; object-fit: cover;" alt="Fotka úlovku">
+                        </a>
+                        <div class="card-body p-2 text-center bg-light">
+                            <a class="btn btn-sm btn-outline-danger font-weight-bold rounded-pill px-3"
+                               th:href="@{/image/delete/{catchId}/{imageId}(catchId=${catchDTO.id}, imageId=${imageId})}"
+                               onclick="return confirm('Opravdu chcete smazat tuto fotku?');">
+                                <i class="fas fa-trash-alt mr-1"></i>Smazat fotku
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${catchDTO.imageIds() == null or #sets.isEmpty(catchDTO.imageIds())}" class="text-center py-4 text-muted">
+                <i class="fas fa-image fa-2x mb-2 d-block opacity-50"></i>
+                <small>K tomuto úlovku zatím nebyly nahrány žádné fotky.</small>
+            </div>
+
+            <hr class="my-3">
+
+            <!-- Formulář pro nahrání nové fotky -->
+            <form action="#" th:action="@{/image/new/{id}(id=${catchDTO.id})}" method="post" enctype="multipart/form-data">
+                <label class="small font-weight-bold text-muted d-block mb-2">Přidat novou fotku</label>
+                <div class="custom-file mb-3">
+                    <input type="file" name="image" class="custom-file-input" id="image" accept="image/jpeg,image/png">
+                    <label class="custom-file-label" for="image" id="fileLabel">Vyberte fotku...</label>
+                </div>
+                <button type="submit" id="submitBtn" class="btn btn-outline-primary btn-block font-weight-bold rounded-pill" disabled>
+                    <i class="fas fa-upload mr-2"></i>Nahrát fotku
+                </button>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- SMAZÁNÍ CELÉHO ÚLOVKU -->
+    <div class="text-center my-4">
+        <a class="btn btn-link text-danger font-weight-bold small"
+           th:href="@{/catch/{id}/delete(id=${catchDTO.id})}"
+           onclick="return confirm('Opravdu chcete kompletně smazat tento úlovek?');">
+            <i class="fas fa-trash-alt mr-1"></i>Smazat celý úlovek
+        </a>
+    </div>
+
 </div>
+
+<!-- SKRIPTY -->
 <script>
+    // Aktivace tlačítka pro nahrání fotky a zobrazení náhledu jména souboru
     const fileInput = document.getElementById('image');
     const submitBtn = document.getElementById('submitBtn');
+    const fileLabel = document.getElementById('fileLabel');
 
-    fileInput.addEventListener('change', function () {
-        submitBtn.disabled = !fileInput.files.length;
-    });
+    if (fileInput) {
+        fileInput.addEventListener('change', function () {
+            const hasFile = fileInput.files.length > 0;
+            submitBtn.disabled = !hasFile;
+            if (hasFile) {
+                fileLabel.textContent = fileInput.files[0].name;
+            } else {
+                fileLabel.textContent = 'Vyberte fotku...';
+            }
+        });
+    }
 </script>
 </body>
 </html>

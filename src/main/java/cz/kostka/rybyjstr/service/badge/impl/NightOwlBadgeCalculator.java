@@ -23,16 +23,18 @@ public class NightOwlBadgeCalculator implements BadgeCalculator {
 
         if (!result.isEmpty()) {
             Object[] row = result.get(0);
-            String hunterName = (String) row[0];
-            Long nightCatches = (Long) row[1];
+            Long hunterId = (Long) row[0];
+            String hunterName = (String) row[1];
+            Long nightCatches = (Long) row[2];
 
             return new BadgeDto(
                     BadgeType.NIGHT_OWL,
+                    hunterId,
                     hunterName,
                     nightCatches + " nočních ks"
             );
         }
 
-        return new BadgeDto(BadgeType.NIGHT_OWL, null, null);
+        return new BadgeDto(BadgeType.NIGHT_OWL,null, null, null);
     }
 }

@@ -7,7 +7,6 @@ import cz.kostka.rybyjstr.service.CatchService;
 import cz.kostka.rybyjstr.service.FishTypeService;
 import cz.kostka.rybyjstr.service.HunterService;
 import cz.kostka.rybyjstr.service.ImageService;
-import cz.kostka.rybyjstr.service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,57 +22,39 @@ public class CatchController {
     private final FishTypeService fishTypeService;
     private final HunterService hunterService;
     private final ImageService imageService;
-    private final StatisticsService statisticsService;
 
     @Autowired
     public CatchController(
             final CatchService catchService,
             final FishTypeService fishTypeService,
             final HunterService hunterService,
-            final ImageService imageService,
-            final StatisticsService statisticsService) {
+            final ImageService imageService) {
         this.catchService = catchService;
         this.fishTypeService = fishTypeService;
         this.hunterService = hunterService;
         this.imageService = imageService;
-        this.statisticsService = statisticsService;
     }
 
-    @GetMapping
-    public String getCatches(final Model model) {
-        addCatchModelAttributes(model);
+//    @GetMapping("/top/size")
+//    public String getAllCatchesBySizeSorted(final Model model) {
+//        model.addAttribute("topN", catchService.getAllCatchesBySize());
+//        model.addAttribute("title", "Úlovky podle velikosti");
+//        return "topCatch";
+//    }
 
-        return "catches";
-    }
-
-    @GetMapping("/allCatches")
-    public String getAllCatches(final Model model) {
-        model.addAttribute("allCatches", catchService.getAllCatchesLatestFirst());
-        return "allCatches";
-    }
-
-    @GetMapping("/top/size")
-    public String getAllCatchesBySizeSorted(final Model model) {
-        model.addAttribute("topN", catchService.getAllCatchesBySize());
-        model.addAttribute("title", "Úlovky podle velikosti");
+    @GetMapping("/top")
+    public String getTopCatches(final Model model) {
+        model.addAttribute("topBySize", catchService.getAllCatchesBySize());
+        model.addAttribute("topByWeight", catchService.getAllCatchesByWeight());
         return "topCatch";
     }
-
-    @GetMapping("/top/weight")
-    public String getAllCatchesByWeightSorted(final Model model) {
-        model.addAttribute("topN", catchService.getAllCatchesByWeight());
-        model.addAttribute("title", "Úlovky podle váhy");
-        return "topCatch";
-    }
-
-    private void addCatchModelAttributes(Model model) {
-        model.addAttribute("newCatchDTO", NewCatchDTO.empty());
-        model.addAttribute("allFishTypes", fishTypeService.getAllFishTypes());
-        model.addAttribute("allHunters", hunterService.getAllHunters());
-        model.addAttribute("allCatchCount", catchService.getAllCatchesCount());
-        model.addAttribute("allCatchSize", catchService.getAllCatchesSize());
-        model.addAttribute("topN", statisticsService.getTopN(catchService.getAllCatches(), 10));
-    }
+//
+//    @GetMapping("/top/weight")
+//    public String getAllCatchesByWeightSorted(final Model model) {
+//        model.addAttribute("topN", catchService.getAllCatchesByWeight());
+//        model.addAttribute("title", "Úlovky podle váhy");
+//        return "topCatch";
+//    }
 
     @PostMapping("/catch/new")
     public String newCatch(

@@ -69,4 +69,29 @@ public class StatisticsController {
         model.addAttribute("totalCountMap", statisticsService.getTotalCountPerHour());
         return "hourStatistic";
     }
+
+    @GetMapping()
+    public String getStatistics(final Model model) {
+        // 1. Hodiny
+        model.addAttribute("allStatsHour", statisticsService.getHourStatisticsTopN(3));
+        model.addAttribute("hunterStatsHour", statisticsService.getHunterStatisticsPerHour());
+        model.addAttribute("fishStatsHour", statisticsService.getFishStatisticsPerHour());
+        model.addAttribute("totalCountMapHour", statisticsService.getTotalCountPerHour());
+
+        // 2. Dny
+        model.addAttribute("allStatsDay", statisticsService.getDayStatisticsTopN(3));
+        model.addAttribute("hunterStatsDay", statisticsService.getHunterStatisticsPerDay());
+        model.addAttribute("fishStatsDay", statisticsService.getFishStatisticsPerDay());
+        model.addAttribute("totalCountMapDay", statisticsService.getTotalCountPerDay());
+
+        // 3. Ryby
+        model.addAttribute("fishStats", statisticsService.getFishStatistics());
+//        model.addAttribute("newFishTypeDTO", NewFishTypeDTO.empty());
+
+        // 4. Lovci (pokud pro ně máš podobnou metodu)
+        model.addAttribute("hunterStats", statisticsService.getHunterStatistics());
+//        model.addAttribute("newHunterDTO", NewHunterDTO.empty());
+
+        return "statistics";
+    }
 }

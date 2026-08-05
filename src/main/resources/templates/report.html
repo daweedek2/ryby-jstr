@@ -6,240 +6,388 @@
     <script src="/js/graphs.js"></script>
     <script src="/js/fish-length.js"></script>
 </head>
-<body>
-<div class="container">
-  <div th:insert="~{fragments/title :: title}"></div>
-    <div class="row cypher-list">
-        <div class="col-sm-12">
-            <h2 th:text="Souhrn"></h2>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">Počet ryb</th>
-                    <th scope="col">Počet cm celkem</th>
-                    <th scope="col">Druhy</th>
-                    <th scope="col">Lovci</th>
-                </tr>
-                </thead>
-                <tbody>
-                <th:block th:each="history : ${historyList}">
+<body class="bg-light">
+
+<!-- Horní Lišta a Sidebar -->
+<div th:replace="~{fragments/navigation :: navbar}"></div>
+
+<div class="container px-3 my-3">
+
+    <!-- ZÁHLAVÍ STRÁNKY -->
+    <div class="card shadow-sm border-0 mb-4 rounded-lg">
+        <div class="card-body p-3 d-flex justify-content-between align-items-center">
+            <div>
+                <small class="text-muted d-block font-weight-bold text-uppercase">Kompletní závěrečný přehled</small>
+                <h3 class="font-weight-bold text-dark m-0">
+                    <i class="fas fa-file-alt text-primary mr-2"></i>Report výpravy
+                </h3>
+            </div>
+            <div class="text-right">
+                <button onclick="window.print()" class="btn btn-outline-secondary btn-sm rounded-pill font-weight-bold d-none d-sm-inline-block">
+                    <i class="fas fa-print mr-1"></i>Tisk
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. SOUHRN METRIK -->
+    <div class="card shadow-sm border-0 mb-4 rounded-lg overflow-hidden" th:each="history : ${historyList}">
+        <div class="card-header bg-dark text-white p-3">
+            <h5 class="font-weight-bold m-0 fs-5">
+                <i class="fas fa-calculator text-primary mr-2"></i>Celkový souhrn výpravy
+            </h5>
+        </div>
+        <div class="card-body p-3">
+            <div class="row text-center bg-light rounded py-3 mx-0 mb-3 border">
+                <div class="col-6 border-right">
+                    <small class="text-muted d-block font-weight-bold text-uppercase">Počet ryb</small>
+                    <strong class="text-primary fs-3" th:text="|${history.totalFishCount} ks|">120 ks</strong>
+                </div>
+                <div class="col-6">
+                    <small class="text-muted d-block font-weight-bold text-uppercase">Celkem metrů</small>
+                    <strong class="text-success fs-3"
+                            th:text="|${#numbers.formatDecimal(history.totalFishSize / 100.0, 1, 'WHITESPACE', 1, 'POINT')} m|">120 m</strong>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 col-md-6 mb-2" th:if="${history.hunterNames != null}">
+                    <small class="text-muted d-block font-weight-bold text-uppercase mb-1">
+                        <i class="fas fa-users text-warning mr-1"></i>Zúčastnění lovci:
+                    </small>
+                    <p class="text-dark font-weight-bold mb-0" th:text="${history.hunterNames}">David, Jirka, Tomáš</p>
+                </div>
+                <div class="col-12 col-md-6" th:if="${history.fishTypeNames != null}">
+                    <small class="text-muted d-block font-weight-bold text-uppercase mb-1">
+                        <i class="fas fa-fish text-info mr-1"></i>Ulovené druhy ryb:
+                    </small>
+                    <p class="text-muted mb-0 font-weight-bold" th:text="${history.fishTypeNames}">Kapr, Jeseter, Amur</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. SUMMARY DÉLKY RYB FRAGMENT -->
+    <div class="mb-4" th:if="${totalCatchSize != null}">
+        <div th:replace="~{fragments/fishLength :: fishLength()}"></div>
+    </div>
+
+    <!-- 3. TOP 10 REŽIMY: VELIKOST & VÁHA -->
+    <div class="row">
+        <!-- TOP 10 podle velikosti -->
+        <div class="col-12 col-md-6 mb-4">
+            <div class="card shadow-sm border-0 rounded-lg h-100 overflow-hidden">
+                <div class="card-header bg-dark text-white p-3">
+                    <h5 class="font-weight-bold m-0 fs-5">
+                        <i class="fas fa-trophy text-warning mr-2"></i>TOP 10 podle délky
+                    </h5>
+                </div>
+                <div class="card-body p-2">
+                    <div class="list-group list-group-flush">
+                        <a th:each="top : ${top10Size}"
+                           th:href="@{/catch/{id}(id=${top.id()})}"
+                           class="list-group-item list-group-item-action bg-light rounded mb-1 p-2 border d-flex justify-content-between align-items-center text-dark text-decoration-none">
+                            <div>
+                                <strong class="text-dark" th:text="${top.hunter()}">Karel</strong>
+                                <small class="text-muted ml-1" th:text="|(${top.fish()})|">(Kapr)</small>
+                            </div>
+                            <div>
+                                <span class="badge badge-primary font-weight-bold px-2 py-1" th:text="${top.size()}">150 cm</span>
+                                <span class="badge badge-secondary font-weight-bold px-2 py-1 ml-1" th:if="${top.weight() != null}" th:text="${top.weight()}">1000 g</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOP 10 podle váhy -->
+        <div class="col-12 col-md-6 mb-4">
+            <div class="card shadow-sm border-0 rounded-lg h-100 overflow-hidden">
+                <div class="card-header bg-dark text-white p-3">
+                    <h5 class="font-weight-bold m-0 fs-5">
+                        <i class="fas fa-weight-hanging text-success mr-2"></i>TOP 10 podle váhy
+                    </h5>
+                </div>
+                <div class="card-body p-2">
+                    <div class="list-group list-group-flush">
+                        <a th:each="top : ${top10Weight}"
+                           th:href="@{/catch/{id}(id=${top.id()})}"
+                           class="list-group-item list-group-item-action bg-light rounded mb-1 p-2 border d-flex justify-content-between align-items-center text-dark text-decoration-none">
+                            <div>
+                                <strong class="text-dark" th:text="${top.hunter()}">Karel</strong>
+                                <small class="text-muted ml-1" th:text="|(${top.fish()})|">(Kapr)</small>
+                            </div>
+                            <div>
+                                <span class="badge badge-success font-weight-bold px-2 py-1" th:if="${top.weight() != null}" th:text="${top.weight()}">60000 g</span>
+                                <span class="badge badge-secondary font-weight-bold px-2 py-1 ml-1" th:text="${top.size()}">150 cm</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. STATISTIKY RYB (KARTY) -->
+    <h4 class="font-weight-bold text-dark mb-3">
+        <i class="fas fa-fish text-info mr-2"></i>Statistiky podle druhů ryb
+    </h4>
+    <div class="row mb-4">
+        <div class="col-12 col-md-6 mb-3 px-2" th:each="fishStats : ${allFishStats}">
+            <div class="card shadow-sm border-0 rounded-lg h-100 overflow-hidden">
+                <div class="card-header bg-dark text-white p-3 d-flex justify-content-between align-items-center">
+                    <h5 class="font-weight-bold m-0" th:text="${fishStats.name()}">Kapr</h5>
+                    <span class="badge badge-info px-3 py-2 font-weight-bold rounded-pill"
+                          th:text="|${fishStats.totalFishCount()} celkem|">7 celkem</span>
+                </div>
+                <div class="card-body p-3">
+                    <small class="text-muted d-block font-weight-bold text-uppercase mb-1">Rozdělení po lovcích:</small>
+                    <div class="d-flex flex-wrap gap-1 mb-3">
+                            <span class="badge badge-light border mr-1 mb-1 px-2 py-1 font-weight-bold text-dark"
+                                  th:each="catch : ${fishStats.catchesMap()}"
+                                  th:text="|${catch.key}: ${catch.value} ks|">Jan: 5 ks</span>
+                    </div>
+
+                    <div th:if="${fishStats.maxSizeCatches() != null and !fishStats.maxSizeCatches().isEmpty()}">
+                        <small class="text-muted d-block font-weight-bold text-uppercase mb-1">Největší úlovek:</small>
+                        <div class="list-group list-group-flush">
+                            <a th:each="maxCatch : ${fishStats.maxSizeCatches()}"
+                               th:href="@{/catch/{id}(id=${maxCatch.id()})}"
+                               class="list-group-item list-group-item-action bg-light rounded mb-1 p-2 border d-flex justify-content-between align-items-center text-dark text-decoration-none">
+                                <strong th:text="${maxCatch.hunter()}">Jan</strong>
+                                <span class="badge badge-dark font-weight-bold px-2 py-1" th:text="${maxCatch.size() + ' cm'}">150 cm</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. STATISTIKY LOVCŮ (KARTY) -->
+    <h4 class="font-weight-bold text-dark mb-3">
+        <i class="fas fa-users text-warning mr-2"></i>Statistiky podle lovců
+    </h4>
+    <div class="row mb-4">
+        <div class="col-12 col-md-6 mb-3 px-2" th:each="hunterStats : ${allHunterStats}">
+            <div class="card shadow-sm border-0 rounded-lg h-100 overflow-hidden">
+                <div class="card-header bg-dark text-white p-3 d-flex justify-content-between align-items-center">
+                    <h5 class="font-weight-bold m-0" th:text="${hunterStats.name()}">Jan</h5>
+                    <span class="badge badge-warning text-dark px-3 py-2 font-weight-bold rounded-pill"
+                          th:text="|${hunterStats.totalFishCount()} celkem|">8 celkem</span>
+                </div>
+                <div class="card-body p-3">
+                    <small class="text-muted d-block font-weight-bold text-uppercase mb-1">Úlovky podle druhů:</small>
+                    <div class="d-flex flex-wrap gap-1 mb-3">
+                            <span class="badge badge-light border mr-1 mb-1 px-2 py-1 font-weight-bold text-dark"
+                                  th:each="catch : ${hunterStats.catchesMap()}"
+                                  th:text="|${catch.key}: ${catch.value} ks|">Kapr: 5 ks</span>
+                    </div>
+
+                    <div th:each="maxCatchMap : ${hunterStats.maxSizeCatchesMap()}">
+                        <small class="text-muted d-block font-weight-bold text-uppercase mb-1" th:text="|Největší ${maxCatchMap.key}:|">Největší kapr:</small>
+                        <div class="list-group list-group-flush mb-2">
+                            <a th:each="maxCatch : ${maxCatchMap.value}"
+                               th:href="@{/catch/{id}(id=${maxCatch.id()})}"
+                               class="list-group-item list-group-item-action bg-light rounded mb-1 p-2 border d-flex justify-content-between align-items-center text-dark text-decoration-none">
+                                <strong th:text="${maxCatch.fish()}">Kapr</strong>
+                                <span class="badge badge-dark font-weight-bold px-2 py-1" th:text="${maxCatch.size() + ' cm'}">150 cm</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. VŠECHNY ÚLOVKY (KARTY NEBO TABULKA) -->
+    <div class="card shadow-sm border-0 mb-4 rounded-lg overflow-hidden">
+        <div class="card-header bg-dark text-white p-3 d-flex justify-content-between align-items-center">
+            <h5 class="font-weight-bold m-0 fs-5">
+                <i class="fas fa-list text-primary mr-2"></i>Všechny úlovky
+            </h5>
+            <span class="badge badge-primary px-3 py-2 font-weight-bold rounded-pill"
+                  th:text="|${allCatches != null ? allCatches.size() : 0} úlovků|">0 úlovků</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="bg-light">
                     <tr>
-                        <td th:text="|${history.totalFishCount} ks|">120 ks</td>
-                        <td th:text="|${#numbers.formatDecimal(history.totalFishSize, 0, 'WHITESPACE', 0, 'POINT')} cm|">120 cm</td>
-                        <td th:text="${history.fishTypeNames}">Kapr, Jeseter</td>
-                        <td th:text="${history.hunterNames}">David, Jirka</td>
+                        <th scope="col" class="border-0">Čas</th>
+                        <th scope="col" class="border-0">Lovec</th>
+                        <th scope="col" class="border-0">Ryba</th>
+                        <th scope="col" class="border-0 text-right">Rozměry</th>
                     </tr>
-                </th:block>
-                </tbody>
-            </table>
-        </div>
-    </div>
-  <div class="row cypher-list">
-    <div class="col-sm-12">
-      <h2 th:text="|Všechny úlovky (${allCatches.size()})|"></h2>
-      <table class="table">
-        <thead>
-        <tr>
-          <th scope="col">Čas</th>
-          <th scope="col">Lovec</th>
-          <th scope="col">Ryba</th>
-        </tr>
-        </thead>
-        <tbody>
-        <th:block th:each="catch : ${allCatches}">
-            <tr>
-              <th th:text="${#temporals.format(catch.timestamp(), ' dd.MM HH:mm')}">1</th>
-              <td th:text="${catch.hunter()}">Jan</td>
-              <td th:text="|${catch.fish()} ${catch.size()} ${catch.weight()}|">Kapr 120 cm 60000 g</td>
-            </tr>
-        </th:block>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <div class="row cypher-list">
-    <div class="col-sm-12">
-      <h1>Statistiky ryb</h1>
-      <th:block th:each="fishStats : ${allFishStats}">
-        <div class="cypher">
-          <h2 th:text="|${fishStats.name()} (${fishStats.totalFishCount()} celkem)|">kapr (7 celkem)</h2>
-          <div class="row align-items-center">
-            <th:block th:each="catch : ${fishStats.catchesMap()}">
-              <div class="col" th:text="|${catch.key} : ${catch.value} ks|">Jan : 5</div>
-            </th:block>
-          </div>
-          <div class="row align-items-center">
-            <div class="col-sm-12">
-              <th:block th:each="maxCatch : ${fishStats.maxSizeCatches()}">
-                <a class="btn btn-secondary">
-                  <div class="col" th:text="|${maxCatch.hunter()} ${maxCatch.size()} cm|">150 cm</div>
-                </a>
-              </th:block>
+                    </thead>
+                    <tbody>
+                    <tr th:each="catch : ${allCatches}">
+                        <td class="font-weight-bold text-muted small"
+                            th:text="${catch.timestamp() != null ? #temporals.format(catch.timestamp(), 'dd.MM. HH:mm') : ''}">01.06. 14:30</td>
+                        <td>
+                            <span class="badge badge-success font-weight-bold px-2 py-1" th:text="${catch.hunter()}">Jan</span>
+                        </td>
+                        <td>
+                            <strong class="text-dark" th:text="${catch.fish()}">Kapr</strong>
+                        </td>
+                        <td class="text-right">
+                            <span class="badge badge-dark font-weight-bold px-2 py-1" th:text="${catch.size() != null ? catch.size() : '-'}">120 cm</span>
+                            <span class="badge badge-secondary font-weight-bold px-2 py-1 ml-1" th:if="${catch.weight() != null}" th:text="${catch.weight()}">6000 g</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
-          </div>
         </div>
-      </th:block>
     </div>
-  </div>
-  <div class="row cypher-list">
-    <div class="col-sm-12">
-      <h1>Statistiky lovců</h1>
-      <th:block th:each="hunterStats : ${allHunterStats}">
-        <div class="cypher">
-          <h2 th:text="|${hunterStats.name()} (${hunterStats.totalFishCount()} celkem)|">Jan</h2>
-          <div class="row align-items-center">
-            <th:block th:each="catch : ${hunterStats.catchesMap()}">
-              <div class="col" th:text="|${catch.key} : ${catch.value} ks|">Kapr : 5</div>
-            </th:block>
-          </div>
-          <th:block th:each="maxCatchMap : ${hunterStats.maxSizeCatchesMap()}">
-            <div class="row align-items-center">
-              <div class="col-sm-12">
-                <h2 th:text="${maxCatchMap.key}">kapr</h2>
-                <th:block th:each="maxCatch : ${maxCatchMap.value}">
-                  <a class="btn btn-secondary">
-                    <div class="col" th:text="|${maxCatch.fish()} ${maxCatch.size()} cm|">150 cm</div>
-                  </a>
-                </th:block>
-              </div>
-            </div>
-          </th:block>
-        </div>
-      </th:block>
-    </div>
-  </div>
-  <div class="row cypher-list">
-    <div class="col-sm-12">
-      <h2>Úlovky podle velikosti</h2>
-      <th:block th:each="top : ${top10Size}">
-        <div class="cypher">
-          <div class="align-items-center">
-            <a class="btn btn-secondary">
-              <div class="col" th:text="|${top.hunter()} ${top.fish()} ${top.size()} ${top.weight()}|"> Karel 150 cm 1000 g</div>
-            </a>
-          </div>
-        </div>
-      </th:block>
-    </div>
-  </div>
-  <div class="row cypher-list">
-    <div class="col-sm-12">
-      <h2>Úlovky podle váhy</h2>
-      <th:block th:each="top : ${top10Weight}">
-        <div class="cypher">
-          <div class="align-items-center">
-            <a class="btn btn-secondary">
-              <div class="col" th:text="|${top.hunter()} ${top.fish()} ${top.size()} ${top.weight()}|"> Karel 150 cm 1000 g</div>
-            </a>
-          </div>
-        </div>
-      </th:block>
-    </div>
-  </div>
-  <div class="row cypher-list">
-      <div class="col-sm-12">
-          <div class="cypher">
-            <div th:insert="~{fragments/fishLength :: fishLength()}"></div>
-          </div>
-      </div>
-  </div>
-    <div class="row cypher-list">
-        <div class="col-sm-12">
-            <h1>Graf lovců</h1>
-            <div class="cypher">
-                <div class="row align-items-center">
-                    <canvas th:attr="id='graf-lovci'"></canvas>
+
+    <!-- 7. SEKCET GRAFŮ -->
+    <h4 class="font-weight-bold text-dark mb-3">
+        <i class="fas fa-chart-bar text-primary mr-2"></i>Vizualizace a grafy
+    </h4>
+    <div class="row">
+
+        <!-- Graf lovců -->
+        <div class="col-12 col-lg-6 mb-4">
+            <div class="card shadow-sm border-0 rounded-lg h-100 overflow-hidden">
+                <div class="card-header bg-dark text-white p-3">
+                    <h6 class="font-weight-bold m-0"><i class="fas fa-users text-warning mr-2"></i>Úlovky podle lovců</h6>
+                </div>
+                <div class="card-body p-3">
+                    <div style="position: relative; width:100%; min-height: 240px;">
+                        <canvas id="graf-lovci"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row cypher-list">
-        <div class="col-sm-12">
-            <h1>Graf ryb</h1>
-            <div class="cypher">
-                <div class="row align-items-center">
-                    <canvas th:attr="id='graf-ryby'"></canvas>
+
+        <!-- Graf ryb -->
+        <div class="col-12 col-lg-6 mb-4">
+            <div class="card shadow-sm border-0 rounded-lg h-100 overflow-hidden">
+                <div class="card-header bg-dark text-white p-3">
+                    <h6 class="font-weight-bold m-0"><i class="fas fa-fish text-info mr-2"></i>Úlovky podle druhů ryb</h6>
+                </div>
+                <div class="card-body p-3">
+                    <div style="position: relative; width:100%; min-height: 240px;">
+                        <canvas id="graf-ryby"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row cypher-list">
-        <div class="col-sm-12">
-            <h1>Ryby za hodinu</h1>
-            <div class="cypher">
-                <div class="row align-items-center">
-                    <canvas th:attr="id='graf-ryby-hodina'"></canvas>
+
+        <!-- Ryby za hodinu -->
+        <div class="col-12 col-lg-6 mb-4">
+            <div class="card shadow-sm border-0 rounded-lg h-100 overflow-hidden">
+                <div class="card-header bg-dark text-white p-3">
+                    <h6 class="font-weight-bold m-0"><i class="far fa-clock text-primary mr-2"></i>Aktivita ryb podle hodin</h6>
+                </div>
+                <div class="card-body p-3">
+                    <div style="position: relative; width:100%; min-height: 220px;">
+                        <canvas id="graf-ryby-hodina"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row cypher-list">
-        <div class="col-sm-12">
-            <h1>Ryby za den</h1>
-            <div class="cypher">
-                <div class="row align-items-center">
-                    <canvas th:attr="id='graf-ryby-den'"></canvas>
+
+        <!-- Ryby za den -->
+        <div class="col-12 col-lg-6 mb-4">
+            <div class="card shadow-sm border-0 rounded-lg h-100 overflow-hidden">
+                <div class="card-header bg-dark text-white p-3">
+                    <h6 class="font-weight-bold m-0"><i class="far fa-calendar-alt text-success mr-2"></i>Průběh úlovků po dnech</h6>
+                </div>
+                <div class="card-body p-3">
+                    <div style="position: relative; width:100%; min-height: 220px;">
+                        <canvas id="graf-ryby-den"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row cypher-list">
-        <div class="col-sm-12">
-            <h1>Kapři podle velikosti</h1>
-            <div class="cypher">
-                <div class="row align-items-center">
-                    <canvas th:attr="id='graf-kapr'"></canvas>
+
+        <!-- Kapři podle velikosti -->
+        <div class="col-12 col-lg-6 mb-4">
+            <div class="card shadow-sm border-0 rounded-lg h-100 overflow-hidden">
+                <div class="card-header bg-dark text-white p-3">
+                    <h6 class="font-weight-bold m-0"><i class="fas fa-ruler-horizontal text-warning mr-2"></i>Kapři podle velikosti</h6>
+                </div>
+                <div class="card-body p-3">
+                    <div style="position: relative; width:100%; min-height: 220px;">
+                        <canvas id="graf-kapr"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row cypher-list">
-        <div class="col-sm-12">
-            <h1>Jeseteři podle velikosti</h1>
-            <div class="cypher">
-                <div class="row align-items-center">
-                    <canvas th:attr="id='graf-jeseter'"></canvas>
+
+        <!-- Jeseteři podle velikosti -->
+        <div class="col-12 col-lg-6 mb-4">
+            <div class="card shadow-sm border-0 rounded-lg h-100 overflow-hidden">
+                <div class="card-header bg-dark text-white p-3">
+                    <h6 class="font-weight-bold m-0"><i class="fas fa-ruler-horizontal text-danger mr-2"></i>Jeseteři podle velikosti</h6>
+                </div>
+                <div class="card-body p-3">
+                    <div style="position: relative; width:100%; min-height: 220px;">
+                        <canvas id="graf-jeseter"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
-    </div>
+
 </div>
+
+<!-- THYMELEAF INLINING JS INICIALIZACE -->
 <script th:inline="javascript">
     /*<![CDATA[*/
-    // Create the graphs for hunters by fish
-    let hunters = [[${allHunterStatsGraph.names()}]];
-    let data = [[${allHunterStatsGraph.nameWithCounts()}]];
-    createStackedBarGraph('graf-lovci', hunters, data);
+    document.addEventListener("DOMContentLoaded", function () {
+        // Graf lovců
+        let hunters = [[${allHunterStatsGraph != null ? allHunterStatsGraph.names() : null}]];
+        let data = [[${allHunterStatsGraph != null ? allHunterStatsGraph.nameWithCounts() : null}]];
+        if (hunters && data && typeof createStackedBarGraph === 'function') {
+            createStackedBarGraph('graf-lovci', hunters, data);
+        }
 
-    // Create the graphs for fish by hunter
-    let fishNames = [[${allFishStatsGraph.names()}]];
-    let hunterData = [[${allFishStatsGraph.nameWithCounts()}]];
-    createStackedBarGraph('graf-ryby', fishNames, hunterData);
+        // Graf ryb
+        let fishNames = [[${allFishStatsGraph != null ? allFishStatsGraph.names() : null}]];
+        let hunterData = [[${allFishStatsGraph != null ? allFishStatsGraph.nameWithCounts() : null}]];
+        if (fishNames && hunterData && typeof createStackedBarGraph === 'function') {
+            createStackedBarGraph('graf-ryby', fishNames, hunterData);
+        }
 
-    // Create the graphs for fish by hour
-    let hodiny = [[${totalCountHourMap.keySet()}]];
-    let hodinyCount = [[${totalCountHourMap.values()}]];
-    createLineGraph('graf-ryby-hodina', hodiny, hodinyCount);
+        // Ryby za hodinu
+        let hodiny = [[${totalCountHourMap != null ? totalCountHourMap.keySet() : null}]];
+        let hodinyCount = [[${totalCountHourMap != null ? totalCountHourMap.values() : null}]];
+        if (hodiny && hodinyCount && typeof createLineGraph === 'function') {
+            createLineGraph('graf-ryby-hodina', hodiny, hodinyCount);
+        }
 
-    // Create the graphs for fish by day
-    let dny = [[${totalCountDayMap.keySet()}]];
-    let dnyData = [[${totalCountDayMap.values()}]];
-    createLineGraph('graf-ryby-den', dny, dnyData);
+        // Ryby za den
+        let dny = [[${totalCountDayMap != null ? totalCountDayMap.keySet() : null}]];
+        let dnyData = [[${totalCountDayMap != null ? totalCountDayMap.values() : null}]];
+        if (dny && dnyData && typeof createLineGraph === 'function') {
+            createLineGraph('graf-ryby-den', dny, dnyData);
+        }
 
-    // Add fish length info
-    let cm = [[${totalCatchSize}]];
-    addFishLengthInfo(cm);
+        // Celková délka ryb
+        let cm = [[${totalCatchSize}]];
+        if (cm && typeof addFishLengthInfo === 'function') {
+            addFishLengthInfo(cm);
+        }
 
-    // Create the graphs for carp
-    let kapriVelikost = [[${carpMap.keySet()}]];
-    let kapriData = [[${carpMap.values()}]];
-    createLineGraph('graf-kapr', kapriVelikost, kapriData);
+        // Kapři podle velikosti
+        let kapriVelikost = [[${carpMap != null ? carpMap.keySet() : null}]];
+        let kapriData = [[${carpMap != null ? carpMap.values() : null}]];
+        if (kapriVelikost && kapriData && typeof createLineGraph === 'function') {
+            createLineGraph('graf-kapr', kapriVelikost, kapriData);
+        }
 
-    // Create the graphs for jeseter
-    let jeseterVelikost = [[${jeseterMap.keySet()}]];
-    let jeseterData = [[${jeseterMap.values()}]];
-    createLineGraph('graf-jeseter', jeseterVelikost, jeseterData);
+        // Jeseteři podle velikosti
+        let jeseterVelikost = [[${jeseterMap != null ? jeseterMap.keySet() : null}]];
+        let jeseterData = [[${jeseterMap != null ? jeseterMap.values() : null}]];
+        if (jeseterVelikost && jeseterData && typeof createLineGraph === 'function') {
+            createLineGraph('graf-jeseter', jeseterVelikost, jeseterData);
+        }
+    });
     /*]]>*/
 </script>
 </body>

@@ -23,16 +23,18 @@ public class KingOfPondBadgeCalculator implements BadgeCalculator {
 
         if (!result.isEmpty()) {
             Object[] row = result.get(0);
-            String hunterName = (String) row[0];
-            Long totalPoints = (Long) row[1];
+            Long hunterId = (Long) row[0];
+            String hunterName = (String) row[1];
+            Long totalPoints = (Long) row[2];
 
             return new BadgeDto(
                     BadgeType.KING_OF_POND,
+                    hunterId,
                     hunterName,
                     totalPoints + " bodů"
             );
         }
 
-        return new BadgeDto(BadgeType.KING_OF_POND, null, null);
+        return new BadgeDto(BadgeType.KING_OF_POND, null, null, null);
     }
 }

@@ -3,18 +3,25 @@ package cz.kostka.rybyjstr.service;
 import cz.kostka.rybyjstr.domain.Catch;
 import cz.kostka.rybyjstr.domain.FishType;
 import cz.kostka.rybyjstr.domain.Hunter;
-import cz.kostka.rybyjstr.domain.Image;
-import cz.kostka.rybyjstr.dto.*;
+import cz.kostka.rybyjstr.dto.CatchDTO;
+import cz.kostka.rybyjstr.dto.CatchViewDTO;
+import cz.kostka.rybyjstr.dto.HunterStatsDto;
+import cz.kostka.rybyjstr.dto.NewCatchDTO;
 import cz.kostka.rybyjstr.repository.CatchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,7 +29,7 @@ import java.util.stream.Collectors;
 @Service
 public class CatchService {
 
-    public static final int CATCHES_PER_PAGE = 50;
+    public static final int CATCHES_PER_PAGE = 20;
     private final CatchRepository catchRepository;
     private final ImageService imageService;
 
@@ -34,13 +41,6 @@ public class CatchService {
 
     public List<CatchDTO> getAllCatches() {
         return catchRepository.findAll(Sort.by("timestamp"))
-                .stream()
-                .map(this::mapToCatchDTOWithoutImage)
-                .toList();
-    }
-
-    public List<CatchDTO> getAllCatchesLatestFirst() {
-        return catchRepository.findAllByOrderByTimestampDesc()
                 .stream()
                 .map(this::mapToCatchDTOWithoutImage)
                 .toList();
@@ -86,7 +86,14 @@ public class CatchService {
     }
 
     private Set<Long> getImageIds(Catch theCatch) {
-        return imageService.getImagesForCatch(theCatch).stream().map(Image::getId).collect(Collectors.toSet());
+        if (theCatch == null || theCatch.getId() == null) {
+            return Set.of();
+        }
+
+        return imageService.getImageIds(List.of(theCatch.getId()))
+                .stream()
+                .map(row -> (Long) row[1]) // row[1] je přímo ID fotky (Long)
+                .collect(Collectors.toSet());
     }
 
     public Catch getCatch(final Long catchId) {
@@ -153,6 +160,21 @@ public class CatchService {
                 getImageIds(catchy));
     }
 
+    private CatchDTO mapToCatchDTOWithImage(Catch catchy, Set<Long> imageIds) {
+        return new CatchDTO(
+                catchy.getId(),
+                catchy.getTimestamp(),
+                catchy.getFishType().getType(),
+                catchy.getFishType().getId(),
+                catchy.getHunter().getName(),
+                catchy.getHunter().getId(),
+                catchy.getSize(),
+                catchy.getWeight(),
+                catchy.getNote(),
+                catchy.getPoints(),
+                imageIds);
+    }
+
     public void updateCatch(final CatchDTO catchDTO) {
         final Catch theCatch = getCatch(catchDTO.id());
         theCatch.setNote(catchDTO.note());
@@ -210,30 +232,81 @@ public class CatchService {
                 .toList();
     }
 
-    public List<CatchDTO> getAllCatchesWithImageLatestFirst(final int index) {
-        final long allCatches = getAllCatchesCount();
-        return catchRepository.findAllByOrderByTimestampDesc()
-                .subList(
-                        index * CATCHES_PER_PAGE,
-                        calculateNextCatchBorder(index) < allCatches ? calculateNextCatchBorder(index) : ((int) allCatches))
-                .stream()
-                .map(this::mapToCatchDTOWithImage)
-                .toList();
-    }
+    public int getIndexForNextCatches(final int currentPage) {
+        Pageable pageable = PageRequest.of(currentPage, CATCHES_PER_PAGE);
+        Page<Catch> page = catchRepository.findAllByOrderByTimestampDesc(pageable);
 
-    private static int calculateNextCatchBorder(int index) {
-        return (index + 1) * CATCHES_PER_PAGE;
-    }
-
-    public int getIndexForNextCatches(final int currentIndex) {
-        if (getAllCatchesCount() - calculateNextCatchBorder(currentIndex) >= 0) {
-            return currentIndex + 1;
-        }
-
-        return 0;
+        // Pokud existuje další stránka v DB, vrátí currentPage + 1, jinak vrátí currentPage
+        return page.hasNext() ? currentPage + 1 : currentPage;
     }
 
     public List<HunterStatsDto> getAllHunterLeaderboard() {
         return catchRepository.getFullLeaderboard();
+    }
+
+    @Transactional(readOnly = true)
+    public List<CatchDTO> getAllCatchesOnlyWithImageLatestFirst(final int pageIndex) {
+        Pageable pageable = PageRequest.of(pageIndex, CATCHES_PER_PAGE);
+
+        // 1. Načteme pouze úlovky s fotkami
+        List<Catch> catches = catchRepository.findAllOnlyWithImagesOrderByTimestampDesc(pageable).getContent();
+        if (catches.isEmpty()) {
+            return List.of();
+        }
+
+        // 2. Vytáhneme jejich IDčka
+        List<Long> catchIds = catches.stream().map(Catch::getId).toList();
+
+        // 3. Vytáhneme IDčka fotek v 1 SQL dotazu
+        Map<Long, Set<Long>> imageIdsByCatchId = imageService.getImageIds(catchIds)
+                .stream()
+                .collect(Collectors.groupingBy(
+                        row -> (Long) row[0],
+                        Collectors.mapping(row -> (Long) row[1], Collectors.toSet())
+                ));
+
+        // 4. Namapujeme na DTO
+        return catches.stream()
+                .map(c -> mapToCatchDTOWithImage(c, imageIdsByCatchId.getOrDefault(c.getId(), Set.of())))
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<CatchDTO> getAllCatchesWithImageLatestFirst(final int pageIndex) {
+        Pageable pageable = PageRequest.of(pageIndex, CATCHES_PER_PAGE);
+
+        // 1. Načteme 20 úlovků z DB
+        List<Catch> catches = catchRepository.findAllByOrderByTimestampDesc(pageable).getContent();
+        if (catches.isEmpty()) {
+            return List.of();
+        }
+
+        // 2. Sebereme jejich Catch ID
+        List<Long> catchIds = catches.stream().map(Catch::getId).toList();
+
+        // 3. Vytáhneme IDčka obrázků v 1 SQL dotazu a seskupíme podle catchId
+        Map<Long, Set<Long>> imageIdsByCatchId = imageService.getImageIds(catchIds)
+                .stream()
+                .collect(Collectors.groupingBy(
+                        row -> (Long) row[0],
+                        Collectors.mapping(row -> (Long) row[1], Collectors.toSet())
+                ));
+
+        // 4. Namapujeme na DTO bez jakýchkoliv dalších DB dotazů
+        return catches.stream()
+                .map(c -> mapToCatchDTOWithImage(c, imageIdsByCatchId.getOrDefault(c.getId(), Set.of())))
+                .toList();
+    }
+
+    /**
+     * Spočíta index pro následující stránku FOTOKNIHY (pouze úlovky s fotkou).
+     * Pokud existuje další stránka v DB, vrátí (currentPage + 1).
+     * Pokud už další úlovky s fotkou NEJSOU, vrátí currentPage.
+     */
+    public int getNextPageIndexForCatchesWithImages(final int currentPage) {
+        Pageable pageable = PageRequest.of(currentPage, CATCHES_PER_PAGE);
+        Page<Catch> page = catchRepository.findAllOnlyWithImagesOrderByTimestampDesc(pageable);
+
+        return page.hasNext() ? currentPage + 1 : currentPage;
     }
 }

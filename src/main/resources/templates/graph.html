@@ -6,99 +6,184 @@
     <script src="/js/graphs.js"></script>
     <script src="/js/fish-length.js"></script>
 </head>
-<body>
-<div class="container">
-    <div th:insert="~{fragments/title :: title}"></div>
-    <div class="row cypher-list">
-        <div class="col-sm-12">
-            <div th:insert="~{fragments/fishLength :: fishLength()}"></div>
-        </div>
-        <div class="col-sm-12">
-            <h1>Graf lovců</h1>
-                <div class="cypher">
-                    <div class="row align-items-center">
-                        <canvas th:attr="id='graf-lovci'"></canvas>
-                    </div>
-                </div>
-        </div>
-        <div class="col-sm-12">
-            <h1>Graf ryb</h1>
-            <div class="cypher">
-                <div class="row align-items-center">
-                    <canvas th:attr="id='graf-ryby'"></canvas>
-                </div>
+<body class="bg-light">
+
+<!-- Horní Lišta a Sidebar -->
+<div th:replace="~{fragments/navigation :: navbar}"></div>
+
+<div class="container px-3 my-3">
+
+    <!-- ZÁHLAVÍ STRÁNKY -->
+    <div class="card shadow-sm border-0 mb-4 rounded-lg">
+        <div class="card-body p-3 d-flex justify-content-between align-items-center">
+            <div>
+                <small class="text-muted d-block font-weight-bold text-uppercase">Vizualizace & Statistiky</small>
+                <h3 class="font-weight-bold text-dark m-0">
+                    <i class="fas fa-chart-line text-primary mr-2"></i>Grafy výpravy
+                </h3>
             </div>
-        </div>
-        <div class="col-sm-12">
-            <h1>Ryby za hodinu</h1>
-            <div class="cypher">
-                <div class="row align-items-center">
-                    <canvas th:attr="id='graf-ryby-hodina'"></canvas>
-                </div>
+            <div>
+                <a th:href="@{/statistics}" class="btn btn-outline-primary btn-sm rounded-pill font-weight-bold">
+                    <i class="fas fa-list mr-1"></i>Tabulky
+                </a>
             </div>
-        </div>
-        <div class="col-sm-12">
-            <h1>Ryby za den</h1>
-            <div class="cypher">
-                <div class="row align-items-center">
-                    <canvas th:attr="id='graf-ryby-den'"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-12">
-            <h1>Kapři podle velikosti</h1>
-            <div class="cypher">
-                <div class="row align-items-center">
-                    <canvas th:attr="id='graf-kapr'"></canvas>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-12">
-            <h1>Jeseteři podle velikosti</h1>
-            <div class="cypher">
-                <div class="row align-items-center">
-                    <canvas th:attr="id='graf-jeseter'"></canvas>
-                </div>
-            </div>
-        </div>
         </div>
     </div>
+
+    <!-- SUMMARY PRO CELKOVOU DÉLKU RYB -->
+    <div class="mb-4" th:if="${totalCatchSize != null}">
+        <div th:replace="~{fragments/fishLength :: fishLength()}"></div>
+    </div>
+
+    <!-- MŘÍŽKA GRAFŮ -->
+    <div class="row">
+
+        <!-- 1. Graf lovců -->
+        <div class="col-12 col-lg-6 mb-4">
+            <div class="card shadow-sm border-0 rounded-lg h-100 overflow-hidden">
+                <div class="card-header bg-dark text-white p-3 d-flex align-items-center">
+                    <i class="fas fa-users text-warning mr-2 fs-5"></i>
+                    <h5 class="font-weight-bold m-0">Úlovky podle lovců</h5>
+                </div>
+                <div class="card-body p-3">
+                    <div class="chart-container" style="position: relative; width:100%; min-height: 260px;">
+                        <canvas id="graf-lovci"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Graf ryb -->
+        <div class="col-12 col-lg-6 mb-4">
+            <div class="card shadow-sm border-0 rounded-lg h-100 overflow-hidden">
+                <div class="card-header bg-dark text-white p-3 d-flex align-items-center">
+                    <i class="fas fa-fish text-info mr-2 fs-5"></i>
+                    <h5 class="font-weight-bold m-0">Úlovky podle druhů ryb</h5>
+                </div>
+                <div class="card-body p-3">
+                    <div class="chart-container" style="position: relative; width:100%; min-height: 260px;">
+                        <canvas id="graf-ryby"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Ryby za hodinu -->
+        <div class="col-12 col-lg-6 mb-4">
+            <div class="card shadow-sm border-0 rounded-lg h-100 overflow-hidden">
+                <div class="card-header bg-dark text-white p-3 d-flex align-items-center">
+                    <i class="far fa-clock text-primary mr-2 fs-5"></i>
+                    <h5 class="font-weight-bold m-0">Aktivita ryb podle hodin</h5>
+                </div>
+                <div class="card-body p-3">
+                    <div class="chart-container" style="position: relative; width:100%; min-height: 240px;">
+                        <canvas id="graf-ryby-hodina"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Ryby za den -->
+        <div class="col-12 col-lg-6 mb-4">
+            <div class="card shadow-sm border-0 rounded-lg h-100 overflow-hidden">
+                <div class="card-header bg-dark text-white p-3 d-flex align-items-center">
+                    <i class="far fa-calendar-alt text-success mr-2 fs-5"></i>
+                    <h5 class="font-weight-bold m-0">Průběh úlovků po dnech</h5>
+                </div>
+                <div class="card-body p-3">
+                    <div class="chart-container" style="position: relative; width:100%; min-height: 240px;">
+                        <canvas id="graf-ryby-den"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Kapři podle velikosti -->
+        <div class="col-12 col-lg-6 mb-4">
+            <div class="card shadow-sm border-0 rounded-lg h-100 overflow-hidden">
+                <div class="card-header bg-dark text-white p-3 d-flex align-items-center">
+                    <i class="fas fa-ruler-horizontal text-warning mr-2 fs-5"></i>
+                    <h5 class="font-weight-bold m-0">Kapři podle velikosti (cm)</h5>
+                </div>
+                <div class="card-body p-3">
+                    <div class="chart-container" style="position: relative; width:100%; min-height: 240px;">
+                        <canvas id="graf-kapr"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. Jeseteři podle velikosti -->
+        <div class="col-12 col-lg-6 mb-4">
+            <div class="card shadow-sm border-0 rounded-lg h-100 overflow-hidden">
+                <div class="card-header bg-dark text-white p-3 d-flex align-items-center">
+                    <i class="fas fa-ruler-horizontal text-danger mr-2 fs-5"></i>
+                    <h5 class="font-weight-bold m-0">Jeseteři podle velikosti (cm)</h5>
+                </div>
+                <div class="card-body p-3">
+                    <div class="chart-container" style="position: relative; width:100%; min-height: 240px;">
+                        <canvas id="graf-jeseter"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 </div>
+
+<!-- THYMELEAF INLINING JS INICIALIZACE -->
 <script th:inline="javascript">
     /*<![CDATA[*/
-    // Create the graphs for hunters by fish
-    let hunters = [[${allHunterStatsGraph.names()}]];
-    let data = [[${allHunterStatsGraph.nameWithCounts()}]];
-    createStackedBarGraph('graf-lovci', hunters, data);
+    document.addEventListener("DOMContentLoaded", function () {
+        // Graf lovců
+        let hunters = [[${allHunterStatsGraph != null ? allHunterStatsGraph.names() : null}]];
+        let data = [[${allHunterStatsGraph != null ? allHunterStatsGraph.nameWithCounts() : null}]];
+        if (hunters && data && typeof createStackedBarGraph === 'function') {
+            createStackedBarGraph('graf-lovci', hunters, data);
+        }
 
-    // Create the graphs for fish by hunter
-    let fishNames = [[${allFishStatsGraph.names()}]];
-    let hunterData = [[${allFishStatsGraph.nameWithCounts()}]];
-    createStackedBarGraph('graf-ryby', fishNames, hunterData);
+        // Graf ryb
+        let fishNames = [[${allFishStatsGraph != null ? allFishStatsGraph.names() : null}]];
+        let hunterData = [[${allFishStatsGraph != null ? allFishStatsGraph.nameWithCounts() : null}]];
+        if (fishNames && hunterData && typeof createStackedBarGraph === 'function') {
+            createStackedBarGraph('graf-ryby', fishNames, hunterData);
+        }
 
-    // Create the graphs for fish by hour
-    let hodiny = [[${totalCountHourMap.keySet()}]];
-    let hodinyCount = [[${totalCountHourMap.values()}]];
-    createLineGraph('graf-ryby-hodina', hodiny, hodinyCount);
+        // Ryby za hodinu
+        let hodiny = [[${totalCountHourMap != null ? totalCountHourMap.keySet() : null}]];
+        let hodinyCount = [[${totalCountHourMap != null ? totalCountHourMap.values() : null}]];
+        if (hodiny && hodinyCount && typeof createLineGraph === 'function') {
+            createLineGraph('graf-ryby-hodina', hodiny, hodinyCount);
+        }
 
-    // Create the graphs for fish by day
-    let dny = [[${totalCountDayMap.keySet()}]];
-    let dnyData = [[${totalCountDayMap.values()}]];
-    createLineGraph('graf-ryby-den', dny, dnyData);
+        // Ryby za den
+        let dny = [[${totalCountDayMap != null ? totalCountDayMap.keySet() : null}]];
+        let dnyData = [[${totalCountDayMap != null ? totalCountDayMap.values() : null}]];
+        if (dny && dnyData && typeof createLineGraph === 'function') {
+            createLineGraph('graf-ryby-den', dny, dnyData);
+        }
 
-    // Add fish length info
-    let cm = [[${totalCatchSize}]];
-    addFishLengthInfo(cm);
+        // Celková délka ryb
+        let cm = [[${totalCatchSize}]];
+        if (cm && typeof addFishLengthInfo === 'function') {
+            addFishLengthInfo(cm);
+        }
 
-    // Create the graphs for carp
-    let kapriVelikost = [[${carpMap.keySet()}]];
-    let kapriData = [[${carpMap.values()}]];
-    createLineGraph('graf-kapr', kapriVelikost, kapriData);
+        // Kapři podle velikosti
+        let kapriVelikost = [[${carpMap != null ? carpMap.keySet() : null}]];
+        let kapriData = [[${carpMap != null ? carpMap.values() : null}]];
+        if (kapriVelikost && kapriData && typeof createLineGraph === 'function') {
+            createLineGraph('graf-kapr', kapriVelikost, kapriData);
+        }
 
-    // Create the graphs for jeseter
-    let jeseterVelikost = [[${jeseterMap.keySet()}]];
-    let jeseterData = [[${jeseterMap.values()}]];
-    createLineGraph('graf-jeseter', jeseterVelikost, jeseterData);
+        // Jeseteři podle velikosti
+        let jeseterVelikost = [[${jeseterMap != null ? jeseterMap.keySet() : null}]];
+        let jeseterData = [[${jeseterMap != null ? jeseterMap.values() : null}]];
+        if (jeseterVelikost && jeseterData && typeof createLineGraph === 'function') {
+            createLineGraph('graf-jeseter', jeseterVelikost, jeseterData);
+        }
+    });
     /*]]>*/
 </script>
 </body>

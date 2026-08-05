@@ -1,23 +1,186 @@
 <!DOCTYPE html>
 <html lang="cs" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="~{fragments/head :: head}"></div>
-<body>
-<div class="container">
-  <div th:insert="~{fragments/title :: title}"></div>
-  <div class="row">
-    <div class="col-sm-12 col-md-12 col-lg-6">
-      <h2 th:text="${title}">Úlovky podle velikosti</h2>
-      <th:block th:each="top : ${topN}">
-        <div class="cypher">
-          <div class="align-items-center">
-            <a class="btn btn-secondary" th:href="@{/catch/{id}(id=${top.id()})}">
-              <div class="col" th:text="|${top.hunter()} ${top.fish()} ${top.size()} ${top.weight()}|"> Karel 150 cm 1000 g</div>
-            </a>
-          </div>
-        </div>
-      </th:block>
+<head th:replace="~{fragments/head :: head}"></head>
+<body class="bg-light">
+
+<!-- Horní Lišta a Sidebar -->
+<div th:replace="~{fragments/navigation :: navbar}"></div>
+
+<div class="container px-3 my-3">
+
+  <!-- ZÁHLAVÍ + NAVIGAČNÍ ZÁLOŽKY (TABY) -->
+  <div class="card shadow-sm border-0 mb-4 rounded-lg">
+    <div class="card-body p-3">
+
+      <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-3">
+        <h3 class="font-weight-bold text-dark m-0 mb-2 mb-sm-0">
+          <i class="fas fa-trophy text-warning mr-2"></i>Žebříček TOP úlovků
+        </h3>
+      </div>
+
+      <!-- Taby pro přepínání: Podle Délky vs. Podle Váhy -->
+      <ul class="nav nav-pills nav-fill bg-light p-1 rounded-pill border" id="topCatchesTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <a class="nav-link active font-weight-bold rounded-pill py-2"
+             id="size-tab"
+             data-toggle="tab"
+             href="#by-size"
+             role="tab"
+             aria-controls="by-size"
+             aria-selected="true">
+            <i class="fas fa-ruler-horizontal mr-2 text-primary"></i>Podle délky
+          </a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link font-weight-bold rounded-pill py-2"
+             id="weight-tab"
+             data-toggle="tab"
+             href="#by-weight"
+             role="tab"
+             aria-controls="by-weight"
+             aria-selected="false">
+            <i class="fas fa-weight-hanging mr-2 text-success"></i>Podle váhy
+          </a>
+        </li>
+      </ul>
+
     </div>
   </div>
+
+  <!-- OBSAH ZÁLOŽEK -->
+  <div class="tab-content" id="topCatchesTabContent">
+
+    <!-- 1. ZÁLOŽKA: PODLE DÉLKY -->
+    <div class="tab-pane fade show active" id="by-size" role="tabpanel" aria-labelledby="size-tab">
+      <div class="row px-1">
+
+        <div class="col-12 col-md-6 col-lg-4 mb-3 px-2" th:each="c, iterStat : ${topBySize}">
+
+          <a th:href="@{/catch/{id}(id=${c.id()})}" class="text-decoration-none text-dark d-block h-100">
+            <div class="card shadow-sm border-0 rounded-lg overflow-hidden h-100 catch-card-hover">
+              <div class="card-body p-3">
+
+                <!-- Pořadí (Medaile) + Čas -->
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <div>
+                                            <span th:if="${iterStat.count == 1}" class="badge badge-warning text-dark font-weight-bold px-2 py-1">
+                                                <i class="fas fa-medal mr-1"></i>1. Místo
+                                            </span>
+                    <span th:if="${iterStat.count == 2}" class="badge badge-secondary font-weight-bold px-2 py-1">
+                                                <i class="fas fa-medal mr-1"></i>2. Místo
+                                            </span>
+                    <span th:if="${iterStat.count == 3}" class="badge badge-danger font-weight-bold px-2 py-1">
+                                                <i class="fas fa-medal mr-1"></i>3. Místo
+                                            </span>
+                    <span th:if="${iterStat.count > 3}" class="badge badge-light border text-muted font-weight-bold px-2 py-1" th:text="${iterStat.count + '.'}">
+                                                4.
+                                            </span>
+                  </div>
+                  <span class="small font-weight-bold text-muted" th:text="${c.timestamp() != null ? #temporals.format(c.timestamp(), 'dd.MM.yyyy') : ''}">
+                                            01.06.2026
+                                        </span>
+                </div>
+
+                <!-- Ryba a Lovec -->
+                <div class="d-flex justify-content-between align-items-center my-2">
+                  <h5 class="font-weight-bold text-dark m-0" th:text="${c.fish()}">Kapr</h5>
+                  <span class="badge badge-success font-weight-bold px-2 py-1" th:text="${c.hunter()}">Lovec</span>
+                </div>
+
+                <!-- Rozměry (Délka zvýrazněná modře) -->
+                <div class="row text-center bg-light rounded py-2 mx-0 my-2 border">
+                  <div class="col-6 border-right">
+                    <small class="text-muted d-block">Délka</small>
+                    <strong class="text-primary fs-5" th:text="${c.size() != null ? c.size() : '-'}">65 cm</strong>
+                  </div>
+                  <div class="col-6">
+                    <small class="text-muted d-block">Váha</small>
+                    <strong class="text-dark fs-5" th:text="${c.weight() != null ? c.weight() : '-'}">4500 g</strong>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- Pokud seznam chybí -->
+        <div th:if="${topBySize == null or #lists.isEmpty(topBySize)}" class="col-12 text-center py-5 text-muted">
+          <i class="fas fa-trophy fa-3x mb-3 text-muted opacity-50"></i>
+          <h5>Žádné úlovky nebyly nalezeny.</h5>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 2. ZÁLOŽKA: PODLE VÁHY -->
+    <div class="tab-pane fade" id="by-weight" role="tabpanel" aria-labelledby="weight-tab">
+      <div class="row px-1">
+
+        <div class="col-12 col-md-6 col-lg-4 mb-3 px-2" th:each="c, iterStat : ${topByWeight}">
+
+          <a th:href="@{/catch/{id}(id=${c.id()})}" class="text-decoration-none text-dark d-block h-100">
+            <div class="card shadow-sm border-0 rounded-lg overflow-hidden h-100 catch-card-hover">
+              <div class="card-body p-3">
+
+                <!-- Pořadí (Medaile) + Čas -->
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <div>
+                                            <span th:if="${iterStat.count == 1}" class="badge badge-warning text-dark font-weight-bold px-2 py-1">
+                                                <i class="fas fa-medal mr-1"></i>1. Místo
+                                            </span>
+                    <span th:if="${iterStat.count == 2}" class="badge badge-secondary font-weight-bold px-2 py-1">
+                                                <i class="fas fa-medal mr-1"></i>2. Místo
+                                            </span>
+                    <span th:if="${iterStat.count == 3}" class="badge badge-danger font-weight-bold px-2 py-1">
+                                                <i class="fas fa-medal mr-1"></i>3. Místo
+                                            </span>
+                    <span th:if="${iterStat.count > 3}" class="badge badge-light border text-muted font-weight-bold px-2 py-1" th:text="${iterStat.count + '.'}">
+                                                4.
+                                            </span>
+                  </div>
+                  <span class="small font-weight-bold text-muted" th:text="${c.timestamp() != null ? #temporals.format(c.timestamp(), 'dd.MM.yyyy') : ''}">
+                                            01.06.2026
+                                        </span>
+                </div>
+
+                <!-- Ryba a Lovec -->
+                <div class="d-flex justify-content-between align-items-center my-2">
+                  <h5 class="font-weight-bold text-dark m-0" th:text="${c.fish()}">Kapr</h5>
+                  <span class="badge badge-success font-weight-bold px-2 py-1" th:text="${c.hunter()}">Lovec</span>
+                </div>
+
+                <!-- Rozměry (Váha zvýrazněná zeleně) -->
+                <div class="row text-center bg-light rounded py-2 mx-0 my-2 border">
+                  <div class="col-6 border-right">
+                    <small class="text-muted d-block">Délka</small>
+                    <strong class="text-dark fs-5" th:text="${c.size() != null ? c.size() : '-'}">65 cm</strong>
+                  </div>
+                  <div class="col-6">
+                    <small class="text-muted d-block">Váha</small>
+                    <strong class="text-success fs-5" th:text="${c.weight() != null ? c.weight() : '-'}">4500 g</strong>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- Pokud seznam chybí -->
+        <div th:if="${topByWeight == null or #lists.isEmpty(topByWeight)}" class="col-12 text-center py-5 text-muted">
+          <i class="fas fa-trophy fa-3x mb-3 text-muted opacity-50"></i>
+          <h5>Žádné úlovky nebyly nalezeny.</h5>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
 </div>
+
 </body>
 </html>

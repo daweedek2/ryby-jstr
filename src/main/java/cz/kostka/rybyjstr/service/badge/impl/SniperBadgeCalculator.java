@@ -23,17 +23,19 @@ public class SniperBadgeCalculator implements BadgeCalculator {
 
         if (!result.isEmpty()) {
             Object[] row = result.get(0);
-            String hunterName = (String) row[0];
-            Double avgPoints = (Double) row[1];
+            Long hunterId = (Long) row[0];
+            String hunterName = (String) row[1];
+            Double avgPoints = (Double) row[2];
             double roundedAvg = Math.round(avgPoints * 10.0) / 10.0;
 
             return new BadgeDto(
                     BadgeType.SNIPER,
+                    hunterId,
                     hunterName,
                     roundedAvg + " bodů/ryba"
             );
         }
 
-        return new BadgeDto(BadgeType.SNIPER, null, null);
+        return new BadgeDto(BadgeType.SNIPER, null,null, null);
     }
 }

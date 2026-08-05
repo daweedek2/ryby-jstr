@@ -26,11 +26,12 @@ public class MicroHunterBadgeCalculator implements BadgeCalculator {
             Catch c = smallestCatch.get();
             return new BadgeDto(
                     BadgeType.MICRO_HUNTER,
+                    c.getHunter().getId(),
                     c.getHunter().getName(),
                     c.getSize() + " cm (" + c.getFishType().getType() + ")"
             );
         }
 
-        return new BadgeDto(BadgeType.MICRO_HUNTER, null, null);
+        return new BadgeDto(BadgeType.MICRO_HUNTER,null, null, null);
     }
 }
