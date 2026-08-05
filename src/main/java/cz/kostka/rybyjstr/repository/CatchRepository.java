@@ -67,4 +67,9 @@ public interface CatchRepository extends JpaRepository<Catch, Long> {
     @EntityGraph(attributePaths = {"hunter", "fishType"})
     Page<Catch> findAllByOrderByTimestampDesc(Pageable pageable);
 
+    // Vybere POUZE úlovky, které mají v kolekci images alespoň 1 fotku
+    @EntityGraph(attributePaths = {"hunter", "fishType"})
+    @Query("SELECT DISTINCT c FROM Catch c JOIN c.images img ORDER BY c.timestamp DESC")
+    Page<Catch> findAllOnlyWithImagesOrderByTimestampDesc(Pageable pageable);
+
 }

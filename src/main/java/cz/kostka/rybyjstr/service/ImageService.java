@@ -44,7 +44,7 @@ public class ImageService {
         return imageRepository.findAllByTheCatch(theCatch);
     }
 
-    public Set<Long> getImageIds(Long catchId) {
-        return imageRepository.findImageIdsByCatchId(catchId);
+    public List<Object[]> getImageIds(List<Long> catchIds) {
+        return imageRepository.findImageIdsByCatchIds(catchIds);
     }
 }

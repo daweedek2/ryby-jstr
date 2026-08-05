@@ -14,7 +14,7 @@ import java.util.Set;
 public interface ImageRepository extends JpaRepository<Image, Long> {
     List<Image> findAllByTheCatch(Catch theCatch);
 
-    // Vytáhne POUZE čísla ID obrázků bez načítání obřích bajtů (image_data)
-    @Query("SELECT i.id FROM Image i WHERE i.theCatch.id = :catchId")
-    Set<Long> findImageIdsByCatchId(@Param("catchId") Long catchId);
+    // Vytáhne dvojice [catchId, imageId] pro celý seznam úlovků naráz v 1 SQL dotazu!
+    @Query("SELECT i.theCatch.id, i.id FROM Image i WHERE i.theCatch.id IN :catchIds")
+    List<Object[]> findImageIdsByCatchIds(@Param("catchIds") List<Long> catchIds);
 }
