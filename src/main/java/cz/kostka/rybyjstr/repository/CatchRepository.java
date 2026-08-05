@@ -19,7 +19,7 @@ public interface CatchRepository extends JpaRepository<Catch, Long> {
     Integer sumAllSizes();
 
     @Query("SELECT new cz.kostka.rybyjstr.dto.HunterStatsDto(" +
-            "c.hunter.name, SUM(c.points), AVG(c.points), COUNT(c), MAX(c.size)) " +
+            "c.hunter.id, c.hunter.name, SUM(c.points), AVG(c.points), COUNT(c), MAX(c.size)) " +
             "FROM Catch c " +
             "GROUP BY c.hunter.id, c.hunter.name " +
             "ORDER BY SUM(c.points) DESC")
