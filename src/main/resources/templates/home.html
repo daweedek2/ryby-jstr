@@ -82,12 +82,13 @@
                     <small class="text-danger" th:if="${#fields.hasErrors('time')}" th:errors="*{time}">Chyba času</small>
                 </div>
 
-                <!-- FOTKA (Velké tlačítko pro foťák na mobilu) -->
+                <!-- FOTKA (S možností výběru z galerie i vyfocení) -->
                 <div class="form-group">
                     <label for="image" class="font-weight-bold small text-muted">Fotka ryby</label>
                     <div class="custom-file">
-                        <input type="file" name="image" id="image" accept="image/*" capture="environment" class="custom-file-input">
-                        <label class="custom-file-label" for="image" data-browse="Vybrat">Vyfotit / Přidat fotku</label>
+                        <!-- Odstraněn atribut capture="environment" -->
+                        <input type="file" name="image" id="image" accept="image/*" class="custom-file-input">
+                        <label class="custom-file-label" for="image" data-browse="Vybrat">Vyfotit nebo vybrat z galerie</label>
                     </div>
                 </div>
 
