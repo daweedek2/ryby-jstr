@@ -8,24 +8,31 @@
 
 <div class="container px-3 my-3">
 
-    <!-- OVLÁDACÍ PANEL: Název + Filtr podle Lovce -->
-    <div class="card shadow-sm border-0 mb-3 rounded-lg">
+    <!-- OVLÁDACÍ PANEL: Název + Filtr + Tisk -->
+    <div class="card shadow-sm border-0 mb-3 rounded-lg no-print">
         <div class="card-body p-2 d-flex justify-content-between align-items-center">
 
             <h5 class="font-weight-bold text-dark m-0 pl-2">
                 <i class="fas fa-camera-retro text-success mr-2"></i>Fotokniha úlovků
             </h5>
 
-            <!-- Filtr podle Lovce -->
-            <div class="dropdown">
-                <button class="btn btn-outline-secondary btn-sm dropdown-toggle font-weight-bold" type="button" id="hunterFilterBtn" data-toggle="dropdown">
-                    <i class="fas fa-filter mr-1"></i>Lovec
+            <div class="d-flex gap-2 align-items-center">
+                <!-- TLAČÍTKO TISK -->
+                <button type="button" onclick="window.print()" class="btn btn-outline-dark btn-sm font-weight-bold mr-2" title="Vytisknout fotoknihu">
+                    <i class="fas fa-print mr-1"></i>Tisknout
                 </button>
-                <div class="dropdown-menu dropdown-menu-right shadow border-0">
-                    <a class="dropdown-item filter-hunter active" href="#" data-hunter="all">Všichni lovci</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item filter-hunter" href="#" th:each="h : ${allHunters}"
-                       th:data-hunter="${h.name != null ? h.name : h}" th:text="${h.name != null ? h.name : h}">Lovec</a>
+
+                <!-- Filtr podle Lovce -->
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle font-weight-bold" type="button" id="hunterFilterBtn" data-toggle="dropdown">
+                        <i class="fas fa-filter mr-1"></i>Lovec
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right shadow border-0">
+                        <a class="dropdown-item filter-hunter active" href="#" data-hunter="all">Všichni lovci</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item filter-hunter" href="#" th:each="h : ${allHunters}"
+                           th:data-hunter="${h.name != null ? h.name : h}" th:text="${h.name != null ? h.name : h}">Lovec</a>
+                    </div>
                 </div>
             </div>
 
@@ -45,7 +52,7 @@
                     <div class="card border-0 rounded-lg overflow-hidden shadow-sm position-relative photo-card">
 
                         <!-- FOTKA ÚLOVKU -->
-                        <div class="bg-dark text-center d-flex align-items-center justify-content-center" style="height: 240px; overflow: hidden;">
+                        <div class="bg-dark text-center d-flex align-items-center justify-content-center photo-wrapper" style="height: 240px; overflow: hidden;">
                             <img th:src="@{/image/{id}(id=${new java.util.ArrayList(c.imageIds)[0]})}"
                                  loading="lazy"
                                  class="card-img-top w-100 h-100"
@@ -53,7 +60,7 @@
                                  alt="Fotka úlovku">
                         </div>
 
-                        <!-- OVERLAY S INFORMACEMI PŘI HOVERU / V PATCE -->
+                        <!-- OVERLAY S INFORMACEMI PŘI HOVERU / V PATCE (PRO WEBOVÝ NÁHLED) -->
                         <div class="photo-overlay position-absolute w-100 p-2 d-flex flex-column justify-content-between"
                              style="top: 0; bottom: 0; left: 0; background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.85) 100%);">
 
@@ -72,6 +79,18 @@
                             </div>
                         </div>
 
+                        <!-- ČISTÝ POPIS NEZATMAVENÝ PRO TISK (Viditelný pouze při tisku) -->
+                        <div class="print-caption p-2 text-dark bg-white border-top">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong th:text="${c.fish}">Kapr</strong>
+                                    <span th:text="${c.size != null ? ' (' + c.size + ' cm)' : ''}"> (65 cm)</span>
+                                </div>
+                                <span class="badge badge-success" th:text="${c.hunter}">Lovec</span>
+                            </div>
+                            <div class="small text-muted text-right mt-1" th:text="${c.timestamp != null ? #temporals.format(c.timestamp, 'dd.MM.yyyy') : ''}">01.06.2026</div>
+                        </div>
+
                     </div>
                 </a>
 
@@ -81,7 +100,7 @@
     </div>
 
     <!-- TLAČÍTKO NAČÍST DALŠÍ FOTKY -->
-    <div class="text-center my-4" id="load-more-wrapper" th:style="${nextPhotoIndex > currentPage ? '' : 'display:none;'}">
+    <div class="text-center my-4 no-print" id="load-more-wrapper" th:style="${nextPhotoIndex > currentPage ? '' : 'display:none;'}">
         <button id="btn-load-more"
                 th:data-next-page="${nextPhotoIndex}"
                 class="btn btn-outline-success btn-lg rounded-pill font-weight-bold px-4 shadow-sm">
@@ -109,7 +128,6 @@
                 success: function(data) {
                     var $response = $(data);
 
-                    // 1. Najdeme nové karty fotek
                     var $newCards = $response.find('#photos-container .photo-item');
 
                     if ($newCards.length > 0) {
@@ -117,7 +135,6 @@
 
                         applyHunterFilter(activeHunter);
 
-                        // 2. Najdeme nové tlačítko v odpovědi
                         var $newBtn = $response.find('#btn-load-more');
                         if ($newBtn.length > 0) {
                             var newNextPage = parseInt($newBtn.attr('data-next-page'));
@@ -165,7 +182,6 @@
     });
 </script>
 
-<!-- STYLY PRO EFEKT PŘI NAJEDUTÍ MYŠÍ -->
 <style>
     .photo-card {
         transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
@@ -173,6 +189,88 @@
     .photo-card:hover {
         transform: translateY(-4px);
         box-shadow: 0 8px 20px rgba(0,0,0,0.15) !important;
+    }
+
+    /* Popisek pro tisk je v běžném režimu skrytý */
+    .print-caption {
+        display: none;
+    }
+
+    /* SPECIFICKÉ STYLY PRO INSTAGRAM STORIES TISK (9:16 FORMAT) */
+    @media print {
+        @page {
+            size: portrait;
+            margin: 8mm;
+        }
+
+        nav, .no-print, #load-more-wrapper, .navbar {
+            display: none !important;
+        }
+
+        body {
+            background-color: #ffffff !important;
+        }
+
+        .container {
+            max-width: 100% !important;
+            width: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        /* 3 fotky na řádek na papíře A4 */
+        .photo-item {
+            flex: 0 0 33.333333% !important;
+            max-width: 33.333333% !important;
+            page-break-inside: avoid;
+            break-inside: avoid;
+            margin-bottom: 20px !important;
+            padding-left: 6px !important;
+            padding-right: 6px !important;
+        }
+
+        .photo-card {
+            border: 1px solid #e0e0e0 !important;
+            box-shadow: none !important;
+            background-color: #f8f9fa !important;
+        }
+
+        /* Vynucení čistého poměru 9:16 (Instagram Stories) */
+        .photo-wrapper {
+            height: 0 !important;
+            padding-bottom: 155% !important; /* Poměr stran ~9:16 */
+            position: relative !important;
+            background-color: #f0f0f0 !important;
+        }
+
+        .photo-wrapper img {
+            position: absolute !important;
+            top: 0;
+            left: 0;
+            width: 100% !important;
+            height: 100% !important;
+            /* contain zajistí, že se fotka zobrazí celá bez ořezu hlavy */
+            object-fit: contain !important;
+            object-position: center !important;
+            filter: brightness(1.04) contrast(1.02);
+        }
+
+        /* Skryjeme ztmavovací gradient a ukážeme bílou kartu s popiskem */
+        .photo-overlay {
+            display: none !important;
+        }
+
+        .print-caption {
+            display: block !important;
+            background: #ffffff !important;
+        }
+
+        .badge-success {
+            background-color: #28a745 !important;
+            color: #fff !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
     }
 </style>
 
